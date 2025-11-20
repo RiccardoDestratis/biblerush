@@ -14,25 +14,31 @@ export function PlayerWaitingView({
 }: PlayerWaitingViewProps) {
   if (gameStatus === "waiting") {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-muted via-background to-muted/50">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
         <div className="text-center space-y-6 max-w-md w-full">
           <div className="space-y-4">
             <h1 className="text-[18px] font-semibold text-foreground">
               Hi, {playerName}!
             </h1>
-            <p className="text-[24px] text-foreground">
+            <p className="text-[24px] text-foreground font-medium">
               Waiting for host to start...
             </p>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p className="text-base text-muted-foreground">
               {playerCount} {playerCount === 1 ? "player" : "players"} joined
             </p>
-            <div className="flex justify-center space-x-2">
+            <div className="flex justify-center items-center space-x-2">
               <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-secondary rounded-full animate-pulse delay-75"></div>
-              <div className="w-2 h-2 bg-secondary rounded-full animate-pulse delay-150"></div>
+              <div
+                className="w-2 h-2 bg-secondary rounded-full animate-pulse"
+                style={{ animationDelay: "0.2s" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-secondary rounded-full animate-pulse"
+                style={{ animationDelay: "0.4s" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -42,7 +48,7 @@ export function PlayerWaitingView({
 
   if (gameStatus === "active") {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-muted via-background to-muted/50">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
         <div className="text-center space-y-6 max-w-md w-full">
           <h1 className="text-[24px] font-semibold text-foreground">
             Game starting soon...
@@ -56,7 +62,7 @@ export function PlayerWaitingView({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-muted via-background to-muted/50">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
       <div className="text-center space-y-6 max-w-md w-full">
         <h1 className="text-[24px] font-semibold text-foreground">
           Game has ended

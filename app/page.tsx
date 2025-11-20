@@ -66,6 +66,12 @@ export default function Home() {
               Test Supabase
             </Link>
           </Button>
+          <Button variant="outline" asChild>
+            <Link href="/test-realtime" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Test Realtime
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

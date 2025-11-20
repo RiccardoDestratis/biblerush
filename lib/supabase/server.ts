@@ -1,15 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { getEnvVar } from "@/lib/utils/env";
+import type { Database } from "@/types/database.types";
 
 /**
  * Supabase client for server-side usage
  * Use this in Server Components and Server Actions
+ * Typed with generated database types for type safety
  */
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     getEnvVar("NEXT_PUBLIC_SUPABASE_URL"),
     getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
     {

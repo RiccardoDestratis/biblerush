@@ -51,6 +51,7 @@ export default async function PlayerPage({
       gameStatus={gameResult.game.status}
       playerName={player.player_name}
       playerCount={playersResult.players.length}
+      roomCode={gameResult.game.room_code}
     />
   );
 }

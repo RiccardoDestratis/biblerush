@@ -258,7 +258,7 @@ export default function TestRealtimePage() {
                         <span className="font-semibold text-blue-600">{event.type}</span>
                         <span className="text-muted-foreground">{event.time}</span>
                       </div>
-                      <pre className="text-xs overflow-x-auto">{event.data}</pre>
+                      <pre className="text-xs overflow-x-auto">{String(event.data)}</pre>
                     </div>
                   ))}
                 </div>

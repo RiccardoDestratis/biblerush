@@ -234,7 +234,7 @@ export async function getGame(gameId: string): Promise<
       game: {
         id: data.id,
         room_code: data.room_code,
-        status: data.status,
+        status: data.status || "waiting", // Default to "waiting" if null
       },
     };
   } catch (error) {
@@ -446,9 +446,9 @@ export async function getPastGames(): Promise<
         return {
           id: game.id,
           room_code: game.room_code,
-          status: game.status,
+          status: game.status || "waiting",
           question_count: game.question_count,
-          created_at: game.created_at,
+          created_at: game.created_at || new Date().toISOString(),
           question_set_title: questionSetTitle,
           player_count: playerCount,
         };

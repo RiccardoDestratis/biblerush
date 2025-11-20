@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { cancelGame } from "@/lib/actions/games";
 import { getPlayerCount, getPlayers } from "@/lib/actions/players";
+import { PlayerList } from "@/components/game/player-list";
+import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
+import type { PlayerJoinedPayload } from "@/lib/types/realtime";
 import { toast } from "sonner";
-import { Loader2, X, RefreshCw } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 interface HostWaitingRoomProps {
   gameId: string;
@@ -27,7 +30,31 @@ export function HostWaitingRoom({
   const [isLoadingNetworkUrl, setIsLoadingNetworkUrl] = useState(true);
   const [playerCount, setPlayerCount] = useState(0);
   const [players, setPlayers] = useState<Array<{ id: string; player_name: string }>>([]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const processedPlayerIdsRef = useRef<Set<string>>(new Set());
+
+  // Fetch initial players from database
+  const fetchPlayers = useCallback(async () => {
+    try {
+      const countResult = await getPlayerCount(gameId);
+      const playersResult = await getPlayers(gameId);
+      
+      if (countResult.success) {
+        setPlayerCount(countResult.count);
+      }
+      
+      if (playersResult.success) {
+        setPlayers(playersResult.players);
+        // Mark existing players as processed to avoid duplicate counts
+        playersResult.players.forEach((p) => {
+          processedPlayerIdsRef.current.add(p.id);
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching players:", error);
+    }
+  }, [gameId]);
 
   // Fetch network URL from API to get the actual network IP
   useEffect(() => {
@@ -59,34 +86,75 @@ export function HostWaitingRoom({
 
     fetchNetworkUrl();
     fetchPlayers();
-    
-    // Refresh player list every 3 seconds (real-time updates come in Epic 2)
-    const interval = setInterval(() => {
-      fetchPlayers();
-    }, 3000);
+  }, [roomCode, gameId, fetchPlayers]);
 
-    return () => clearInterval(interval);
-  }, [roomCode, gameId]);
+  // Set up real-time subscription for player joins
+  useEffect(() => {
+    // Create game channel
+    const channel = createGameChannel(gameId);
+    channelRef.current = channel;
 
-  const fetchPlayers = async () => {
-    setIsRefreshing(true);
-    try {
-      const countResult = await getPlayerCount(gameId);
-      const playersResult = await getPlayers(gameId);
-      
-      if (countResult.success) {
-        setPlayerCount(countResult.count);
+    // Reset processed IDs when game changes
+    processedPlayerIdsRef.current = new Set();
+
+    // Handle player joined event (optimistic update)
+    const handlePlayerJoined = (payload: PlayerJoinedPayload) => {
+      // Check if we've already processed this player (avoid duplicates from broadcast + DB event)
+      if (processedPlayerIdsRef.current.has(payload.playerId)) {
+        return; // Already processed, skip
       }
+
+      // Mark as processed
+      processedPlayerIdsRef.current.add(payload.playerId);
+
+      // Optimistic update: Add player immediately
+      setPlayers((prevPlayers) => {
+        // Double-check for duplicates (safety check)
+        const exists = prevPlayers.some((p) => p.id === payload.playerId);
+        if (exists) {
+          return prevPlayers;
+        }
+        
+        // Add new player
+        return [
+          ...prevPlayers,
+          {
+            id: payload.playerId,
+            player_name: payload.playerName,
+          },
+        ];
+      });
       
-      if (playersResult.success) {
-        setPlayers(playersResult.players);
+      // Update count
+      setPlayerCount((prev) => prev + 1);
+    };
+
+    // Subscribe to game channel
+    const unsubscribe = subscribeToGameChannel(channel, gameId, {
+      onPlayerJoined: handlePlayerJoined,
+      onStatusChange: (status) => {
+        if (status === "connected") {
+          console.log("Realtime connected for game:", gameId);
+        } else if (status === "reconnecting") {
+          console.log("Realtime reconnecting...");
+        } else if (status === "failed") {
+          console.error("Realtime connection failed");
+        }
+      },
+      onError: (error) => {
+        console.error("Realtime error:", error);
+      },
+    });
+
+    unsubscribeRef.current = unsubscribe;
+
+    // Cleanup on unmount
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
       }
-    } catch (error) {
-      console.error("Error fetching players:", error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+    };
+  }, [gameId]);
 
   const handleCancelGame = async () => {
     if (
@@ -194,39 +262,11 @@ export function HostWaitingRoom({
 
         {/* Player List Section */}
         <div className="mt-12 space-y-4">
-          <div className="flex items-center justify-center gap-4">
-            <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
-              {playerCount} {playerCount === 1 ? "Player" : "Players"} Joined
-            </h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={fetchPlayers}
-              disabled={isRefreshing}
-              className="h-10 w-10"
-            >
-              <RefreshCw className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`} />
-            </Button>
-          </div>
+          <h2 className="text-3xl md:text-4xl font-semibold text-foreground text-center">
+            {playerCount} {playerCount === 1 ? "Player" : "Players"} Joined
+          </h2>
           
-          {players.length > 0 ? (
-            <div className="mt-6 space-y-2 max-h-96 overflow-y-auto">
-              {players.map((player, index) => (
-                <div
-                  key={player.id}
-                  className="bg-background/50 backdrop-blur-sm rounded-lg p-4 text-left border border-primary/20"
-                >
-                  <p className="text-xl font-medium text-foreground">
-                    {index + 1}. {player.player_name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xl text-muted-foreground">
-              Players will appear here when they join...
-            </p>
-          )}
+          <PlayerList players={players} />
         </div>
 
         {/* Start Game Button - Disabled */}

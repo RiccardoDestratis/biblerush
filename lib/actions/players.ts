@@ -1,7 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import type { PlayerJoinedPayload } from "@/lib/types/realtime";
 
 /**
  * Join a game by room code
@@ -76,6 +78,31 @@ export async function joinGame(
       };
     }
 
+    // Check technical safety limit (200 players max to prevent overwhelming Supabase connections)
+    // Note: Tier-based enforcement (20 for free, unlimited for Pro/Church) will be added in Story 5.3
+    // For now, we only enforce a technical safety limit
+    const { count: playerCount, error: countError } = await supabase
+      .from("game_players")
+      .select("*", { count: "exact", head: true })
+      .eq("game_id", game.id);
+
+    if (countError) {
+      console.error("Error checking player count:", countError);
+      return {
+        success: false,
+        error: "Failed to check player count. Please try again.",
+      };
+    }
+
+    // Technical safety limit: 200 players max (prevents overwhelming Realtime connections)
+    // Tier-based limits (20 for free tier) will be enforced in Story 5.3 with authentication
+    if ((playerCount || 0) >= 200) {
+      return {
+        success: false,
+        error: "Game is full (200 players max). Please create a new game.",
+      };
+    }
+
     // Insert player into game_players table
     const { data: player, error: playerError } = await supabase
       .from("game_players")
@@ -94,6 +121,55 @@ export async function joinGame(
         success: false,
         error: "Failed to join game. Please try again.",
       };
+    }
+
+    // Broadcast player_joined event via Realtime for optimistic UI updates
+    // Note: PostgreSQL change listener will also fire automatically as a fallback
+    // but broadcast provides immediate feedback (<500ms latency target)
+    try {
+      // Use service role client to broadcast events from server
+      const serviceClient = createServiceClient();
+      const channel = serviceClient.channel(`game:${game.id}`);
+      
+      // Subscribe to the channel first (required before broadcasting)
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Channel subscription timeout"));
+        }, 3000);
+
+        channel.subscribe((status: string) => {
+          if (status === "SUBSCRIBED") {
+            clearTimeout(timeout);
+            resolve();
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            clearTimeout(timeout);
+            reject(new Error(`Failed to subscribe to channel: ${status}`));
+          }
+        });
+      });
+      
+      const payload: PlayerJoinedPayload = {
+        playerId: player.id,
+        playerName: trimmedName,
+      };
+      
+      // Broadcast the event
+      await channel.send({
+        type: "broadcast",
+        event: "player_joined",
+        payload,
+      });
+      
+      // Clean up the channel after broadcasting
+      // Use setTimeout to ensure broadcast is sent before unsubscribing
+      setTimeout(() => {
+        channel.unsubscribe();
+      }, 200);
+    } catch (broadcastError) {
+      // Log error but don't fail the join - player is already in database
+      // PostgreSQL change listener will still fire and update clients automatically
+      console.error("Error broadcasting player_joined event:", broadcastError);
+      // This is non-fatal - the PostgreSQL change listener will handle the update
     }
 
     // Revalidate paths
@@ -181,9 +257,16 @@ export async function getPlayers(
       };
     }
 
+    // Map players to ensure joined_at is always a string (never null)
+    const players = (data || []).map((player) => ({
+      id: player.id,
+      player_name: player.player_name,
+      joined_at: player.joined_at || new Date().toISOString(),
+    }));
+
     return {
       success: true,
-      players: data || [],
+      players,
     };
   } catch (error) {
     console.error("Unexpected error fetching players:", error);

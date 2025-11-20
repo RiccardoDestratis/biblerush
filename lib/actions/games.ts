@@ -151,14 +151,14 @@ export async function createGame(
     const roomCode = await generateUniqueRoomCode();
 
     // Stub host_id for MVP (auth will be added in Epic 5)
-    // Using a placeholder UUID - in production this will be auth.user.id
-    const stubHostId = "00000000-0000-0000-0000-000000000000";
+    // Using NULL since schema allows it (ON DELETE SET NULL)
+    // In production this will be auth.user.id
 
     // Insert game into database
     const { data, error } = await supabase
       .from("games")
       .insert({
-        host_id: stubHostId,
+        host_id: null, // NULL for MVP, will be set to auth.user.id in Epic 5
         room_code: roomCode,
         question_set_id: actualQuestionSetId,
         question_count: questionCount,
@@ -169,9 +169,10 @@ export async function createGame(
 
     if (error) {
       console.error("Error creating game:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
       return {
         success: false,
-        error: "Failed to create game. Please try again.",
+        error: `Failed to create game: ${error.message || "Please try again."}`,
       };
     }
 

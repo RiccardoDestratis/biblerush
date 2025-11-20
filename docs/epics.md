@@ -18,9 +18,9 @@ This document provides the complete epic and story breakdown for quizgame, decom
 - **Epic 2:** Real-Time Game Engine & Player Experience (7 stories)
 - **Epic 3:** Scoring, Leaderboards & Game Completion (6 stories)
 - **Epic 4:** Content Infrastructure & AI Visual System (5 stories)
-- **Epic 5:** Content Library Completion & Launch Readiness (9 stories)
+- **Epic 5:** Content Library Completion & Launch Readiness (10 stories)
 
-**Total:** 34 stories across 5 epics
+**Total:** 35 stories across 5 epics
 
 ---
 
@@ -1997,6 +1997,161 @@ So that we can soft launch with confidence and gather user feedback.
 **Monitoring Setup:**
 - ✅ Analytics tracking active
 - ✅ Error logging configured
+
+---
+
+### Story 5.9: Admin Dashboard for Question Management
+
+As an administrator,
+I want an admin dashboard to view, add, edit, and manage questions and question sets,
+So that I can easily maintain and expand the question library without direct database access.
+
+**Acceptance Criteria:**
+
+**Given** I am an authenticated admin user (identified by `users.is_admin = true` or `users.tier = 'church'`)
+**When** I navigate to `/admin/questions`
+**Then** I see admin dashboard with:
+
+**Question Set Management:**
+- List of all question sets with: name, description, difficulty, question count, published status
+- "Create New Set" button
+- Edit/delete actions for each set
+- Filter/search by name, difficulty, published status
+
+**Question Management:**
+- Table view of all questions with columns:
+  - Question text (truncated)
+  - Question Set
+  - Correct Answer
+  - Has Image (yes/no)
+  - Actions (Edit, Delete, Regenerate Image)
+- Pagination (50 questions per page)
+- Filter by question set, search by question text
+- "Add Question" button (manual entry)
+- "Bulk Upload" button (CSV import)
+
+**Manual Question Entry:**
+**When** I click "Add Question"
+**Then** I see form with fields:
+- Question Set (dropdown)
+- Question Text (textarea)
+- Option A, B, C, D (text inputs)
+- Correct Answer (radio: A/B/C/D)
+- Scripture Reference (text input)
+- Verse Content (textarea, optional)
+- Image Content Prompt (textarea for DALL-E prompt)
+- Image Style (textarea for DALL-E style)
+- Upload Custom Image (file upload, optional - overrides AI generation)
+- Difficulty (dropdown: beginner/intermediate/advanced, optional)
+
+**When** I submit the form:
+**Then** question is created in database
+**And** if image prompt provided: AI image is generated via DALL-E 3 and uploaded to Supabase Storage
+**And** if custom image uploaded: Image is uploaded to Supabase Storage
+**And** success toast: "Question created successfully"
+
+**CSV Bulk Upload:**
+**When** I click "Bulk Upload"
+**Then** I see upload interface:
+- File picker (accepts .csv)
+- Format specification link/help text
+- "Upload" button
+
+**CSV Format:**
+```csv
+set_name,set_description,difficulty,question,option_a,option_b,option_c,option_d,right_answer,verse_content,verse_reference,image_content_prompt,image_style
+"Foundations: Biblical Essentials","Core truths and fundamental stories",beginner,"What is the first book of the Bible?","Exodus","Psalms","Genesis","Matthew","Genesis","In the beginning God created the heavens and the earth.","Genesis 1:1","Ancient Hebrew scroll opened to first words circa 400 BC Middle East, aged parchment with Hebrew text visible, warm candlelight illuminating the writing, simple wooden reading stand, stone wall background, scholarly atmosphere of ancient Jewish scriptorium","Photorealistic, historically accurate biblical scene, warm candlelight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+```
+
+**When** I upload valid CSV:
+**Then** CSV is parsed and validated
+**And** for each row:
+  - Question set is created if doesn't exist (or matched if exists)
+  - Question is created with all fields
+  - If `image_content_prompt` provided: AI image generated and uploaded
+  - Progress indicator shows: "Processing 1 of 20 questions..."
+**And** success summary: "20 questions imported successfully. 3 images generated."
+**And** errors shown if any rows fail: "Row 5: Invalid correct_answer. Must be A, B, C, or D."
+
+**Image Management:**
+**When** I view a question in the table
+**Then** I see "Regenerate Image" button if image exists
+**And** I see "Generate Image" button if no image exists
+
+**When** I click "Regenerate Image":
+**Then** modal appears:
+  - Current image preview (if exists)
+  - Image Content Prompt (editable textarea)
+  - Image Style (editable textarea)
+  - "Upload Custom Image" option (file picker)
+  - "Generate with DALL-E" button
+  - "Upload Custom" button
+  - "Cancel" button
+
+**When** I click "Generate with DALL-E":
+**Then** DALL-E 3 API is called with prompt + style
+**And** new image is generated and uploaded to Supabase Storage
+**And** `questions.image_url` is updated
+**And** success toast: "Image regenerated successfully"
+**And** old image is deleted from storage (optional cleanup)
+
+**When** I upload custom image:
+**Then** image is validated (format: PNG/JPEG/WebP, max 5MB)
+**And** image is uploaded to Supabase Storage
+**And** `questions.image_url` is updated
+**And** success toast: "Custom image uploaded successfully"
+
+**Question Editing:**
+**When** I click "Edit" on a question
+**Then** I see edit form (same as "Add Question" but pre-filled)
+**And** I can modify any field
+**And** I can regenerate/change image
+**And** "Save Changes" button updates question in database
+
+**Database Schema Updates:**
+**Given** admin dashboard is implemented
+**Then** database schema includes new fields:
+
+```sql
+-- Add to question_sets table:
+ALTER TABLE question_sets ADD COLUMN difficulty TEXT; -- 'beginner', 'intermediate', 'advanced'
+ALTER TABLE question_sets ADD COLUMN is_published BOOLEAN DEFAULT true;
+
+-- Add to questions table:
+ALTER TABLE questions ADD COLUMN verse_content TEXT; -- Full verse text
+ALTER TABLE questions ADD COLUMN image_content_prompt TEXT; -- DALL-E prompt
+ALTER TABLE questions ADD COLUMN image_style TEXT; -- DALL-E style
+ALTER TABLE questions ADD COLUMN is_custom_image BOOLEAN DEFAULT false; -- True if uploaded, false if AI-generated
+
+-- Add to users table (if not exists):
+ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT false;
+```
+
+**Security:**
+- Admin routes protected: `/admin/*` requires `is_admin = true` or `tier = 'church'`
+- RLS policies: Admins can read/write all questions and question_sets
+- CSV upload: Validated server-side, max file size 10MB
+- Image upload: Validated format and size server-side
+
+**Prerequisites:** Stories 5.2 (Auth), 4.2 (AI Image Generation)
+
+**Technical Notes:**
+- Admin dashboard uses shadcn/ui components (DataTable, Form, FileUpload)
+- CSV parsing: Use `papaparse` or similar library
+- Image upload: Supabase Storage with public bucket
+- DALL-E integration: Reuse logic from Story 4.2
+- Admin check: Middleware or Server Action validates `is_admin` or `tier = 'church'`
+- Follow UX Design patterns for admin interfaces (clean, functional, not game-styled)
+
+**CSV Format Specification:**
+- Headers: `set_name`, `set_description`, `difficulty`, `question`, `option_a`, `option_b`, `option_c`, `option_d`, `right_answer`, `verse_content`, `verse_reference`, `image_content_prompt`, `image_style`
+- All fields except `verse_content`, `image_content_prompt`, `image_style` are required
+- `right_answer` must be exactly "A", "B", "C", or "D" (case-sensitive)
+- `difficulty` must be "beginner", "intermediate", or "advanced" (case-insensitive)
+- CSV encoding: UTF-8
+- Line breaks in text fields: Use `\n` or quoted fields with actual line breaks
+
+---
 - ✅ Uptime monitoring active
 - ✅ Usage metrics dashboard (basic)
 

@@ -51,6 +51,11 @@ This establishes the base architecture with these decisions:
 | **Internationalization** | next-intl | 3.x | UI & Content | Next.js 15 App Router support, type-safe translations |
 | **Hosting** | Vercel | Latest | Deployment | Zero-config Next.js deployment, edge network, serverless |
 | **AI Image Gen** | OpenAI DALL-E 3 | Latest | Content | Pre-generated Biblical imagery, batch processing |
+| **Unit Testing** | Vitest | Latest | Testing | Fast unit tests for business logic, scoring, game state |
+| **E2E Testing** | Playwright | Latest | Testing | Multi-device e2e tests for critical user flows, real-time sync validation |
+| **Browser Automation** | Browser MCP | Latest | Testing | AI-powered browser automation for visual regression, accessibility, complex flows |
+| **Database Testing** | Supabase MCP | Latest | Testing | Automated database operations, migrations, RLS validation, test data management |
+| **Load Testing** | Artillery/k6 | Latest | Testing | Simulate 50+ concurrent players to validate real-time sync at scale |
 
 ---
 
@@ -67,6 +72,8 @@ quizgame/
 │   │   │   ├── dashboard/        # User dashboard
 │   │   │   ├── games/            # Past games list
 │   │   │   └── settings/         # Account settings + language
+│   │   ├── admin/                # Admin routes (requires is_admin or tier='church')
+│   │   │   └── questions/        # Question management dashboard
 │   │   ├── create/               # Create new game flow
 │   │   ├── game/
 │   │   │   └── [gameId]/
@@ -135,6 +142,11 @@ quizgame/
 │   ├── generate-images.ts        # Batch AI image generation
 │   ├── seed-questions.ts         # Seed question sets
 │   └── migrate-translations.ts   # Translation migration (future)
+├── e2e/                          # End-to-end tests (Playwright)
+│   ├── game-flow.spec.ts         # Critical game flow tests
+│   ├── realtime-sync.spec.ts     # Real-time synchronization tests
+│   ├── fixtures/                 # Test fixtures and helpers
+│   └── playwright.config.ts      # Playwright configuration
 ├── types/                        # TypeScript types
 │   ├── database.ts               # Supabase generated types
 │   ├── game.ts                   # Game-related types
@@ -376,8 +388,10 @@ quizgame/
 - Constants: `lib/constants.ts` or co-located
 
 **Tests:**
-- Co-located with code: `__tests__/AnswerButton.test.tsx`
+- Unit tests: Co-located with code: `__tests__/AnswerButton.test.tsx` (Vitest)
+- E2E tests: `e2e/` directory: `e2e/game-flow.spec.ts` (Playwright)
 - Test utils: `lib/__tests__/utils.ts`
+- E2E fixtures: `e2e/fixtures/` for test data and helpers
 
 **i18n Files:**
 - One file per locale: `messages/en.json`, `messages/de.json`, `messages/it.json`
@@ -499,6 +513,7 @@ CREATE TABLE users (
   display_name TEXT,
   tier TEXT DEFAULT 'free', -- 'free', 'pro', 'church'
   locale_preference TEXT DEFAULT 'en', -- 'en', 'de', 'it'
+  is_admin BOOLEAN DEFAULT false, -- Admin access for question management
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -529,6 +544,8 @@ CREATE TABLE question_sets (
   description TEXT,
   question_count INT DEFAULT 0,
   tier_required TEXT DEFAULT 'free',
+  difficulty TEXT, -- 'beginner', 'intermediate', 'advanced'
+  is_published BOOLEAN DEFAULT true,
   created_at TIMESTAMP DEFAULT NOW()
 );
 ```
@@ -546,6 +563,10 @@ CREATE TABLE questions (
   correct_answer CHAR(1) NOT NULL, -- 'A', 'B', 'C', 'D'
   image_url TEXT, -- Supabase Storage URL
   scripture_reference TEXT,
+  verse_content TEXT, -- Full verse text (optional)
+  image_content_prompt TEXT, -- DALL-E prompt for AI generation
+  image_style TEXT, -- DALL-E style specification
+  is_custom_image BOOLEAN DEFAULT false, -- True if uploaded, false if AI-generated
   order_index INT,
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -952,6 +973,15 @@ pnpm lint
 
 # Run type checking
 pnpm type-check
+
+# Run unit tests (Vitest)
+pnpm test
+
+# Run e2e tests (Playwright)
+pnpm test:e2e
+
+# Install Playwright browsers (first time only)
+pnpm exec playwright install
 ```
 
 ### Package Management Commands (pnpm only)
@@ -974,6 +1004,141 @@ pnpm install
 ```
 
 **⚠️ CRITICAL:** Never use `npm` or `yarn` commands. Always use `pnpm`.
+
+---
+
+## Testing Architecture
+
+### Testing Stack
+
+**Unit & Integration Tests: Vitest**
+- **Purpose:** Fast unit tests for business logic (scoring, game state, tier validation)
+- **Location:** Co-located with code: `__tests__/ComponentName.test.tsx`
+- **Coverage Target:** 80%+ for critical logic (scoring, game state), 60%+ for Server Actions
+- **Setup:** Vitest with React Testing Library for component tests
+
+**End-to-End Tests: Playwright**
+- **Purpose:** Multi-device e2e tests for critical user flows, real-time sync validation
+- **Location:** `e2e/` directory
+- **Key Test Scenarios:**
+  - Complete game flow: Create game → Join → Play → Results
+  - Real-time synchronization: Multiple devices (host + players) stay in sync
+  - Cross-browser compatibility: iOS Safari, Chrome Android
+  - Answer submission and scoring accuracy
+- **Setup:** Playwright with multiple browser contexts to simulate host + players
+
+**Load Testing: k6 or Artillery**
+- **Purpose:** Validate real-time sync at scale (50+ concurrent players)
+- **What is Load Testing?** Simulates many users (50-200+) connecting simultaneously to test system performance under stress
+- **What is Artillery?** Open-source load testing tool that can simulate WebSocket connections (perfect for Supabase Realtime)
+- **Timing:** Run before launch after Epic 3 completion
+- **Metrics:** Real-time message latency (p95 <500ms), connection stability, no dropped connections
+- **Alternative:** k6 (another popular load testing tool, also supports WebSockets)
+
+**Browser MCP Automation:**
+- **Purpose:** Automated UI/UX testing using Browser MCP (Model Context Protocol)
+- **What is Browser MCP?** AI-powered browser automation that can navigate, interact, and validate UI flows
+- **Advantages:** Can automate visual testing, accessibility checks, and complex user flows that traditional e2e tests struggle with
+- **Use Cases:** 
+  - Visual regression testing
+  - Accessibility validation
+  - Complex multi-step flows
+  - Real-time sync visual validation
+- **Integration:** Use alongside Playwright for comprehensive coverage
+
+**Supabase MCP:**
+- **Purpose:** Database operations, migrations, and data validation during testing
+- **What is Supabase MCP?** Model Context Protocol integration for Supabase that enables AI-assisted database operations
+- **Use Cases:**
+  - Automated database migrations
+  - Test data seeding and cleanup
+  - RLS policy validation
+  - Query optimization testing
+  - Real-time channel testing
+- **Integration:** Use in test scripts and CI/CD pipelines
+
+### E2E Test Structure
+
+```
+e2e/
+├── game-flow.spec.ts          # Complete game flow: create → join → play → results
+├── realtime-sync.spec.ts      # Real-time synchronization across devices
+├── player-joining.spec.ts      # QR code and room ID joining flows
+├── scoring.spec.ts            # Answer submission and scoring accuracy
+├── fixtures/
+│   ├── test-users.ts          # Test user accounts
+│   ├── test-games.ts          # Game creation helpers
+│   └── supabase-helpers.ts    # Supabase test utilities (uses Supabase MCP)
+├── browser-mcp/               # Browser MCP automation tests
+│   ├── visual-regression.spec.ts  # Visual UI testing
+│   ├── accessibility.spec.ts      # A11y automated checks
+│   └── complex-flows.spec.ts      # Multi-step user journeys
+├── load/                       # Load testing scripts
+│   ├── artillery-config.yml   # Artillery load test config
+│   └── k6-script.js           # Alternative k6 load test
+└── playwright.config.ts       # Playwright configuration
+```
+
+### Testing Strategy
+
+**Unit Tests (Vitest):**
+- Critical business logic: `lib/scoring.ts`, `lib/game-state.ts`
+- Server Actions: `lib/actions/*.ts`
+- Component logic: Game components with React Testing Library
+
+**E2E Tests (Playwright):**
+- **Multi-Context Testing:** Use Playwright's multiple browser contexts to simulate:
+  - Host device (projector view)
+  - Multiple player devices (mobile views)
+  - Real-time synchronization between all contexts
+- **Critical Paths:**
+  1. Host creates game → Players join via QR/room ID → Game starts
+  2. Questions display on all devices → Players submit answers → Scores update
+  3. Real-time leaderboard updates → Game completion → Final results
+
+**Browser MCP Automation:**
+- **Automated UI/UX Testing:** Use Browser MCP to automate visual and interaction testing
+- **Test Scenarios:**
+  - Visual regression: Screenshot comparison of UI states
+  - Accessibility: Automated a11y checks (ARIA labels, keyboard navigation)
+  - Complex flows: Multi-step user journeys with visual validation
+  - Real-time sync: Visual validation of synchronized states across devices
+  - Cross-browser: Test on actual iOS Safari, Chrome Android via MCP
+- **Advantages over Manual Testing:**
+  - Repeatable and consistent
+  - Can run in CI/CD pipelines
+  - Catches visual regressions automatically
+  - Faster than manual testing
+- **When to Use:** All UI flows that can be automated (replaces manual testing for most scenarios)
+
+**Supabase MCP Integration:**
+- **Database Testing:** Use Supabase MCP for automated database operations
+- **Test Data Management:**
+  - Seed test questions, games, players
+  - Clean up test data after runs
+  - Validate RLS policies
+- **Migration Testing:** Test migrations before applying to production
+- **Real-time Testing:** Validate Supabase Realtime channels and subscriptions
+- **Query Validation:** Test database queries and performance
+
+### CI/CD Integration
+
+**GitHub Actions:**
+- Run Vitest unit tests on every PR
+- Run Playwright e2e tests on staging deployments
+- Run Browser MCP visual regression tests on UI changes
+- Run Supabase MCP database validation (migrations, RLS policies)
+- TypeScript check and ESLint on every commit
+- Load testing (Artillery/k6) on staging before production deployment
+
+**Vercel Preview:**
+- Automatic preview deployments for testing
+- E2E tests (Playwright + Browser MCP) can target preview URLs
+- Supabase MCP can validate against preview database
+
+**MCP Integration:**
+- **Browser MCP:** Automated visual testing, accessibility checks, complex flow validation
+- **Supabase MCP:** Database migrations, test data seeding, RLS policy validation, query testing
 
 ---
 

@@ -1,0 +1,35 @@
+# Cursor Rules for BibleRush Quiz Game
+
+## Development Workflow
+
+### Cache Clearing
+- **After bigger changes** (schema updates, major refactors, environment variable changes), always run `pnpm dev:clean` instead of `pnpm dev`
+- This clears the Next.js cache (.next) and node_modules/.cache before restarting the dev server
+- Prevents stale content and caching issues
+
+### Package Manager
+- **ALWAYS use pnpm** - never use npm or yarn
+- All package management commands must use pnpm
+
+### Testing
+- Before committing, always test if all new changes work perfectly and the app did not break
+- Build the app: `pnpm build`
+- Run tests using backend and frontend testing (e.g., browser tab)
+- Only commit after successful testing
+
+### Environment Files
+- The env files are not accessible to read - don't try to read them
+- Always assume they are correct
+- Use environment variables via `process.env` or helper functions
+
+### Git Workflow
+- Regularly commit to git when a new feature has successfully been implemented
+- Test thoroughly before committing
+- Follow the branch strategy: feature branches from `staging`, merge to `staging`, then to `main` for production
+
+### Code Quality
+- No unconventional hot fixes - if stuck after 2 tries, research the problem online and come up with a sustainable solution
+- Follow TypeScript strict mode
+- Use ESLint and Prettier for code formatting
+- Maintain WCAG AA accessibility standards
+

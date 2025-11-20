@@ -1,0 +1,210 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.6</storyId>
+    <title>Player Join Flow - Join Page & Name Entry</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-6-player-join-flow-join-page-name-entry.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>player</asA>
+    <iWant>to join a game by scanning QR code or entering room code and my name</iWant>
+    <soThat>I can participate in the quiz from my mobile phone without downloading an app</soThat>
+    <tasks>
+      - Create `/join` route with query parameter handling for QR code deep linking
+      - Create join form component with room code and player name inputs
+      - Implement Server Action to validate room code and insert player into game_players table
+      - Add form validation (room code: 6 chars alphanumeric, name: 2-30 chars)
+      - Add loading states, error handling, and success redirect
+      - Mobile-optimize layout with large touch targets (60px+ buttons, 48px+ inputs)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    **Given** I am a player wanting to join a game
+    **When** I navigate to `/join` (public route, no auth required)
+    **Then** I see:
+    - If URL contains `?code=[room_code]` query param (from QR scan), room code input is auto-populated
+    - Room code input field: 6-character text input (auto-uppercase, auto-format), Label: "Room Code", Placeholder: "ABC123"
+    - Player name input field: Text input (2-30 characters, trimmed), Label: "Your Name", Placeholder: "Enter your name", Required validation
+    - "Join Game" button (large, 60px height for touch targets, per UX Design)
+
+    **When** I enter a room code and my name and click "Join Game"
+    **Then** a Server Action is triggered that:
+    - Validates room code exists in `games` table with `status='waiting'`
+    - If invalid: Shows error toast "Room code was invalid, please provide the room ID" (per PRD FR5)
+    - If game status='active' or 'completed': Shows error toast "This game has already started."
+    - If valid: Inserts player into `game_players` table: `game_id`, `player_name`, `total_score=0`, `joined_at`
+    - Redirects to `/game/[gameId]/play` (player view)
+
+    **And** mobile-optimized layout (375px width):
+    - Large input fields (48px height)
+    - Large button (60px height)
+    - Generous spacing for easy tapping (per UX Design "Touch-First Mobile Design")
+
+    **And** QR code scanning: When user scans QR code with phone camera, opens join URL in browser directly
+    **And** loading state: Button shows spinner during validation/insertion
+    **And** error handling: Network errors show "Connection failed. Try again."
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 1.6: Player Join Flow - Join Page & Name Entry">
+        Story acceptance criteria, technical notes, and prerequisites. Server Action in `lib/actions/players.ts`. Name validation: 2-30 characters, trim whitespace, allow alphanumeric + spaces. Follow UX Design "Journey 2: Player Joins Game" flow. QR code deep linking: Browser handles `?code=` parameter automatically. Mobile-first design: 60px+ tap targets, large fonts (18px+), minimal UI.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="2.1 Defining Experience">
+        Touch-First Mobile Design: Large answer buttons (minimum 60px height) for fast tapping under time pressure. Single-tap interactions only—no complex gestures or swipes. QR Code + Fallback Pattern: Primary scan QR code with phone camera → instant join via deep link. Fallback: Manual room ID entry (6-character code).
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 Color System">
+        Soft Lavender theme: Primary #C5B5E8, Secondary #FFD9B3, Accent #B8E0D2, Success #A8D5BA, Error #F4A5A5. Light mode optimized for projector readability. Game-like visual treatment with 3D effects, gradients, shadows.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Public routes like `/join` don't require authentication. Server Actions in `lib/actions/` for data mutations. Next.js 15 App Router with Server Components for data fetching. Mobile-first player experience with large touch targets.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Decision Summary">
+        Server Actions over API Routes for type-safe mutations. React Server Components for optimal performance. Supabase Client for database operations. shadcn/ui for accessible form components.
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="FR5: Player Join">
+        Players shall join games via mobile browser without app download by scanning QR code or entering room ID and providing a display name (2-30 characters). Error message: "Room code was invalid, please provide the room ID" if invalid.
+      </doc>
+    </docs>
+    <code>
+      <file path="lib/actions/games.ts" kind="server-action">
+        Contains Server Actions for game operations: `createGame`, `getGame`, `cancelGame`. Pattern to follow: "use server" directive, createClient from lib/supabase/server, error handling with success/error return types, revalidatePath for cache invalidation. `getGame` function shows how to fetch game by ID and validate status.
+      </file>
+      <file path="app/game/[gameId]/host/page.tsx" kind="page">
+        Shows Server Component pattern: async function, await params, fetch data with Server Action, redirect on error. Join URL format: `${appUrl}/join?code=${room_code}`. This is the URL that QR codes point to.
+      </file>
+      <file path="lib/supabase/server.ts" kind="utility">
+        Contains `createClient()` function for server-side Supabase client. Use this in Server Actions to access database.
+      </file>
+      <file path="components/ui/input.tsx" kind="component">
+        shadcn/ui Input component. Use for room code and player name inputs. Already installed from Story 1.3.
+      </file>
+      <file path="components/ui/button.tsx" kind="component">
+        shadcn/ui Button component. Use for "Join Game" button. Already installed from Story 1.3. Use large size variant for 60px height.
+      </file>
+      <file path="components/ui/label.tsx" kind="component">
+        shadcn/ui Label component. Use for form labels. Already installed from Story 1.3.
+      </file>
+      <file path="components/ui/toast.tsx" kind="component">
+        shadcn/ui Toast component (via sonner). Use for error messages. Already installed from Story 1.3.
+      </file>
+      <file path="app/join/" kind="directory">
+        Target directory for join page. Currently doesn't exist. Create `app/join/page.tsx` here.
+      </file>
+      <file path="components/game/" kind="directory">
+        Target directory for game components. Create `components/game/join-form.tsx` here.
+      </file>
+      <file path="lib/actions/players.ts" kind="server-action">
+        Target file for player-related Server Actions. Currently doesn't exist. Create `joinGame` function here.
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="^15.1.0">Next.js 15 App Router framework</package>
+        <package name="react" version="^19.0.0">React 19</package>
+        <package name="react-dom" version="^19.0.0">React DOM 19</package>
+        <package name="@supabase/supabase-js" version="latest">Supabase client library (already installed)</package>
+        <package name="sonner" version="latest">Toast notification library (already installed from Story 1.3)</package>
+        <package name="lucide-react" version="^0.554.0">Icon library for loading spinner (already installed)</package>
+      </ecosystem>
+      <database>
+        <table name="games">
+          <column name="id" type="UUID" primaryKey="true">Game identifier</column>
+          <column name="room_code" type="TEXT" unique="true">6-character alphanumeric room code</column>
+          <column name="status" type="TEXT">Game status: 'waiting', 'active', 'completed'</column>
+        </table>
+        <table name="game_players">
+          <column name="id" type="UUID" primaryKey="true">Player identifier</column>
+          <column name="game_id" type="UUID" foreignKey="games.id">Reference to game</column>
+          <column name="player_name" type="TEXT">Player display name (2-30 characters)</column>
+          <column name="total_score" type="INTEGER" default="0">Cumulative score</column>
+          <column name="joined_at" type="TIMESTAMP">When player joined</column>
+        </table>
+      </database>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      Public route - no authentication required. Players can join games anonymously.
+    </constraint>
+    <constraint>
+      Mobile-first design: 60px+ touch targets, 48px+ input height, large fonts (18px+), generous spacing.
+    </constraint>
+    <constraint>
+      Room code validation: 6 characters, alphanumeric, uppercase. Auto-format as user types.
+    </constraint>
+    <constraint>
+      Player name validation: 2-30 characters, trim whitespace, allow alphanumeric + spaces only.
+    </constraint>
+    <constraint>
+      Error messages must be user-friendly: "Room code was invalid, please provide the room ID" (per PRD FR5), not technical database errors.
+    </constraint>
+    <constraint>
+      QR code deep linking: Browser automatically handles `?code=[room_code]` query parameter. Extract from URL and auto-populate input.
+    </constraint>
+    <constraint>
+      Use Server Actions pattern from `lib/actions/games.ts`: "use server" directive, createClient, error handling with success/error return types.
+    </constraint>
+    <constraint>
+      Use shadcn/ui components (Input, Button, Label, Toast) already installed from Story 1.3.
+    </constraint>
+    <constraint>
+      Loading state: Show spinner on button during Server Action execution. Disable form during submission.
+    </constraint>
+    <constraint>
+      Redirect to `/game/[gameId]/play` on successful join. This route will be created in Story 1.7.
+    </constraint>
+    <constraint>
+      Always use pnpm as package manager (never npm or yarn) per user rules.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="joinGame Server Action" kind="function">
+      <signature>joinGame(roomCode: string, playerName: string): Promise&lt;{success: true, gameId: string} | {success: false, error: string}&gt;</signature>
+      <path>lib/actions/players.ts</path>
+      <description>Server Action to validate room code and insert player into game_players table. Returns gameId for redirect on success, error message on failure.</description>
+    </interface>
+    <interface name="Next.js searchParams" kind="api">
+      <signature>searchParams: Promise&lt;{ [key: string]: string | string[] | undefined }&gt;</signature>
+      <path>app/join/page.tsx</path>
+      <description>Next.js 15 App Router searchParams prop for accessing query parameters. Use to extract `?code=[room_code]` from URL.</description>
+    </interface>
+    <interface name="Supabase createClient" kind="function">
+      <signature>createClient(): Promise&lt;SupabaseClient&gt;</signature>
+      <path>lib/supabase/server.ts</path>
+      <description>Server-side Supabase client for database operations. Use in Server Actions to query games and insert into game_players.</description>
+    </interface>
+    <interface name="redirect" kind="function">
+      <signature>redirect(path: string): never</signature>
+      <path>next/navigation</path>
+      <description>Next.js redirect function for navigation. Use to redirect to `/game/[gameId]/play` after successful join.</description>
+    </interface>
+    <interface name="toast" kind="function">
+      <signature>toast.error(message: string) | toast.success(message: string)</signature>
+      <path>sonner</path>
+      <description>Toast notification library. Use for error messages (invalid room code, game started, network errors).</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing: Navigate to `/join`, test room code entry, test name entry, test join flow. Test QR code deep linking: Scan QR code, verify room code auto-populated. Test validation: Invalid room code, game already started, invalid name (too short, too long, special characters). Test mobile layout: 375px viewport, touch targets, spacing. Test error handling: Network errors, invalid inputs. Test loading state: Button shows spinner during submission, form disabled. Test success: Redirects to player view after successful join. No automated tests required for this story.
+    </standards>
+    <locations>
+      Test page: `app/join/page.tsx` (production route)
+      Test with QR code: Scan QR code from Story 1.5 host waiting room
+      Test mobile: Use browser dev tools to simulate 375px viewport
+    </locations>
+    <ideas>
+      Test room code auto-population: Navigate to `/join?code=ABC123`, verify input is pre-filled. Test room code formatting: Type "abc123", verify it becomes "ABC123". Test name validation: Try 1 character (should fail), try 31 characters (should fail), try special characters (should fail or sanitize). Test invalid room code: Enter non-existent code, verify error toast. Test game already started: Create game, start it (in future story), try to join, verify error toast. Test successful join: Create game, join with valid code and name, verify redirect to player view. Test mobile layout: Resize browser to 375px, verify inputs are 48px+ height, button is 60px+ height, spacing is generous. Test loading state: Click join button, verify spinner appears, form is disabled, button shows loading state.
+    </ideas>
+  </tests>
+</story-context>
+

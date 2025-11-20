@@ -147,6 +147,10 @@ export async function createGame(
       };
     }
 
+    // Clean up old waiting games before creating new one (prevents accumulation)
+    // In production, this should be a scheduled cron job instead
+    await cleanupOldWaitingGames(30);
+
     // Generate unique room code
     const roomCode = await generateUniqueRoomCode();
 
@@ -277,6 +281,189 @@ export async function cancelGame(
     return {
       success: false,
       error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
+ * Clean up old waiting games that haven't been started
+ * Deletes games in 'waiting' status that are older than the specified minutes
+ * @param maxAgeMinutes - Maximum age in minutes before cleanup (default: 30)
+ * @returns Number of games deleted
+ */
+export async function cleanupOldWaitingGames(
+  maxAgeMinutes: number = 30
+): Promise<{ success: true; deletedCount: number } | { success: false; error: string }> {
+  try {
+    const supabase = await createClient();
+
+    // Calculate cutoff time
+    const cutoffTime = new Date();
+    cutoffTime.setMinutes(cutoffTime.getMinutes() - maxAgeMinutes);
+
+    // Find and delete old waiting games
+    const { data: oldGames, error: findError } = await supabase
+      .from("games")
+      .select("id")
+      .eq("status", "waiting")
+      .lt("created_at", cutoffTime.toISOString());
+
+    if (findError) {
+      console.error("Error finding old waiting games:", findError);
+      return {
+        success: false,
+        error: "Failed to find old games",
+      };
+    }
+
+    if (!oldGames || oldGames.length === 0) {
+      return {
+        success: true,
+        deletedCount: 0,
+      };
+    }
+
+    // Delete old games (CASCADE will handle related records)
+    const gameIds = oldGames.map((g) => g.id);
+    const { error: deleteError } = await supabase
+      .from("games")
+      .delete()
+      .in("id", gameIds);
+
+    if (deleteError) {
+      console.error("Error deleting old waiting games:", deleteError);
+      return {
+        success: false,
+        error: "Failed to delete old games",
+      };
+    }
+
+    // Revalidate paths
+    revalidatePath("/dashboard");
+    revalidatePath("/create");
+
+    return {
+      success: true,
+      deletedCount: oldGames.length,
+    };
+  } catch (error) {
+    console.error("Unexpected error cleaning up old games:", error);
+    return {
+      success: false,
+      error: "Failed to clean up old games",
+    };
+  }
+}
+
+/**
+ * Get past games for dashboard
+ * For MVP, fetches all games (host_id is NULL). In Epic 5, will filter by authenticated user.
+ * Automatically cleans up old waiting games before fetching.
+ * @returns List of past games with question set info and player counts
+ */
+export async function getPastGames(): Promise<
+  | {
+      success: true;
+      games: Array<{
+        id: string;
+        room_code: string;
+        status: string;
+        question_count: number;
+        created_at: string;
+        question_set_title: string | null;
+        player_count: number;
+      }>;
+    }
+  | { success: false; error: string }
+> {
+  try {
+    // Clean up old waiting games (30 minutes old) before fetching
+    // This prevents accumulation of abandoned games
+    await cleanupOldWaitingGames(30);
+
+    const supabase = await createClient();
+
+    // For MVP: Fetch all games (host_id is NULL)
+    // In Epic 5: Add WHERE host_id = auth.user.id
+    const { data: games, error: gamesError } = await supabase
+      .from("games")
+      .select(
+        `
+        id,
+        room_code,
+        status,
+        question_count,
+        created_at,
+        question_set_id,
+        question_sets (
+          title
+        )
+      `
+      )
+      .order("created_at", { ascending: false })
+      .limit(50); // Limit to 50 most recent games
+
+    if (gamesError) {
+      console.error("Error fetching games:", gamesError);
+      return {
+        success: false,
+        error: "Failed to fetch games",
+      };
+    }
+
+    if (!games || games.length === 0) {
+      return {
+        success: true,
+        games: [],
+      };
+    }
+
+    // Get player counts for each game
+    const gamesWithPlayerCounts = await Promise.all(
+      games.map(async (game) => {
+        const { count, error: countError } = await supabase
+          .from("game_players")
+          .select("*", { count: "exact", head: true })
+          .eq("game_id", game.id);
+
+        const playerCount = countError ? 0 : count || 0;
+
+        // Handle question_sets relation (Supabase returns as array or object)
+        let questionSetTitle: string | null = null;
+        if (game.question_sets) {
+          if (Array.isArray(game.question_sets)) {
+            questionSetTitle =
+              game.question_sets.length > 0 &&
+              typeof game.question_sets[0] === "object" &&
+              "title" in game.question_sets[0]
+                ? (game.question_sets[0] as { title: string }).title
+                : null;
+          } else if (typeof game.question_sets === "object" && "title" in game.question_sets) {
+            questionSetTitle = (game.question_sets as { title: string }).title;
+          }
+        }
+
+        return {
+          id: game.id,
+          room_code: game.room_code,
+          status: game.status,
+          question_count: game.question_count,
+          created_at: game.created_at,
+          question_set_title: questionSetTitle,
+          player_count: playerCount,
+        };
+      })
+    );
+
+    return {
+      success: true,
+      games: gamesWithPlayerCounts,
+    };
+  } catch (error) {
+    console.error("Unexpected error fetching past games:", error);
+    return {
+      success: false,
+      error: "Failed to fetch games",
     };
   }
 }

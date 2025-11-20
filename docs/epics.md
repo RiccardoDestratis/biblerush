@@ -18,7 +18,7 @@ This document provides the complete epic and story breakdown for quizgame, decom
 - **Epic 2:** Real-Time Game Engine & Player Experience (7 stories)
 - **Epic 3:** Scoring, Leaderboards & Game Completion (6 stories)
 - **Epic 4:** Content Infrastructure & AI Visual System (5 stories)
-- **Epic 5:** Content Library Completion & Launch Readiness (10 stories)
+- **Epic 5:** Content Library Completion & Launch Readiness (11 stories)
 
 **Total:** 35 stories across 5 epics
 
@@ -1531,6 +1531,13 @@ So that the MVP launches with all 5 promised question sets (100 total questions)
 
 ### Story 5.2: User Authentication with Supabase Auth
 
+**Authentication Strategy:**
+- **Hosts (Game Creators):** Authentication is **REQUIRED**. Hosts must create an account to create games, access dashboard, and manage their games.
+- **Players:** Authentication is **OPTIONAL**. Players can join games anonymously (no account needed), but can optionally create an account to:
+  - View their game history and statistics
+  - Track their performance across multiple games
+  - See personal leaderboards and achievements (future feature)
+
 As a user,
 I want to create an account and log in securely,
 So that my games are tracked and I can access my dashboard.
@@ -1544,6 +1551,7 @@ So that my games are tracked and I can access my dashboard.
 - Login: Email, password fields
 - "Sign in with Google" button (OAuth)
 - Links to switch between login/signup
+- **Note for players:** Optional signup message: "Create an account to track your game history and stats (optional - you can play without an account)"
 
 **When** I sign up with email/password:
 **Then** Server Action creates account via Supabase Auth:
@@ -1574,9 +1582,15 @@ So that my games are tracked and I can access my dashboard.
 - Accessibility: WCAG AA compliant (focus indicators, labels)
 
 **And** protected routes:
-- `/dashboard`, `/create` require authentication
-- Unauthenticated users redirected to `/login`
+- `/dashboard`, `/create` require authentication (hosts only)
+- Unauthenticated users attempting to access protected routes redirected to `/login`
+- `/join` and `/game/[gameId]/play` remain public (no auth required for players)
 - Middleware checks auth status
+
+**And** player experience:
+- Players can join games via `/join` without authentication
+- Players can optionally create account from join page or after game completion
+- Optional account creation allows players to track their game history
 
 **Prerequisites:** Stories 1.1, 1.2
 
@@ -1585,7 +1599,65 @@ So that my games are tracked and I can access my dashboard.
 - Session management: Automatic via Supabase client (Architecture "Authentication")
 - Protected routes: Next.js middleware checks auth status
 - Follow UX Design "Authentication Screens" specifications
+- **Authentication Strategy:** Hosts required, players optional (documented in this story)
 - **Note:** RLS policies are implemented in Story 5.2.5 (Security Policies)
+
+---
+
+### Story 5.2.1: Conditional Navigation Based on Authentication & Role
+
+As a user,
+I want to see only relevant navigation links based on whether I'm authenticated and my role,
+So that the interface is clean and appropriate for my use case.
+
+**Acceptance Criteria:**
+
+**Given** I am not authenticated
+**When** I view the header navigation
+**Then** I see:
+- Home link
+- Join Game link (public, for players)
+- Login/Signup link
+- **NOT** Dashboard link (hosts only)
+- **NOT** Create Game link (hosts only)
+
+**Given** I am authenticated as a host
+**When** I view the header navigation
+**Then** I see:
+- Home link
+- Create Game link (protected, hosts only)
+- Dashboard link (protected, hosts only)
+- Join Game link (optional, for testing)
+- User menu with: Profile, Logout
+
+**Given** I am authenticated as a player (optional account)
+**When** I view the header navigation
+**Then** I see:
+- Home link
+- Join Game link
+- My Games/Stats link (if player has game history)
+- User menu with: Profile, Logout
+- **NOT** Create Game link (hosts only)
+- **NOT** Dashboard link (hosts only - different from player stats)
+
+**And** navigation implementation:
+- Header component checks authentication status via Supabase client
+- Conditionally renders links based on `auth.user` presence
+- Role detection: Hosts have created games (or explicit role flag), players have joined games
+- Mobile-responsive: Navigation collapses on small screens
+
+**And** route protection:
+- Clicking protected links when unauthenticated redirects to `/login` with return URL
+- Middleware enforces route protection server-side
+
+**Prerequisites:** Story 5.2 (Authentication)
+
+**Technical Notes:**
+- Header component: `components/layout/header.tsx` - convert to check auth status
+- Use `createClient()` from `@/lib/supabase/client` to check `auth.getUser()`
+- Role detection: Check if user has created games (host) vs only joined games (player)
+- Alternative: Add `user_role` field to `users` table ('host' | 'player' | 'both')
+- Follow UX Design "Navigation" specifications
 
 ---
 
@@ -2237,13 +2309,13 @@ This epic breakdown decomposes the Bible Memory Quiz Game PRD into 34 implementa
 - Integrates DALL-E 3 for AI image generation
 - Delivers ONE complete question set (20 questions + images) as proof of concept
 
-**Epic 5: Content Library Completion & Launch Readiness (9 stories)**
+**Epic 5: Content Library Completion & Launch Readiness (11 stories)**
 - Completes remaining 4 question sets (80 questions + images)
 - Adds user authentication with Row Level Security (RLS) policies
 - Implements freemium model with tier restrictions
 - Polishes for production launch with error handling and performance optimization
 
-**Total:** 34 stories, all functional requirements covered, ready for Phase 4 implementation.
+**Total:** 36 stories, all functional requirements covered, ready for Phase 4 implementation.
 
 **Context Incorporated:**
 - ✅ PRD requirements (all 20 FRs mapped)

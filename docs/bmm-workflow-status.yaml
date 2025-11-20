@@ -1,0 +1,87 @@
+# Workflow Status - Bible Memory Quiz Game
+# Generated: 2025-01-27
+# Track: BMad Method (Greenfield)
+
+generated: "2025-01-27"
+project: "quizgame"
+project_type: "greenfield"
+selected_track: "bmad-method"
+field_type: "greenfield"
+workflow_path: ".bmad/bmm/workflows/workflow-status/paths/method-greenfield.yaml"
+
+workflow_status:
+  # Phase 0: Discovery (Optional)
+  - id: "brainstorm-project"
+    status: "skipped"
+    optional: true
+    
+  - id: "research"
+    status: "skipped"
+    optional: true
+    
+  - id: "product-brief"
+    status: "docs/projectbrief.md"
+    optional: true
+    completed: true
+
+  # Phase 1: Planning
+  - id: "prd"
+    status: "docs/prd.md"
+    required: true
+    completed: true
+    
+  - id: "validate-prd"
+    status: "optional"
+    optional: true
+    completed: false
+    
+  - id: "create-design"
+    status: "docs/ux-design-specification.md"
+    conditional: "if_has_ui"
+    agent: "ux-designer"
+    command: "create-design"
+    required: true
+    completed: true
+
+  # Phase 2: Solutioning
+  - id: "create-architecture"
+    status: "docs/architecture.md"
+    agent: "architect"
+    command: "create-architecture"
+    required: true
+    completed: true
+    
+  - id: "create-epics-and-stories"
+    status: "docs/epics.md"
+    agent: "pm"
+    command: "create-epics-and-stories"
+    required: true
+    completed: true
+    
+  - id: "test-design"
+    status: "recommended"
+    agent: "tea"
+    command: "test-design"
+    recommended: true
+    completed: false
+    
+  - id: "validate-architecture"
+    status: "optional"
+    optional: true
+    completed: false
+    
+  - id: "implementation-readiness"
+    status: "docs/implementation-readiness-report-2025-01-27.md"
+    agent: "architect"
+    command: "implementation-readiness"
+    required: true
+    completed: true
+
+  # Phase 3: Implementation
+  - id: "sprint-planning"
+    status: "required"
+    agent: "sm"
+    command: "sprint-planning"
+    required: true
+    completed: false
+

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Memory Quiz Game - Color Theme Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .theme-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.05);
+        }
+
+        .color-label {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #666;
+        }
+
+        .components-preview {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .components-preview h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary { }
+        .btn-secondary { }
+        .btn-outline { 
+            background: transparent;
+            border: 2px solid;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 2px solid;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+        }
+
+        .card-preview {
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .comparison-mode {
+            display: none;
+        }
+
+        .comparison-mode.active {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1rem;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .personality-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: #f0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Color Theme Explorer</h1>
+        <p class="subtitle">Explore pastel, minty color themes optimized for projector readability. All themes use light backgrounds for clear visibility on large displays.</p>
+
+        <div class="controls">
+            <button class="toggle-btn" onclick="toggleComparison()">Toggle Side-by-Side Comparison</button>
+        </div>
+
+        <div class="themes-grid" id="themesGrid">
+            <!-- Theme 1: Minty Fresh -->
+            <div class="theme-card">
+                <h2 class="theme-title">Minty Fresh</h2>
+                <p class="theme-description">Soft mint greens with coral accents. Fresh, energetic, and easy on the eyes. Perfect for all-ages engagement.</p>
+                
+                <div class="color-palette">
+                    <div>
+                        <div class="color-swatch" style="background: #A8E6CF;" onclick="copyColor('#A8E6CF')">#A8E6CF</div>
+                        <div class="color-label">Primary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FFD3B6;" onclick="copyColor('#FFD3B6')">#FFD3B6</div>
+                        <div class="color-label">Secondary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FFAAA5;" onclick="copyColor('#FFAAA5')">#FFAAA5</div>
+                        <div class="color-label">Accent</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #B5EAD7;" onclick="copyColor('#B5EAD7')">#B5EAD7</div>
+                        <div class="color-label">Success</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FF8B94;" onclick="copyColor('#FF8B94')">#FF8B94</div>
+                        <div class="color-label">Error</div>
+                    </div>
+                </div>
+
+                <div class="personality-tags">
+                    <span class="tag">Fresh</span>
+                    <span class="tag">Energetic</span>
+                    <span class="tag">All-Ages</span>
+                    <span class="tag">Projector-Optimized</span>
+                </div>
+
+                <div class="components-preview">
+                    <h3>Component Preview</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" style="background: #A8E6CF; color: #1a1a1a;">Primary Button</button>
+                        <button class="btn btn-secondary" style="background: #FFD3B6; color: #1a1a1a;">Secondary</button>
+                        <button class="btn btn-outline" style="border-color: #A8E6CF; color: #A8E6CF;">Outline</button>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Room Code</label>
+                        <input type="text" class="input" placeholder="ABC123" style="border-color: #A8E6CF;">
+                    </div>
+                    <div class="card-preview" style="background: #F0FDF4; border-color: #A8E6CF;">
+                        <strong>Question Set Card</strong>
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gospels: Life of Jesus</p>
+                        <span class="badge" style="background: #A8E6CF; color: #1a1a1a;">20 questions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme 2: Soft Lavender -->
+            <div class="theme-card">
+                <h2 class="theme-title">Soft Lavender</h2>
+                <p class="theme-description">Gentle lavender and peach tones. Calming yet engaging. Great for creating a welcoming, inclusive atmosphere.</p>
+                
+                <div class="color-palette">
+                    <div>
+                        <div class="color-swatch" style="background: #C5B5E8;" onclick="copyColor('#C5B5E8')">#C5B5E8</div>
+                        <div class="color-label">Primary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FFD9B3;" onclick="copyColor('#FFD9B3')">#FFD9B3</div>
+                        <div class="color-label">Secondary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #B8E0D2;" onclick="copyColor('#B8E0D2')">#B8E0D2</div>
+                        <div class="color-label">Accent</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #A8D5BA;" onclick="copyColor('#A8D5BA')">#A8D5BA</div>
+                        <div class="color-label">Success</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #F4A5A5;" onclick="copyColor('#F4A5A5')">#F4A5A5</div>
+                        <div class="color-label">Error</div>
+                    </div>
+                </div>
+
+                <div class="personality-tags">
+                    <span class="tag">Calming</span>
+                    <span class="tag">Welcoming</span>
+                    <span class="tag">Inclusive</span>
+                    <span class="tag">Projector-Optimized</span>
+                </div>
+
+                <div class="components-preview">
+                    <h3>Component Preview</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" style="background: #C5B5E8; color: #1a1a1a;">Primary Button</button>
+                        <button class="btn btn-secondary" style="background: #FFD9B3; color: #1a1a1a;">Secondary</button>
+                        <button class="btn btn-outline" style="border-color: #C5B5E8; color: #C5B5E8;">Outline</button>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Room Code</label>
+                        <input type="text" class="input" placeholder="ABC123" style="border-color: #C5B5E8;">
+                    </div>
+                    <div class="card-preview" style="background: #F5F0FF; border-color: #C5B5E8;">
+                        <strong>Question Set Card</strong>
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gospels: Life of Jesus</p>
+                        <span class="badge" style="background: #C5B5E8; color: #1a1a1a;">20 questions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme 3: Sky Blue Dream -->
+            <div class="theme-card">
+                <h2 class="theme-title">Sky Blue Dream</h2>
+                <p class="theme-description">Soft sky blues with warm coral. Uplifting and cheerful. Creates a positive, energetic game atmosphere.</p>
+                
+                <div class="color-palette">
+                    <div>
+                        <div class="color-swatch" style="background: #A8D8EA;" onclick="copyColor('#A8D8EA')">#A8D8EA</div>
+                        <div class="color-label">Primary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FFC4A3;" onclick="copyColor('#FFC4A3')">#FFC4A3</div>
+                        <div class="color-label">Secondary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #B5E5CF;" onclick="copyColor('#B5E5CF')">#B5E5CF</div>
+                        <div class="color-label">Accent</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #9DD4C8;" onclick="copyColor('#9DD4C8')">#9DD4C8</div>
+                        <div class="color-label">Success</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FFB3BA;" onclick="copyColor('#FFB3BA')">#FFB3BA</div>
+                        <div class="color-label">Error</div>
+                    </div>
+                </div>
+
+                <div class="personality-tags">
+                    <span class="tag">Uplifting</span>
+                    <span class="tag">Cheerful</span>
+                    <span class="tag">Positive</span>
+                    <span class="tag">Projector-Optimized</span>
+                </div>
+
+                <div class="components-preview">
+                    <h3>Component Preview</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" style="background: #A8D8EA; color: #1a1a1a;">Primary Button</button>
+                        <button class="btn btn-secondary" style="background: #FFC4A3; color: #1a1a1a;">Secondary</button>
+                        <button class="btn btn-outline" style="border-color: #A8D8EA; color: #A8D8EA;">Outline</button>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Room Code</label>
+                        <input type="text" class="input" placeholder="ABC123" style="border-color: #A8D8EA;">
+                    </div>
+                    <div class="card-preview" style="background: #E6F7FF; border-color: #A8D8EA;">
+                        <strong>Question Set Card</strong>
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gospels: Life of Jesus</p>
+                        <span class="badge" style="background: #A8D8EA; color: #1a1a1a;">20 questions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme 4: Peach Blossom -->
+            <div class="theme-card">
+                <h2 class="theme-title">Peach Blossom</h2>
+                <p class="theme-description">Warm peach and soft mint. Friendly and approachable. Perfect for creating a welcoming, non-intimidating experience.</p>
+                
+                <div class="color-palette">
+                    <div>
+                        <div class="color-swatch" style="background: #FFB5A7;" onclick="copyColor('#FFB5A7')">#FFB5A7</div>
+                        <div class="color-label">Primary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FFD4A3;" onclick="copyColor('#FFD4A3')">#FFD4A3</div>
+                        <div class="color-label">Secondary</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #A8E0D2;" onclick="copyColor('#A8E0D2')">#A8E0D2</div>
+                        <div class="color-label">Accent</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #B5E5A8;" onclick="copyColor('#B5E5A8')">#B5E5A8</div>
+                        <div class="color-label">Success</div>
+                    </div>
+                    <div>
+                        <div class="color-swatch" style="background: #FF9F9F;" onclick="copyColor('#FF9F9F')">#FF9F9F</div>
+                        <div class="color-label">Error</div>
+                    </div>
+                </div>
+
+                <div class="personality-tags">
+                    <span class="tag">Warm</span>
+                    <span class="tag">Friendly</span>
+                    <span class="tag">Approachable</span>
+                    <span class="tag">Projector-Optimized</span>
+                </div>
+
+                <div class="components-preview">
+                    <h3>Component Preview</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" style="background: #FFB5A7; color: #1a1a1a;">Primary Button</button>
+                        <button class="btn btn-secondary" style="background: #FFD4A3; color: #1a1a1a;">Secondary</button>
+                        <button class="btn btn-outline" style="border-color: #FFB5A7; color: #FFB5A7;">Outline</button>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Room Code</label>
+                        <input type="text" class="input" placeholder="ABC123" style="border-color: #FFB5A7;">
+                    </div>
+                    <div class="card-preview" style="background: #FFF5F0; border-color: #FFB5A7;">
+                        <strong>Question Set Card</strong>
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gospels: Life of Jesus</p>
+                        <span class="badge" style="background: #FFB5A7; color: #1a1a1a;">20 questions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; margin-top: 3rem;">
+            <h2 style="margin-bottom: 1rem;">How to Use This Explorer</h2>
+            <ul style="line-height: 2; color: #666;">
+                <li><strong>Click any color swatch</strong> to copy the hex code to your clipboard</li>
+                <li><strong>Compare themes</strong> using the toggle button above</li>
+                <li><strong>Consider projector visibility</strong> - all themes use light backgrounds for optimal readability</li>
+                <li><strong>Think about your brand</strong> - which theme feels right for your church community?</li>
+            </ul>
+            <p style="margin-top: 1.5rem; padding: 1rem; background: #F0FDF4; border-radius: 8px; color: #166534;">
+                <strong>💡 Remember:</strong> All colors will be configurable via settings/config, so you can adjust them later. Choose the direction that feels right!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function copyColor(color) {
+            navigator.clipboard.writeText(color).then(() => {
+                alert(`Copied ${color} to clipboard!`);
+            });
+        }
+
+        function toggleComparison() {
+            const grid = document.getElementById('themesGrid');
+            grid.classList.toggle('comparison-mode');
+        }
+    </script>
+</body>
+</html>
+

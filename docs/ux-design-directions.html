@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Memory Quiz Game - Design Direction Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: #C5B5E8;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(197, 181, 232, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(197, 181, 232, 0.4);
+        }
+
+        .direction-section {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .direction-section.active {
+            display: block;
+        }
+
+        .direction-header {
+            margin-bottom: 2rem;
+        }
+
+        .direction-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .direction-description {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .direction-philosophy {
+            background: #F5F0FF;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #C5B5E8;
+            margin-bottom: 2rem;
+        }
+
+        .mockup-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .mockup-screen {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .screen-label {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Game-Style 3D Buttons */
+        .btn-game {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 
+                0 4px 0 rgba(0,0,0,0.15),
+                0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .btn-game:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.15),
+                0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .btn-game:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 rgba(0,0,0,0.15),
+                0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary-game {
+            background: linear-gradient(135deg, #C5B5E8 0%, #A89BC8 100%);
+            color: #1a1a1a;
+        }
+
+        .btn-secondary-game {
+            background: linear-gradient(135deg, #FFD9B3 0%, #FFC999 100%);
+            color: #1a1a1a;
+        }
+
+        .btn-accent-game {
+            background: linear-gradient(135deg, #B8E0D2 0%, #9BC8B8 100%);
+            color: #1a1a1a;
+        }
+
+        /* Answer Buttons - Game Style */
+        .answer-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .answer-btn {
+            padding: 1.5rem;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.2),
+                0 12px 24px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, var(--btn-color) 0%, var(--btn-color-dark) 100%);
+            color: #1a1a1a;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 0 rgba(0,0,0,0.2),
+                0 16px 32px rgba(0,0,0,0.2);
+        }
+
+        .answer-btn:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 2px 0 rgba(0,0,0,0.2),
+                0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .answer-btn.answer-a { --btn-color: #C5B5E8; --btn-color-dark: #A89BC8; }
+        .answer-btn.answer-b { --btn-color: #FFD9B3; --btn-color-dark: #FFC999; }
+        .answer-btn.answer-c { --btn-color: #B8E0D2; --btn-color-dark: #9BC8B8; }
+        .answer-btn.answer-d { --btn-color: #FFB5A7; --btn-color-dark: #FF9F8F; }
+
+        /* Game Cards with 3D Effect */
+        .game-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 
+                0 4px 0 rgba(0,0,0,0.1),
+                0 8px 16px rgba(0,0,0,0.1);
+            border: 2px solid rgba(197, 181, 232, 0.2);
+            transition: all 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.1),
+                0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        /* Timer - Game Style */
+        .timer-game {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C5B5E8 0%, #A89BC8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.2),
+                0 12px 24px rgba(0,0,0,0.2),
+                inset 0 2px 4px rgba(255,255,255,0.3);
+            margin: 1rem auto;
+        }
+
+        /* Leaderboard - Podium Style */
+        .leaderboard-game {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .podium-place {
+            text-align: center;
+            flex: 1;
+        }
+
+        .podium-base {
+            background: linear-gradient(135deg, var(--podium-color) 0%, var(--podium-dark) 100%);
+            border-radius: 12px 12px 0 0;
+            padding: 1rem;
+            box-shadow: 
+                0 4px 0 rgba(0,0,0,0.2),
+                0 8px 16px rgba(0,0,0,0.15);
+            height: var(--podium-height);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .podium-1 { --podium-color: #FFD700; --podium-dark: #FFC700; --podium-height: 120px; }
+        .podium-2 { --podium-color: #C0C0C0; --podium-dark: #A0A0A0; --podium-height: 90px; }
+        .podium-3 { --podium-color: #CD7F32; --podium-dark: #B86F2A; --podium-height: 70px; }
+
+        .podium-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .podium-score {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        /* Projector View Styling */
+        .projector-view {
+            background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+            min-height: 600px;
+            border-radius: 16px;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .projector-question {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        /* Mobile Player View */
+        .mobile-view {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+
+        .mobile-question {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+            line-height: 1.3;
+        }
+
+        .lock-btn {
+            width: 100%;
+            padding: 1.25rem;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, #C5B5E8 0%, #A89BC8 100%);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 
+                0 4px 0 rgba(0,0,0,0.15),
+                0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .lock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.15),
+                0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .characteristics {
+            background: #F5F0FF;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+
+        .characteristics h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .characteristics ul {
+            list-style: none;
+            line-height: 2;
+        }
+
+        .characteristics li {
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .characteristics li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #C5B5E8;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Design Direction Showcase</h1>
+        <p class="subtitle">Game-focused UI with 3D effects, depth, and playful interactions. Not SaaS - pure game experience!</p>
+
+        <div class="navigation">
+            <button class="nav-btn" onclick="showDirection(1)">Direction 1: Bold Game</button>
+            <button class="nav-btn" onclick="showDirection(2)">Direction 2: Playful Depth</button>
+            <button class="nav-btn" onclick="showDirection(3)">Direction 3: Soft 3D</button>
+        </div>
+
+        <!-- Direction 1: Bold Game -->
+        <div class="direction-section active" id="direction1">
+            <div class="direction-header">
+                <h2 class="direction-title">Direction 1: Bold Game</h2>
+                <p class="direction-description">Strong 3D effects, bold shadows, high contrast. Maximum game feel with dramatic depth.</p>
+                <div class="direction-philosophy">
+                    <strong>Philosophy:</strong> "ESPN leaderboard energy" - Bold, energetic, competitive. High visual impact for projector displays.
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-screen">
+                    <div class="screen-label">Projector View - Question Display</div>
+                    <div class="projector-view">
+                        <div class="projector-question">Where was Jesus born?</div>
+                        <div class="timer-game">12</div>
+                        <div class="answer-buttons" style="grid-template-columns: 1fr 1fr; max-width: 800px; margin-top: 2rem;">
+                            <button class="answer-btn answer-a">A<br>Bethlehem</button>
+                            <button class="answer-btn answer-b">B<br>Jerusalem</button>
+                            <button class="answer-btn answer-c">C<br>Nazareth</button>
+                            <button class="answer-btn answer-d">D<br>Galilee</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mockup-screen">
+                    <div class="screen-label">Mobile Player View</div>
+                    <div class="mobile-view">
+                        <div class="mobile-question">Where was Jesus born?</div>
+                        <div class="timer-game" style="width: 80px; height: 80px; font-size: 1.8rem; margin: 1rem auto;">12</div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                            <button class="answer-btn answer-a" style="padding: 1.25rem;">A - Bethlehem</button>
+                            <button class="answer-btn answer-b" style="padding: 1.25rem;">B - Jerusalem</button>
+                            <button class="answer-btn answer-c" style="padding: 1.25rem;">C - Nazareth</button>
+                            <button class="answer-btn answer-d" style="padding: 1.25rem;">D - Galilee</button>
+                        </div>
+                        <button class="lock-btn">🔒 Lock Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="characteristics">
+                <h3>Key Characteristics</h3>
+                <ul>
+                    <li><strong>Layout:</strong> Centered, focused on question and answers</li>
+                    <li><strong>Density:</strong> Balanced - enough space but information-rich</li>
+                    <li><strong>Visual Weight:</strong> Bold 3D effects, strong shadows, high elevation</li>
+                    <li><strong>Button Style:</strong> Large, chunky, game-like with dramatic depth</li>
+                    <li><strong>Best for:</strong> High-energy competitive gameplay, maximum projector impact</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Direction 2: Playful Depth -->
+        <div class="direction-section" id="direction2">
+            <div class="direction-header">
+                <h2 class="direction-title">Direction 2: Playful Depth</h2>
+                <p class="direction-description">Moderate 3D effects with playful interactions. Game-like but approachable. Balanced depth.</p>
+                <div class="direction-philosophy">
+                    <strong>Philosophy:</strong> "Game night fun" - Playful, engaging, friendly competition. 3D effects that feel inviting, not intimidating.
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-screen">
+                    <div class="screen-label">Projector View - Leaderboard</div>
+                    <div class="projector-view">
+                        <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 2rem; color: #1a1a1a;">Leaderboard</h2>
+                        <div class="leaderboard-game">
+                            <div class="podium-place">
+                                <div class="podium-base podium-2">
+                                    <div class="podium-name">Sarah</div>
+                                    <div class="podium-score">85</div>
+                                </div>
+                                <div style="margin-top: 0.5rem; font-weight: 600;">2nd</div>
+                            </div>
+                            <div class="podium-place">
+                                <div class="podium-base podium-1">
+                                    <div class="podium-name">Mike</div>
+                                    <div class="podium-score">120</div>
+                                </div>
+                                <div style="margin-top: 0.5rem; font-weight: 600;">1st 🏆</div>
+                            </div>
+                            <div class="podium-place">
+                                <div class="podium-base podium-3">
+                                    <div class="podium-name">Emma</div>
+                                    <div class="podium-score">75</div>
+                                </div>
+                                <div style="margin-top: 0.5rem; font-weight: 600;">3rd</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mockup-screen">
+                    <div class="screen-label">Game Setup - Question Set Selection</div>
+                    <div style="padding: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">Choose Question Set</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="game-card">
+                                <div style="font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">Gospels</div>
+                                <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">Life of Jesus</div>
+                                <span style="background: #C5B5E8; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">20 questions</span>
+                            </div>
+                            <div class="game-card">
+                                <div style="font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">OT Heroes</div>
+                                <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">Old Testament</div>
+                                <span style="background: #FFD9B3; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">20 questions</span>
+                            </div>
+                        </div>
+                        <button class="btn-game btn-primary-game" style="width: 100%; margin-top: 1.5rem;">Create Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="characteristics">
+                <h3>Key Characteristics</h3>
+                <ul>
+                    <li><strong>Layout:</strong> Card-based with clear hierarchy</li>
+                    <li><strong>Density:</strong> Balanced spacing, not too dense</li>
+                    <li><strong>Visual Weight:</strong> Moderate 3D effects, friendly depth</li>
+                    <li><strong>Button Style:</strong> Game-like with gradients and shadows, approachable</li>
+                    <li><strong>Best for:</strong> All-ages engagement, friendly competition, projector readability</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Direction 3: Soft 3D -->
+        <div class="direction-section" id="direction3">
+            <div class="direction-header">
+                <h2 class="direction-title">Direction 3: Soft 3D</h2>
+                <p class="direction-description">Subtle 3D effects with gentle depth. Game-like but refined. Easy on the eyes for extended play.</p>
+                <div class="direction-philosophy">
+                    <strong>Philosophy:</strong> "Apple simplicity with game depth" - Clean, refined, but still clearly a game. Subtle elevation and depth.
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-screen">
+                    <div class="screen-label">Waiting Room - Projector</div>
+                    <div class="projector-view">
+                        <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 1rem; color: #1a1a1a;">Waiting for Players</h2>
+                        <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 2px 0 rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.1); margin: 2rem 0;">
+                            <div style="font-size: 4rem; font-weight: 900; color: #C5B5E8; margin-bottom: 1rem;">ABC123</div>
+                            <div style="color: #666; font-size: 1.2rem;">Room Code</div>
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Players Joined: 5</div>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+                                <span style="background: #C5B5E8; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">Mike</span>
+                                <span style="background: #FFD9B3; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">Sarah</span>
+                                <span style="background: #B8E0D2; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">Emma</span>
+                                <span style="background: #C5B5E8; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">John</span>
+                                <span style="background: #FFD9B3; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">Lisa</span>
+                            </div>
+                        </div>
+                        <button class="btn-game btn-primary-game" style="margin-top: 2rem; padding: 1.25rem 3rem; font-size: 1.3rem;">Start Game</button>
+                    </div>
+                </div>
+
+                <div class="mockup-screen">
+                    <div class="screen-label">Join Screen - Mobile</div>
+                    <div class="mobile-view">
+                        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">Join Game</h2>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Room Code</label>
+                            <input type="text" placeholder="ABC123" style="width: 100%; padding: 1rem; border: 3px solid #C5B5E8; border-radius: 12px; font-size: 1.2rem; font-weight: 700; text-align: center; letter-spacing: 0.2rem; box-shadow: 0 2px 0 rgba(0,0,0,0.1);">
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Your Name</label>
+                            <input type="text" placeholder="Enter your name" style="width: 100%; padding: 1rem; border: 3px solid #C5B5E8; border-radius: 12px; font-size: 1rem; box-shadow: 0 2px 0 rgba(0,0,0,0.1);">
+                        </div>
+                        <button class="btn-game btn-primary-game" style="width: 100%; padding: 1.25rem; font-size: 1.2rem;">Join Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="characteristics">
+                <h3>Key Characteristics</h3>
+                <ul>
+                    <li><strong>Layout:</strong> Clean, spacious, focused</li>
+                    <li><strong>Density:</strong> Generous spacing, breathing room</li>
+                    <li><strong>Visual Weight:</strong> Subtle 3D, refined depth</li>
+                    <li><strong>Button Style:</strong> Game-like but refined, gentle shadows</li>
+                    <li><strong>Best for:</strong> Extended gameplay, all ages, projector clarity</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; margin-top: 3rem;">
+            <h2 style="margin-bottom: 1rem;">Design Direction Notes</h2>
+            <p style="color: #666; line-height: 1.8;">
+                All directions feature <strong>game-focused 3D styling</strong> with gradients, shadows, and depth effects. 
+                Buttons have tactile feel with hover/active states. Cards have elevation. This is a <strong>game experience, not SaaS</strong>.
+            </p>
+            <p style="margin-top: 1rem; padding: 1rem; background: #F5F0FF; border-radius: 8px; color: #333;">
+                <strong>💡 Key Principle:</strong> Every interactive element should feel like it's part of a game - with depth, elevation, and playful interactions. 
+                Think game UI, not business application.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function showDirection(num) {
+            // Hide all directions
+            document.querySelectorAll('.direction-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show selected direction
+            document.getElementById('direction' + num).classList.add('active');
+        }
+    </script>
+</body>
+</html>
+

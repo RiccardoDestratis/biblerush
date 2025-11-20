@@ -1,0 +1,171 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.3</storyId>
+    <title>Basic UI Components with shadcn/ui</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-3-basic-ui-components-shadcn-ui.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>core shadcn/ui components installed and customized for the application</iWant>
+    <soThat>I have reusable, accessible UI building blocks for rapid development</soThat>
+    <tasks>
+      - Install shadcn/ui core components via CLI (button, card, input, label, toast, dialog, badge)
+      - Customize components with application color palette (Deep Purple #7C3AED, Coral Orange #FF6B6B, Teal #14B8A6)
+      - Create typography utilities for projector (48px+ headings, 32px+ body) and mobile (18px body, 16px minimum)
+      - Create layout components (header.tsx, footer.tsx)
+      - Create test components page showcasing all installed components
+      - Verify setup, accessibility (WCAG AA), and responsive breakpoints
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    **Given** shadcn/ui is initialized
+    **When** I install core components
+    **Then** the following components are installed via CLI:
+    - `button` - Primary, secondary, destructive variants
+    - `card` - For question set selection and dashboard
+    - `input` - Text input for room codes, player names
+    - `label` - Form labels
+    - `toast` - Toast notifications for errors/success
+    - `dialog` - Modal dialogs for confirmations
+    - `badge` - For tier indicators, question counts
+
+    **And** components are customized in `components/ui/` to use application color palette:
+    - Button variants configured: Default (Deep Purple), Secondary (Coral Orange), Outline (Teal border)
+    - All components use Soft Lavender theme colors from UX Design Specification
+
+    **And** typography utilities are created in `lib/utils.ts` for consistent text sizing:
+    - Projector text: 48px+ for headings, 32px+ for body
+    - Mobile text: 18px for body, 16px minimum
+
+    **And** layout components are created:
+    - `components/layout/header.tsx` - Top navigation with logo placeholder
+    - `components/layout/footer.tsx` - Basic footer
+
+    **And** test page created at `app/test-components/page.tsx` showcasing all installed components
+    **And** Tailwind CSS IntelliSense works in VS Code (autocomplete for className values)
+    **And** responsive breakpoints tested (mobile 375px, desktop 1280px)
+    **And** dark mode setup skipped for MVP (light mode only, per UX Design)
+    **And** accessibility verified: Focus indicators visible, keyboard navigation works (WCAG AA compliance)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 1.3: Basic UI Components with shadcn/ui">
+        Story acceptance criteria, technical notes, and prerequisites. Component styling follows UX Design Specification. Use Lucide React icons (no emojis). 3D effects deferred to later stories. WCAG AA compliance required.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="1.1 Design System Foundation">
+        shadcn/ui chosen as primary design system. Framer Motion for animations. Component strategy: shadcn/ui for base components, custom game components built on primitives. Lucide React for all icons.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 Color System">
+        Soft Lavender theme: Primary #C5B5E8, Secondary #FFD9B3, Accent #B8E0D2, Success #A8D5BA, Error #F4A5A5. Light mode optimized for projector readability. Game-like visual treatment with 3D effects, gradients, shadows.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Components organized in `components/ui/` for shadcn/ui components, `components/layout/` for layout components. Next.js 15 App Router structure with TypeScript strict mode.
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="Functional Requirements">
+        UI components support FR1 (game creation), FR4 (question set selection), FR5 (player join), FR18 (user dashboard). Accessibility requirements (WCAG AA) for all users.
+      </doc>
+    </docs>
+    <code>
+      <file path="components.json" kind="config">
+        shadcn/ui configuration file. Already initialized with "new-york" style, RSC enabled, TSX enabled. Tailwind config points to tailwind.config.ts and app/globals.css. Aliases configured: @/components, @/lib/utils, @/components/ui.
+      </file>
+      <file path="lib/utils.ts" kind="utility">
+        Contains `cn()` function for className merging using clsx and tailwind-merge. Will need to add typography utilities here.
+      </file>
+      <file path="app/globals.css" kind="styles">
+        Global CSS with Tailwind directives. Contains CSS variables for shadcn/ui theme (--primary, --secondary, etc.). Currently using default neutral colors. Needs to be updated with Soft Lavender theme colors.
+      </file>
+      <file path="tailwind.config.ts" kind="config">
+        Tailwind configuration with extended colors for shadcn/ui (primary, secondary, accent, success, destructive). Uses CSS variables. Already configured with tailwindcss-animate plugin.
+      </file>
+      <file path="components/ui/" kind="directory">
+        Target directory for shadcn/ui components. Currently empty. Components will be installed here via shadcn CLI.
+      </file>
+      <file path="components/layout/" kind="directory">
+        Target directory for layout components. Currently empty. Will contain header.tsx and footer.tsx.
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="^15.1.0">Next.js 15 App Router framework</package>
+        <package name="react" version="^19.0.0">React 19</package>
+        <package name="react-dom" version="^19.0.0">React DOM 19</package>
+        <package name="tailwindcss" version="^3.4.0">Tailwind CSS for styling</package>
+        <package name="tailwindcss-animate" version="^1.0.7">Animation utilities for Tailwind</package>
+        <package name="class-variance-authority" version="^0.7.1">Variant management for components</package>
+        <package name="clsx" version="^2.1.1">Conditional className utility</package>
+        <package name="tailwind-merge" version="^3.4.0">Merge Tailwind classes</package>
+        <package name="lucide-react" version="^0.554.0">Icon library (already installed, use for icons)</package>
+        <package name="@radix-ui/react-toast" version="latest">Required for toast component (will be installed by shadcn CLI)</package>
+        <package name="sonner" version="latest">Toast notification library (required for toast component, will be installed by shadcn CLI)</package>
+        <package name="@radix-ui/react-dialog" version="latest">Required for dialog component (will be installed by shadcn CLI)</package>
+        <package name="@radix-ui/react-label" version="latest">Required for label component (will be installed by shadcn CLI)</package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      Component styling must follow UX Design Specification section "Component Library". Use Soft Lavender theme colors, not default shadcn colors.
+    </constraint>
+    <constraint>
+      Use Lucide React icons exclusively (no emojis) per UX Design Specification.
+    </constraint>
+    <constraint>
+      3D effects and gradients will be added in later stories. For this story, focus on base component installation and color customization.
+    </constraint>
+    <constraint>
+      All components must be WCAG AA compliant: 4.5:1 contrast ratio minimum, visible focus indicators, keyboard navigation support.
+    </constraint>
+    <constraint>
+      Dark mode setup skipped for MVP - light mode only per UX Design Specification.
+    </constraint>
+    <constraint>
+      Components must be responsive: tested at mobile 375px and desktop 1280px breakpoints.
+    </constraint>
+    <constraint>
+      Use Next.js 15 App Router patterns. Components should be Server Components by default unless client-side interactivity is needed.
+    </constraint>
+    <constraint>
+      Always use pnpm as package manager (never npm or yarn) per user rules.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="shadcn/ui CLI" kind="command-line-tool">
+      <signature>npx shadcn@latest add [component-name]</signature>
+      <path>CLI tool</path>
+      <description>Command to install shadcn/ui components. Components are copy-paste style, installed to components/ui/ directory.</description>
+    </interface>
+    <interface name="cn utility function" kind="function">
+      <signature>cn(...inputs: ClassValue[]): string</signature>
+      <path>lib/utils.ts</path>
+      <description>Utility function for merging Tailwind classes. Already exists. Use for conditional className merging in components.</description>
+    </interface>
+    <interface name="CSS Variables" kind="configuration">
+      <signature>--primary, --secondary, --accent, --success, --destructive (HSL values)</signature>
+      <path>app/globals.css</path>
+      <description>CSS custom properties for theme colors. Currently using default values. Need to update with Soft Lavender theme colors.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual visual testing for component appearance and styling. Keyboard navigation testing for accessibility (Tab, Enter, Escape). Responsive breakpoint testing at 375px (mobile) and 1280px (desktop). Color contrast verification using WCAG AA standards (4.5:1 minimum contrast ratio). No automated unit tests required for this story - this is component library setup and customization.
+    </standards>
+    <locations>
+      Test page: app/test-components/page.tsx (development verification only, not production route)
+    </locations>
+    <ideas>
+      Test all button variants (default, secondary, destructive, outline) with hover and active states. Test card component with different content layouts. Test input component with validation states (error, disabled). Test toast notifications with different types (success, error, info). Test dialog component with open/close interactions. Test badge component with different variants. Verify focus indicators are visible on all interactive elements. Test keyboard navigation: Tab through all interactive elements, Enter to activate buttons, Escape to close dialogs. Test responsive behavior: resize browser to 375px width and verify components are usable, resize to 1280px and verify proper spacing.
+    </ideas>
+  </tests>
+</story-context>
+

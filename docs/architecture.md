@@ -101,6 +101,9 @@ quizgame/
 │   │   ├── ScoreDisplay.tsx      # Animated score counter
 │   │   ├── QRCodeDisplay.tsx     # QR code generator
 │   │   ├── WaitingRoom.tsx       # Waiting room display
+│   │   ├── HostWaitingRoom.tsx   # Host waiting room with player management
+│   │   ├── PlayerWaitingView.tsx # Player waiting view with self-rename
+│   │   ├── PlayerList.tsx        # Real-time player list with animations
 │   │   ├── QuestionDisplay.tsx   # Projector question view
 │   │   ├── AutoModeToggle.tsx    # Auto-advance toggle
 │   │   └── ImageReveal.tsx       # AI image reveal animation
@@ -114,7 +117,7 @@ quizgame/
 ├── lib/                          # Shared utilities and logic
 │   ├── actions/                  # Server Actions
 │   │   ├── games.ts              # Game CRUD operations
-│   │   ├── players.ts            # Player join/leave
+│   │   ├── players.ts            # Player join/leave/remove/rename
 │   │   ├── answers.ts            # Answer submission
 │   │   ├── questions.ts          # Question fetching
 │   │   ├── users.ts              # User management

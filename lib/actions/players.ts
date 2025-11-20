@@ -15,7 +15,7 @@ export async function joinGame(
   roomCode: string,
   playerName: string
 ): Promise<
-  | { success: true; gameId: string }
+  | { success: true; gameId: string; playerId: string }
   | { success: false; error: string }
 > {
   try {
@@ -179,6 +179,7 @@ export async function joinGame(
     return {
       success: true,
       gameId: game.id,
+      playerId: player.id,
     };
   } catch (error) {
     console.error("Unexpected error joining game:", error);
@@ -273,6 +274,229 @@ export async function getPlayers(
     return {
       success: false,
       error: "Failed to fetch players",
+    };
+  }
+}
+
+/**
+ * Remove a player from a game
+ * @param gameId - UUID of the game
+ * @param playerId - UUID of the player to remove
+ * @returns Success or error
+ */
+export async function removePlayer(
+  gameId: string,
+  playerId: string
+): Promise<
+  | { success: true }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Verify the game exists and is in waiting status
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id, status")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    if (game.status !== "waiting") {
+      return {
+        success: false,
+        error: "Can only remove players from waiting games",
+      };
+    }
+
+    // Delete the player
+    const { error: deleteError } = await supabase
+      .from("game_players")
+      .delete()
+      .eq("id", playerId)
+      .eq("game_id", gameId);
+
+    if (deleteError) {
+      console.error("Error removing player:", deleteError);
+      return {
+        success: false,
+        error: "Failed to remove player",
+      };
+    }
+
+    // Broadcast player_removed event
+    try {
+      const serviceClient = createServiceClient();
+      const channel = serviceClient.channel(`game:${gameId}`);
+      
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Channel subscription timeout"));
+        }, 3000);
+
+        channel.subscribe((status: string) => {
+          if (status === "SUBSCRIBED") {
+            clearTimeout(timeout);
+            resolve();
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            clearTimeout(timeout);
+            reject(new Error(`Failed to subscribe to channel: ${status}`));
+          }
+        });
+      });
+      
+      await channel.send({
+        type: "broadcast",
+        event: "player_removed",
+        payload: { playerId },
+      });
+      
+      setTimeout(() => {
+        channel.unsubscribe();
+      }, 200);
+    } catch (broadcastError) {
+      // Log but don't fail - player is already removed from DB
+      console.error("Error broadcasting player_removed event:", broadcastError);
+    }
+
+    revalidatePath(`/game/${gameId}/host`);
+    revalidatePath(`/game/${gameId}/play`);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Unexpected error removing player:", error);
+    return {
+      success: false,
+      error: "Failed to remove player",
+    };
+  }
+}
+
+/**
+ * Rename a player in a game
+ * @param gameId - UUID of the game
+ * @param playerId - UUID of the player to rename
+ * @param newName - New player name (2-30 characters)
+ * @returns Success or error
+ */
+export async function renamePlayer(
+  gameId: string,
+  playerId: string,
+  newName: string
+): Promise<
+  | { success: true }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Validate new name
+    const trimmedName = newName.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 30) {
+      return {
+        success: false,
+        error: "Player name must be between 2 and 30 characters",
+      };
+    }
+
+    const nameRegex = /^[a-zA-Z0-9\s]+$/;
+    if (!nameRegex.test(trimmedName)) {
+      return {
+        success: false,
+        error: "Player name can only contain letters, numbers, and spaces",
+      };
+    }
+
+    // Verify the game exists and is in waiting status
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id, status")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    if (game.status !== "waiting") {
+      return {
+        success: false,
+        error: "Can only rename players in waiting games",
+      };
+    }
+
+    // Update the player name
+    const { error: updateError } = await supabase
+      .from("game_players")
+      .update({ player_name: trimmedName })
+      .eq("id", playerId)
+      .eq("game_id", gameId);
+
+    if (updateError) {
+      console.error("Error renaming player:", updateError);
+      return {
+        success: false,
+        error: "Failed to rename player",
+      };
+    }
+
+    // Broadcast player_renamed event
+    try {
+      const serviceClient = createServiceClient();
+      const channel = serviceClient.channel(`game:${gameId}`);
+      
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Channel subscription timeout"));
+        }, 3000);
+
+        channel.subscribe((status: string) => {
+          if (status === "SUBSCRIBED") {
+            clearTimeout(timeout);
+            resolve();
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            clearTimeout(timeout);
+            reject(new Error(`Failed to subscribe to channel: ${status}`));
+          }
+        });
+      });
+      
+      await channel.send({
+        type: "broadcast",
+        event: "player_renamed",
+        payload: { playerId, newName: trimmedName },
+      });
+      
+      setTimeout(() => {
+        channel.unsubscribe();
+      }, 200);
+    } catch (broadcastError) {
+      // Log but don't fail - player is already renamed in DB
+      console.error("Error broadcasting player_renamed event:", broadcastError);
+    }
+
+    revalidatePath(`/game/${gameId}/host`);
+    revalidatePath(`/game/${gameId}/play`);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Unexpected error renaming player:", error);
+    return {
+      success: false,
+      error: "Failed to rename player",
     };
   }
 }

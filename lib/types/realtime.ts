@@ -13,6 +13,8 @@ import type { Tables } from "@/types/database.types";
  */
 export type RealtimeEvent =
   | "player_joined"
+  | "player_removed"
+  | "player_renamed"
   | "game_start"
   | "question_advance"
   | "game_end";
@@ -24,6 +26,21 @@ export type RealtimeEvent =
 export interface PlayerJoinedPayload {
   playerId: string; // From game_players.id
   playerName: string; // From game_players.player_name
+}
+
+/**
+ * Payload for player_removed event
+ */
+export interface PlayerRemovedPayload {
+  playerId: string; // From game_players.id
+}
+
+/**
+ * Payload for player_renamed event
+ */
+export interface PlayerRenamedPayload {
+  playerId: string; // From game_players.id
+  newName: string; // New player name
 }
 
 /**
@@ -60,6 +77,8 @@ export interface GameEndPayload {
  */
 export type RealtimeEventPayload =
   | PlayerJoinedPayload
+  | PlayerRemovedPayload
+  | PlayerRenamedPayload
   | GameStartPayload
   | QuestionAdvancePayload
   | GameEndPayload;
@@ -76,6 +95,8 @@ export type RealtimeEventHandler<T extends RealtimeEventPayload = RealtimeEventP
  */
 export interface GameChannelCallbacks {
   onPlayerJoined?: RealtimeEventHandler<PlayerJoinedPayload>;
+  onPlayerRemoved?: RealtimeEventHandler<PlayerRemovedPayload>;
+  onPlayerRenamed?: RealtimeEventHandler<PlayerRenamedPayload>;
   onGameStart?: RealtimeEventHandler<GameStartPayload>;
   onQuestionAdvance?: RealtimeEventHandler<QuestionAdvancePayload>;
   onGameEnd?: RealtimeEventHandler<GameEndPayload>;

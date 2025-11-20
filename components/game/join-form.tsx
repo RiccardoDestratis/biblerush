@@ -99,7 +99,7 @@ export function JoinForm({ initialRoomCode = "" }: JoinFormProps) {
 
     if (result.success) {
       toast.success("Successfully joined game!");
-      router.push(`/game/${result.gameId}/play?playerName=${encodeURIComponent(trimmedName)}`);
+      router.push(`/game/${result.gameId}/play?playerId=${result.playerId}&playerName=${encodeURIComponent(trimmedName)}`);
     } else {
       toast.error(result.error);
       setIsLoading(false);

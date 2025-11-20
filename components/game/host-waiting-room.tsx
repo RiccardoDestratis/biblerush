@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { cancelGame } from "@/lib/actions/games";
-import { getPlayerCount, getPlayers } from "@/lib/actions/players";
+import { getPlayerCount, getPlayers, removePlayer, renamePlayer } from "@/lib/actions/players";
 import { PlayerList } from "@/components/game/player-list";
 import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
-import type { PlayerJoinedPayload } from "@/lib/types/realtime";
+import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload } from "@/lib/types/realtime";
 import { toast } from "sonner";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, MoreVertical, Trash2, Edit2 } from "lucide-react";
 
 interface HostWaitingRoomProps {
   gameId: string;
@@ -30,9 +30,14 @@ export function HostWaitingRoom({
   const [isLoadingNetworkUrl, setIsLoadingNetworkUrl] = useState(true);
   const [playerCount, setPlayerCount] = useState(0);
   const [players, setPlayers] = useState<Array<{ id: string; player_name: string }>>([]);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
+  const [renamingPlayerId, setRenamingPlayerId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const [menuPosition, setMenuPosition] = useState<{ top: number; right: number } | null>(null);
   const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const processedPlayerIdsRef = useRef<Set<string>>(new Set());
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Fetch initial players from database
   const fetchPlayers = useCallback(async () => {
@@ -129,9 +134,33 @@ export function HostWaitingRoom({
       setPlayerCount((prev) => prev + 1);
     };
 
+    // Handle player removed event
+    const handlePlayerRemoved = (payload: PlayerRemovedPayload) => {
+      setPlayers((prevPlayers) => prevPlayers.filter((p) => p.id !== payload.playerId));
+      setPlayerCount((prev) => Math.max(0, prev - 1));
+      if (selectedPlayerId === payload.playerId) {
+        setSelectedPlayerId(null);
+      }
+    };
+
+    // Handle player renamed event
+    const handlePlayerRenamed = (payload: PlayerRenamedPayload) => {
+      setPlayers((prevPlayers) =>
+        prevPlayers.map((p) =>
+          p.id === payload.playerId ? { ...p, player_name: payload.newName } : p
+        )
+      );
+      if (renamingPlayerId === payload.playerId) {
+        setRenamingPlayerId(null);
+        setRenameValue("");
+      }
+    };
+
     // Subscribe to game channel
     const unsubscribe = subscribeToGameChannel(channel, gameId, {
       onPlayerJoined: handlePlayerJoined,
+      onPlayerRemoved: handlePlayerRemoved,
+      onPlayerRenamed: handlePlayerRenamed,
       onStatusChange: (status) => {
         if (status === "connected") {
           console.log("Realtime connected for game:", gameId);
@@ -155,6 +184,98 @@ export function HostWaitingRoom({
       }
     };
   }, [gameId]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setSelectedPlayerId(null);
+        setMenuPosition(null);
+      }
+    };
+
+    if (selectedPlayerId) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [selectedPlayerId]);
+
+  // Update menu position on scroll
+  useEffect(() => {
+    if (!selectedPlayerId || !menuPosition) return;
+
+    const updatePosition = () => {
+      const button = document.querySelector(`[data-player-button="${selectedPlayerId}"]`) as HTMLElement;
+      if (button) {
+        const buttonRect = button.getBoundingClientRect();
+        setMenuPosition({
+          top: buttonRect.bottom + 4,
+          right: window.innerWidth - buttonRect.right,
+        });
+      }
+    };
+
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [selectedPlayerId, menuPosition]);
+
+  const handlePlayerClick = (playerId: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    if (selectedPlayerId === playerId) {
+      setSelectedPlayerId(null);
+      setMenuPosition(null);
+    } else {
+      const buttonRect = event.currentTarget.getBoundingClientRect();
+      setMenuPosition({
+        top: buttonRect.bottom + 4,
+        right: window.innerWidth - buttonRect.right,
+      });
+      setSelectedPlayerId(playerId);
+      setRenamingPlayerId(null);
+    }
+  };
+
+  const handleRemovePlayer = async (playerId: string) => {
+    const result = await removePlayer(gameId, playerId);
+    if (result.success) {
+      toast.success("Player removed");
+      setSelectedPlayerId(null);
+      setMenuPosition(null);
+    } else {
+      toast.error(result.error || "Failed to remove player");
+    }
+  };
+
+  const handleStartRename = (playerId: string, currentName: string) => {
+    setRenamingPlayerId(playerId);
+    setRenameValue(currentName);
+    setSelectedPlayerId(null);
+  };
+
+  const handleSaveRename = async (playerId: string) => {
+    if (!renameValue.trim()) {
+      toast.error("Player name cannot be empty");
+      return;
+    }
+
+    const result = await renamePlayer(gameId, playerId, renameValue.trim());
+    if (result.success) {
+      toast.success("Player renamed");
+      setRenamingPlayerId(null);
+      setRenameValue("");
+    } else {
+      toast.error(result.error || "Failed to rename player");
+    }
+  };
+
+  const handleCancelRename = () => {
+    setRenamingPlayerId(null);
+    setRenameValue("");
+  };
 
   const handleCancelGame = async () => {
     if (
@@ -266,7 +387,103 @@ export function HostWaitingRoom({
             {playerCount} {playerCount === 1 ? "Player" : "Players"} Joined
           </h2>
           
-          <PlayerList players={players} />
+          {/* Menu Portal - Fixed Position */}
+          {selectedPlayerId && menuPosition && (
+            <div
+              ref={menuRef}
+              className="fixed bg-background border rounded-lg shadow-xl z-[9999] min-w-[120px]"
+              style={{
+                top: `${menuPosition.top}px`,
+                right: `${menuPosition.right}px`,
+              }}
+            >
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-muted flex items-center gap-2 text-sm rounded-t-lg"
+                onClick={() => {
+                  const player = players.find((p) => p.id === selectedPlayerId);
+                  if (player) handleStartRename(selectedPlayerId, player.player_name);
+                }}
+              >
+                <Edit2 className="h-4 w-4" />
+                Rename
+              </button>
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-destructive/10 text-destructive flex items-center gap-2 text-sm rounded-b-lg"
+                onClick={() => handleRemovePlayer(selectedPlayerId)}
+              >
+                <Trash2 className="h-4 w-4" />
+                Remove
+              </button>
+            </div>
+          )}
+          
+          {/* Player List with Click Actions */}
+          <div className="relative">
+            {players.length === 0 ? (
+              <p className="text-xl text-muted-foreground text-center">
+                Players will appear here when they join...
+              </p>
+            ) : (
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {players.map((player, index) => (
+                  <div
+                    key={player.id}
+                    className="bg-background/50 backdrop-blur-sm rounded-lg p-4 text-left border border-primary/20 flex items-center justify-between group relative"
+                  >
+                    {renamingPlayerId === player.id ? (
+                      <div className="flex items-center gap-2 flex-1">
+                        <input
+                          type="text"
+                          value={renameValue}
+                          onChange={(e) => setRenameValue(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleSaveRename(player.id);
+                            } else if (e.key === "Escape") {
+                              handleCancelRename();
+                            }
+                          }}
+                          className="flex-1 px-3 py-1 border rounded bg-background"
+                          autoFocus
+                        />
+                        <Button
+                          size="sm"
+                          onClick={() => handleSaveRename(player.id)}
+                          variant="default"
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={handleCancelRename}
+                          variant="outline"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-xl font-medium text-foreground flex-1">
+                          {index + 1}. {player.player_name}
+                        </p>
+                        <div className="relative flex-shrink-0">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => handlePlayerClick(player.id, e)}
+                            data-player-button={player.id}
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Start Game Button - Disabled */}

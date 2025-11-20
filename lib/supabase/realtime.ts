@@ -51,6 +51,14 @@ export function subscribeToGameChannel(
     callbacks.onPlayerJoined?.(payload.payload as any);
   });
 
+  channel.on("broadcast", { event: "player_removed" }, (payload) => {
+    callbacks.onPlayerRemoved?.(payload.payload as any);
+  });
+
+  channel.on("broadcast", { event: "player_renamed" }, (payload) => {
+    callbacks.onPlayerRenamed?.(payload.payload as any);
+  });
+
   channel.on("broadcast", { event: "game_start" }, (payload) => {
     callbacks.onGameStart?.(payload.payload as any);
   });

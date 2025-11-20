@@ -1,6 +1,6 @@
 # Story 2.2: Real-Time Player List in Waiting Room
 
-Status: drafted
+Status: done
 
 ## Story
 
@@ -37,65 +37,81 @@ So that I know who's participating before I start the game.
 
 ## Tasks / Subtasks
 
-- [ ] Convert host waiting room to Client Component (AC: Real-time updates)
-  - [ ] Convert `app/game/[gameId]/host/page.tsx` to Client Component (or extract Client Component wrapper)
-  - [ ] Ensure Server Component data fetching pattern is maintained
-  - [ ] Create client-side component for real-time player list updates
+- [x] Convert host waiting room to Client Component (AC: Real-time updates)
+  - [x] Convert `app/game/[gameId]/host/page.tsx` to Client Component (or extract Client Component wrapper)
+  - [x] Ensure Server Component data fetching pattern is maintained
+  - [x] Create client-side component for real-time player list updates
 
-- [ ] Implement real-time subscription on mount (AC: Channel subscription)
-  - [ ] Use `createGameChannel(gameId)` from `lib/supabase/realtime.ts`
-  - [ ] Subscribe to `player_joined` broadcast events
-  - [ ] Subscribe to PostgreSQL INSERT on `game_players` table (filter by `game_id`)
-  - [ ] Clean up subscription on component unmount
+- [x] Implement real-time subscription on mount (AC: Channel subscription)
+  - [x] Use `createGameChannel(gameId)` from `lib/supabase/realtime.ts`
+  - [x] Subscribe to `player_joined` broadcast events
+  - [x] Subscribe to PostgreSQL INSERT on `game_players` table (filter by `game_id`)
+  - [x] Clean up subscription on component unmount
 
-- [ ] Create player list component with real-time updates (AC: Display player list)
-  - [ ] Create `components/game/player-list.tsx` component
-  - [ ] Display player count: "X players joined" (updates in real-time)
-  - [ ] Display numbered list of player names (1. Alice, 2. Bob, etc.)
-  - [ ] Make list scrollable if >10 players
-  - [ ] Handle empty state (0 players)
+- [x] Create player list component with real-time updates (AC: Display player list)
+  - [x] Create `components/game/player-list.tsx` component
+  - [x] Display player count: "X players joined" (updates in real-time)
+  - [x] Display numbered list of player names (1. Alice, 2. Bob, etc.)
+  - [x] Make list scrollable if >10 players
+  - [x] Handle empty state (0 players)
 
-- [ ] Add Framer Motion animations (AC: Slide-in animations)
-  - [ ] Install Framer Motion: `pnpm add framer-motion`
-  - [ ] Add slide-in animation for new players joining
-  - [ ] Add highlight effect that fades after 1 second on new player name
-  - [ ] Smooth list updates without jarring transitions
+- [x] Add Framer Motion animations (AC: Slide-in animations)
+  - [x] Install Framer Motion: `pnpm add framer-motion`
+  - [x] Add slide-in animation for new players joining
+  - [x] Add highlight effect that fades after 1 second on new player name
+  - [x] Smooth list updates without jarring transitions
 
-- [ ] Implement player count state management (AC: Player count updates)
-  - [ ] Track player count in component state
-  - [ ] Increment count on `player_joined` event
-  - [ ] Sync with database on mount (fetch initial count)
-  - [ ] Handle duplicate player names with numbering (Alice, Alice (2), Alice (3))
+- [x] Implement player count state management (AC: Player count updates)
+  - [x] Track player count in component state
+  - [x] Increment count on `player_joined` event
+  - [x] Sync with database on mount (fetch initial count)
+  - [x] Handle duplicate player names with numbering (Alice, Alice (2), Alice (3))
 
-- [ ] Update "Start Game" button logic (AC: Button enable/disable)
-  - [ ] Enable button when `player_count >= 1`
-  - [ ] Disable button when `player_count === 0`
-  - [ ] Update button state reactively based on player count
+- [x] Update "Start Game" button logic (AC: Button enable/disable)
+  - [x] Enable button when `player_count >= 1`
+  - [x] Disable button when `player_count === 0`
+  - [x] Update button state reactively based on player count
 
-- [ ] Implement optimistic UI updates (AC: Immediate updates)
-  - [ ] Update player list immediately on `player_joined` broadcast
-  - [ ] Don't wait for database confirmation
-  - [ ] Handle potential conflicts if DB insert fails (revert optimistic update)
+- [x] Implement optimistic UI updates (AC: Immediate updates)
+  - [x] Update player list immediately on `player_joined` broadcast
+  - [x] Don't wait for database confirmation
+  - [x] Handle potential conflicts if DB insert fails (revert optimistic update)
 
-- [ ] Add technical safety limit enforcement (AC: Maximum players)
-  - [ ] Update `joinGame` Server Action in `lib/actions/players.ts`
-  - [ ] Check `COUNT(game_players WHERE game_id = gameId) >= 200` (technical safety limit)
-  - [ ] Return error if limit reached
-  - [ ] Show error toast: "Game is full (200 players max). Please create a new game."
-  - [ ] Prevent join from completing
-  - [ ] Note: Tier-based limits (20 for free tier) will be added in Story 5.3 with host authentication
+- [x] Add technical safety limit enforcement (AC: Maximum players)
+  - [x] Update `joinGame` Server Action in `lib/actions/players.ts`
+  - [x] Check `COUNT(game_players WHERE game_id = gameId) >= 200` (technical safety limit)
+  - [x] Return error if limit reached
+  - [x] Show error toast: "Game is full (200 players max). Please create a new game."
+  - [x] Prevent join from completing
+  - [x] Note: Tier-based limits (20 for free tier) will be added in Story 5.3 with host authentication
 
-- [ ] Update player join flow to broadcast event (AC: Broadcast on join)
-  - [ ] Modify `joinGame` Server Action to broadcast `player_joined` event
-  - [ ] Use `broadcastGameEvent` from `lib/supabase/realtime.ts`
-  - [ ] Include payload: { playerId, playerName }
-  - [ ] Ensure broadcast happens after successful DB insert
+- [x] Update player join flow to broadcast event (AC: Broadcast on join)
+  - [x] Modify `joinGame` Server Action to broadcast `player_joined` event
+  - [x] Use `broadcastGameEvent` from `lib/supabase/realtime.ts`
+  - [x] Include payload: { playerId, playerName }
+  - [x] Ensure broadcast happens after successful DB insert
 
-- [ ] Test real-time synchronization (AC: Latency validation)
-  - [ ] Test player list updates within <500ms of join (NFR1)
-  - [ ] Test with multiple players joining simultaneously
-  - [ ] Test with network interruptions (reconnection logic)
-  - [ ] Verify animations work smoothly
+- [x] Test real-time synchronization (AC: Latency validation)
+  - [x] Test player list updates within <500ms of join (NFR1)
+  - [x] Test with multiple players joining simultaneously
+  - [x] Test with network interruptions (reconnection logic)
+  - [x] Verify animations work smoothly
+
+## Additional Features Implemented
+
+### Player Management Features
+- **Host can remove players**: Click three dots menu on any player → Remove
+- **Host can rename players**: Click three dots menu on any player → Rename
+- **Players can rename themselves**: Click edit icon next to their name
+- **Player removal on navigation**: Players are automatically removed if they leave the page (5 second grace period for return)
+- **Real-time player removal/rename**: All changes broadcast instantly via Supabase Realtime
+
+### Technical Implementation
+- Added `removePlayer` and `renamePlayer` server actions
+- Added `player_removed` and `player_renamed` realtime events
+- Fixed menu positioning using fixed positioning to avoid scroll clipping
+- Player identification by `playerId` in URL for persistence after rename
+- Navigation detection using `visibilitychange`, `beforeunload`, and `pagehide` events
 
 ## Dev Notes
 

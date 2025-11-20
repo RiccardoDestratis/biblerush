@@ -50,7 +50,7 @@ development_status:
   # Epic 2: Real-Time Game Engine & Player Experience
   epic-2: backlog
   2-1-supabase-realtime-setup-game-channels: done
-  2-2-real-time-player-list-waiting-room: backlog
+  2-2-real-time-player-list-waiting-room: done
   2-3-game-start-question-data-loading: backlog
   2-4-question-display-projector-view: backlog
   2-5-question-display-player-mobile-view: backlog

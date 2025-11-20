@@ -5,7 +5,7 @@ import { PlayerWaitingView } from "@/components/game/player-waiting-view";
 
 interface PlayerPageProps {
   params: Promise<{ gameId: string }>;
-  searchParams: Promise<{ playerName?: string }>;
+  searchParams: Promise<{ playerName?: string; playerId?: string }>;
 }
 
 export default async function PlayerPage({
@@ -15,6 +15,7 @@ export default async function PlayerPage({
   const { gameId } = await params;
   const search = await searchParams;
   const playerName = search.playerName;
+  const playerId = search.playerId;
 
   // Fetch game from database
   const gameResult = await getGame(gameId);
@@ -30,16 +31,17 @@ export default async function PlayerPage({
     redirect("/join");
   }
 
-  // For MVP, we'll identify player by name (Epic 5 adds proper auth)
-  // If no playerName in URL, we can't identify the player, so redirect
-  if (!playerName) {
-    redirect("/join");
-  }
+  // Try to find player by ID first (more reliable after rename), then by name
+  let player = playerId 
+    ? playersResult.players.find((p) => p.id === playerId)
+    : null;
 
-  // Check if player exists in the game
-  const player = playersResult.players.find(
-    (p) => p.player_name.toLowerCase() === playerName.toLowerCase()
-  );
+  // Fallback to name matching if no ID provided
+  if (!player && playerName) {
+    player = playersResult.players.find(
+      (p) => p.player_name.toLowerCase() === playerName.toLowerCase()
+    );
+  }
 
   if (!player) {
     redirect("/join");
@@ -48,6 +50,7 @@ export default async function PlayerPage({
   return (
     <PlayerWaitingView
       gameId={gameId}
+      playerId={player.id}
       gameStatus={gameResult.game.status}
       playerName={player.player_name}
       playerCount={playersResult.players.length}

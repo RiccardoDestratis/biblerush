@@ -54,7 +54,7 @@ development_status:
   2-3-game-start-question-data-loading: done
   2-4-question-display-projector-view: done
   2-5-question-display-player-mobile-view: in-progress
-  2-6-answer-submission-confirm-lock-pattern: backlog
+  2-6-answer-submission-confirm-lock-pattern: in-progress
   2-7-question-advancement-synchronization: backlog
   epic-2-retrospective: optional
 

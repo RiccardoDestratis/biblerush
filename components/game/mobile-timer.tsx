@@ -7,6 +7,8 @@ interface MobileTimerProps {
   duration: number; // Total duration in seconds
   startedAt: string; // ISO timestamp when timer started
   onExpire?: () => void; // Callback when timer reaches 0
+  onLowTime?: (remaining: number) => void; // Callback when timer ≤ 5 seconds
+  showWarning?: boolean; // Whether to show low-time warning animation
 }
 
 /**
@@ -19,6 +21,8 @@ export function MobileTimer({
   duration,
   startedAt,
   onExpire,
+  onLowTime,
+  showWarning = false,
 }: MobileTimerProps) {
   const [remaining, setRemaining] = useState(duration);
   const [hasExpired, setHasExpired] = useState(false);
@@ -44,6 +48,11 @@ export function MobileTimer({
       const remainingSeconds = calculateRemaining();
       setRemaining(remainingSeconds);
 
+      // Trigger low-time warning callback every second when ≤ 5 seconds
+      if (remainingSeconds <= 5 && remainingSeconds > 0) {
+        onLowTime?.(remainingSeconds);
+      }
+
       if (remainingSeconds === 0 && !hasExpired) {
         setHasExpired(true);
         onExpire?.();
@@ -52,7 +61,7 @@ export function MobileTimer({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [duration, startedAt, onExpire, hasExpired]);
+  }, [duration, startedAt, onExpire, hasExpired, onLowTime]);
 
   // Calculate progress percentage (0-100)
   const progress = (remaining / duration) * 100;
@@ -73,9 +82,19 @@ export function MobileTimer({
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="flex items-center justify-center gap-3" role="timer" aria-label={`${remaining} seconds remaining`}>
-      {/* Compact circular progress */}
-      <div className="relative" style={{ width: "40px", height: "40px" }}>
+    <div className="flex flex-col items-center justify-center gap-2" role="timer" aria-label={`${remaining} seconds remaining`}>
+      {/* Compact circular progress with enlargement animation */}
+      <motion.div
+        className="relative"
+        style={{ width: "40px", height: "40px" }}
+        animate={{
+          scale: showWarning ? 1.4 : 1,
+        }}
+        transition={{
+          duration: showWarning ? 1.5 : 0.5,
+          ease: "easeOut",
+        }}
+      >
         <svg
           className="transform -rotate-90"
           width="40"
@@ -109,7 +128,7 @@ export function MobileTimer({
             }}
           />
         </svg>
-      </div>
+      </motion.div>
       
       {/* Numeric countdown text */}
       <motion.span

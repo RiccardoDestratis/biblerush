@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/lib/store/game-store";
 import { MobileTimer } from "@/components/game/mobile-timer";
-import { Button } from "@/components/ui/button";
+import { submitAnswer } from "@/lib/actions/answers";
 import { toast } from "sonner";
 
 interface QuestionDisplayPlayerProps {
@@ -12,10 +12,12 @@ interface QuestionDisplayPlayerProps {
   playerId: string;
 }
 
+type SubmissionStatus = "idle" | "submitting" | "submitted" | "error";
+
 /**
- * Player mobile view for question display
+ * Player mobile view for question display with tap-to-lock pattern
  * Mobile-optimized layout (375px-430px width)
- * Displays question, answer options, countdown timer, and lock answer button
+ * Tap answer once to select (orange), tap again to lock (green/shiny)
  */
 export function QuestionDisplayPlayer({
   gameId,
@@ -29,31 +31,190 @@ export function QuestionDisplayPlayer({
     startedAt,
   } = useGameStore();
 
-  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
-  const [lockedAnswerIndex, setLockedAnswerIndex] = useState<number | null>(null);
+  // State for answer selection (string format: 'A', 'B', 'C', 'D')
+  const [selectedAnswer, setSelectedAnswer] = useState<"A" | "B" | "C" | "D" | null>(null);
+  const [lockedAnswer, setLockedAnswer] = useState<"A" | "B" | "C" | "D" | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>("idle");
+  const [showLowTimeWarning, setShowLowTimeWarning] = useState(false);
+  const [lowTimeRemaining, setLowTimeRemaining] = useState<number | null>(null);
+  const [showTimerEnlargement, setShowTimerEnlargement] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [messageText, setMessageText] = useState<string>("");
+  const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
 
-  // Handle timer expiration - auto-submit selected answer if any
-  const handleTimerExpire = () => {
-    if (selectedAnswerIndex !== null && lockedAnswerIndex === null) {
-      // Auto-lock the selected answer when timer expires
-      setLockedAnswerIndex(selectedAnswerIndex);
-      // TODO: Auto-submit in Story 2.6
+  // Calculate response time in milliseconds
+  const calculateResponseTime = useCallback((): number => {
+    if (!startedAt) return 0;
+    const startTime = new Date(startedAt).getTime();
+    const now = Date.now();
+    return Math.max(0, now - startTime);
+  }, [startedAt]);
+
+  // Submit answer to server
+  const handleSubmitAnswer = useCallback(
+    async (answer: "A" | "B" | "C" | "D" | null, responseTimeMs: number) => {
+      if (!currentQuestion) return;
+
+      // Prevent duplicate submissions
+      if (submissionStatus === "submitted" || submissionStatus === "submitting") {
+        return;
+      }
+
+      setSubmissionStatus("submitting");
+
+      try {
+        const result = await submitAnswer(
+          gameId,
+          playerId,
+          currentQuestion.id,
+          answer,
+          responseTimeMs
+        );
+
+        if (result.success) {
+          setSubmissionStatus("submitted");
+          setShowMessage(true);
+          setMessageText(answer ? "You selected. Waiting for other players." : "You did not select anything.");
+        } else {
+          // Retry once automatically after 500ms
+          setTimeout(async () => {
+            const retryResult = await submitAnswer(
+              gameId,
+              playerId,
+              currentQuestion.id,
+              answer,
+              responseTimeMs
+            );
+
+            if (retryResult.success) {
+              setSubmissionStatus("submitted");
+              setShowMessage(true);
+              setMessageText(answer ? "You selected. Waiting for other players." : "You did not select anything.");
+            } else {
+              setSubmissionStatus("error");
+              setLockedAnswer(null);
+              setShowMessage(false);
+              
+              if (retryResult.error === "Answer already submitted") {
+                toast.error("Answer already submitted");
+              } else if (retryResult.error.includes("Game") || retryResult.error.includes("Question")) {
+                toast.error("Game data error. Please refresh.");
+              } else {
+                toast.error("Submission failed. Your answer may not be recorded.");
+              }
+            }
+          }, 500);
+        }
+      } catch (error) {
+        console.error("Error submitting answer:", error);
+        setSubmissionStatus("error");
+        setLockedAnswer(null);
+        setShowMessage(false);
+        toast.error("Submission failed. Your answer may not be recorded.");
+      }
+    },
+    [gameId, playerId, currentQuestion, submissionStatus]
+  );
+
+  // Handle tap-to-lock pattern
+  const handleAnswerTap = useCallback(
+    (answer: "A" | "B" | "C" | "D") => {
+      // If already submitted, do nothing
+      if (submissionStatus === "submitted") return;
+
+      // If this answer is already selected (orange state)
+      if (selectedAnswer === answer && lockedAnswer === null) {
+        // Double-tap: Lock the answer (green/shiny state)
+        setLockedAnswer(answer);
+        setShowLowTimeWarning(false);
+        
+        // Optimistic UI: Show green state immediately
+        const responseTimeMs = calculateResponseTime();
+        
+        // Haptic feedback (optional, may not work on all devices)
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          navigator.vibrate(100);
+        }
+
+        // Submit in background
+        handleSubmitAnswer(answer, responseTimeMs);
+      } else if (selectedAnswer !== answer) {
+        // Single-tap: Select this answer (orange state)
+        setSelectedAnswer(answer);
+        setShowLowTimeWarning(false); // Hide warning when answer is selected
+      }
+    },
+    [selectedAnswer, lockedAnswer, submissionStatus, calculateResponseTime, handleSubmitAnswer]
+  );
+
+  // Handle timer expiration - auto-submit
+  const handleTimerExpire = useCallback(() => {
+    if (hasAutoSubmitted) return;
+    setHasAutoSubmitted(true);
+    setShowLowTimeWarning(false);
+
+    // If already locked/submitted, do nothing
+    if (submissionStatus === "submitted") return;
+
+    // Auto-submit current selection (or null if no selection)
+    const responseTimeMs = timerDuration * 1000; // Full duration
+    handleSubmitAnswer(selectedAnswer, responseTimeMs);
+    
+    // Show appropriate message
+    if (selectedAnswer) {
+      setLockedAnswer(selectedAnswer);
+      setShowMessage(true);
+      setMessageText("You selected. Waiting for other players.");
+    } else {
+      setShowMessage(true);
+      setMessageText("You did not select anything.");
     }
-  };
+  }, [hasAutoSubmitted, submissionStatus, timerDuration, selectedAnswer, handleSubmitAnswer]);
+
+  // Handle low-time warning (timer ≤ 5 seconds)
+  const handleLowTime = useCallback(
+    (remaining: number) => {
+      // Only show warning if no answer is selected
+      if (selectedAnswer === null && submissionStatus !== "submitted") {
+        setShowLowTimeWarning(true);
+        setLowTimeRemaining(remaining);
+        
+        // Trigger timer enlargement animation (only once when first entering low-time)
+        if (!showTimerEnlargement) {
+          setShowTimerEnlargement(true);
+          // Return to normal size after 1.5 seconds
+          setTimeout(() => {
+            setShowTimerEnlargement(false);
+          }, 1500);
+        }
+      } else {
+        // Hide warning if answer is selected or submitted
+        setShowLowTimeWarning(false);
+        setShowTimerEnlargement(false);
+      }
+    },
+    [selectedAnswer, submissionStatus, showTimerEnlargement]
+  );
 
   // Dismiss "Starting game..." toast when question display appears
   useEffect(() => {
     if (currentQuestion && startedAt) {
-      // Dismiss the loading toast from PlayerWaitingView
       toast.dismiss("game-start");
     }
   }, [currentQuestion, startedAt]);
 
-  // Reset selection when question changes
+  // Reset state when question changes
   useEffect(() => {
     if (currentQuestion) {
-      setSelectedAnswerIndex(null);
-      setLockedAnswerIndex(null);
+      setSelectedAnswer(null);
+      setLockedAnswer(null);
+      setSubmissionStatus("idle");
+      setShowLowTimeWarning(false);
+      setLowTimeRemaining(null);
+      setShowTimerEnlargement(false);
+      setShowMessage(false);
+      setMessageText("");
+      setHasAutoSubmitted(false);
     }
   }, [currentQuestion?.id]);
 
@@ -63,24 +224,14 @@ export function QuestionDisplayPlayer({
 
   // Answer button colors
   const answerColors = [
-    { bg: "bg-purple-500", hover: "hover:bg-purple-600", selected: "bg-purple-700", border: "border-purple-600" }, // A
-    { bg: "bg-orange-500", hover: "hover:bg-orange-600", selected: "bg-orange-700", border: "border-orange-600" }, // B
-    { bg: "bg-teal-500", hover: "hover:bg-teal-600", selected: "bg-teal-700", border: "border-teal-600" }, // C
-    { bg: "bg-red-500", hover: "hover:bg-red-600", selected: "bg-red-700", border: "border-red-600" }, // D (coral)
+    { bg: "bg-purple-500", hover: "hover:bg-purple-600", selected: "bg-orange-500", locked: "bg-green-500", border: "border-purple-600" }, // A
+    { bg: "bg-orange-500", hover: "hover:bg-orange-600", selected: "bg-orange-500", locked: "bg-green-500", border: "border-orange-600" }, // B
+    { bg: "bg-teal-500", hover: "hover:bg-teal-600", selected: "bg-orange-500", locked: "bg-green-500", border: "border-teal-600" }, // C
+    { bg: "bg-red-500", hover: "hover:bg-red-600", selected: "bg-orange-500", locked: "bg-green-500", border: "border-red-600" }, // D (coral)
   ];
 
-  const answerLabels = ["A", "B", "C", "D"];
-
-  const handleAnswerSelect = (index: number) => {
-    if (lockedAnswerIndex !== null) return; // Can't change after locking
-    setSelectedAnswerIndex(index);
-  };
-
-  const handleLockAnswer = () => {
-    if (selectedAnswerIndex === null) return;
-    setLockedAnswerIndex(selectedAnswerIndex);
-    // TODO: Submit answer in Story 2.6
-  };
+  const answerLabels: ("A" | "B" | "C" | "D")[] = ["A", "B", "C", "D"];
+  const isSubmitted = submissionStatus === "submitted";
 
   return (
     <motion.div
@@ -120,19 +271,40 @@ export function QuestionDisplayPlayer({
           </h1>
         </motion.div>
 
-        {/* Timer */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.3 }}
-          className="flex justify-center"
-        >
-          <MobileTimer
-            duration={timerDuration}
-            startedAt={startedAt}
-            onExpire={handleTimerExpire}
-          />
-        </motion.div>
+        {/* Timer with low-time warning */}
+        <div className="flex flex-col items-center gap-2">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="flex justify-center"
+          >
+            <MobileTimer
+              duration={timerDuration}
+              startedAt={startedAt}
+              onExpire={handleTimerExpire}
+              onLowTime={handleLowTime}
+              showWarning={showTimerEnlargement}
+            />
+          </motion.div>
+
+          {/* Low-time warning message */}
+          <AnimatePresence>
+            {showLowTimeWarning && lowTimeRemaining !== null && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="text-center"
+              >
+                <p className="text-xl font-bold text-amber-600">
+                  Select something now. You only have {lowTimeRemaining} more seconds!
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Answer buttons - stacked vertically */}
         <motion.div
@@ -142,28 +314,37 @@ export function QuestionDisplayPlayer({
           className="space-y-3 w-full"
         >
           {currentQuestion.options.map((option, index) => {
-            const isSelected = selectedAnswerIndex === index;
-            const isLocked = lockedAnswerIndex === index;
+            const answerLabel = answerLabels[index];
+            const isSelected = selectedAnswer === answerLabel && lockedAnswer === null;
+            const isLocked = lockedAnswer === answerLabel;
             const color = answerColors[index];
             
+            // Determine button state styling
+            let buttonClass = color.bg;
+            if (isLocked) {
+              buttonClass = `${color.locked} shadow-lg ring-4 ring-green-300 ring-opacity-50`;
+            } else if (isSelected) {
+              buttonClass = `${color.selected} border-4 ${color.border}`;
+            }
+
             return (
               <button
                 key={index}
-                onClick={() => handleAnswerSelect(index)}
-                disabled={lockedAnswerIndex !== null}
+                onClick={() => handleAnswerTap(answerLabel)}
+                disabled={isSubmitted}
                 className={`
                   w-full
-                  ${isSelected || isLocked ? color.selected : color.bg}
-                  ${!isLocked && !isSelected ? color.hover : ''}
-                  ${isSelected ? `border-4 ${color.border}` : 'border-2 border-transparent'}
+                  ${buttonClass}
+                  ${!isSubmitted && !isLocked && !isSelected ? color.hover : ''}
                   rounded-xl
                   p-4
                   min-h-[60px]
                   flex items-center gap-4
-                  transition-all duration-200
+                  transition-all duration-300
                   shadow-md
-                  ${isLocked ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'}
+                  ${isSubmitted ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                   ${isSelected && !isLocked ? 'ring-2 ring-offset-2 ring-yellow-400' : ''}
+                  ${isLocked ? 'animate-pulse' : ''}
                 `}
               >
                 {/* Letter label */}
@@ -182,7 +363,7 @@ export function QuestionDisplayPlayer({
                     ${isSelected || isLocked ? 'border-white' : 'border-white/50'}
                   `}
                 >
-                  {answerLabels[index]}
+                  {answerLabel}
                 </div>
 
                 {/* Option text */}
@@ -209,38 +390,23 @@ export function QuestionDisplayPlayer({
           })}
         </motion.div>
 
-        {/* Lock Answer button - only shown after selection */}
-        {selectedAnswerIndex !== null && lockedAnswerIndex === null && (
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.3 }}
-            className="w-full"
-          >
-            <Button
-              onClick={handleLockAnswer}
-              className="w-full h-[60px] text-lg font-semibold bg-purple-600 hover:bg-purple-700"
-              size="lg"
+        {/* On-screen message (not a toast) */}
+        <AnimatePresence>
+          {showMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="text-center"
             >
-              Lock Answer
-            </Button>
-          </motion.div>
-        )}
-
-        {/* Locked indicator */}
-        {lockedAnswerIndex !== null && (
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="text-center"
-          >
-            <p className="text-sm text-gray-600 font-medium">
-              Answer locked! Waiting for results...
-            </p>
-          </motion.div>
-        )}
+              <p className="text-lg text-gray-700">
+                {messageText}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
 }
-

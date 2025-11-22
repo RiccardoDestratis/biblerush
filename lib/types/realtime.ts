@@ -18,7 +18,10 @@ export type RealtimeEvent =
   | "game_start"
   | "question_advance"
   | "game_end"
-  | "timer_expired";
+  | "timer_expired"
+  | "game_pause"
+  | "game_resume"
+  | "scores_updated";
 
 /**
  * Payload for player_joined event
@@ -92,6 +95,29 @@ export interface TimerExpiredPayload {
 }
 
 /**
+ * Payload for game_pause event
+ */
+export interface GamePausePayload {
+  pausedAt: string; // ISO timestamp when game was paused
+}
+
+/**
+ * Payload for game_resume event
+ */
+export interface GameResumePayload {
+  resumedAt: string; // ISO timestamp when game was resumed
+  pauseDuration: number; // Duration of pause in seconds
+}
+
+/**
+ * Payload for scores_updated event
+ */
+export interface ScoresUpdatedPayload {
+  gameId: string; // UUID of the game
+  questionId: string; // UUID of the question that was scored
+}
+
+/**
  * Union type for all event payloads
  */
 export type RealtimeEventPayload =
@@ -101,7 +127,10 @@ export type RealtimeEventPayload =
   | GameStartPayload
   | QuestionAdvancePayload
   | GameEndPayload
-  | TimerExpiredPayload;
+  | TimerExpiredPayload
+  | GamePausePayload
+  | GameResumePayload
+  | ScoresUpdatedPayload;
 
 /**
  * Callback function type for realtime event handlers
@@ -121,6 +150,9 @@ export interface GameChannelCallbacks {
   onQuestionAdvance?: RealtimeEventHandler<QuestionAdvancePayload>;
   onGameEnd?: RealtimeEventHandler<GameEndPayload>;
   onTimerExpired?: RealtimeEventHandler<TimerExpiredPayload>;
+  onGamePause?: RealtimeEventHandler<GamePausePayload>;
+  onGameResume?: RealtimeEventHandler<GameResumePayload>;
+  onScoresUpdated?: RealtimeEventHandler<ScoresUpdatedPayload>;
   onError?: (error: Error) => void;
   onStatusChange?: (status: ConnectionStatus) => void;
 }

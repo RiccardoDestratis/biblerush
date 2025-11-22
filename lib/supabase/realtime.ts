@@ -75,6 +75,18 @@ export function subscribeToGameChannel(
     callbacks.onTimerExpired?.(payload.payload as any);
   });
 
+  channel.on("broadcast", { event: "game_pause" }, (payload) => {
+    callbacks.onGamePause?.(payload.payload as any);
+  });
+
+  channel.on("broadcast", { event: "game_resume" }, (payload) => {
+    callbacks.onGameResume?.(payload.payload as any);
+  });
+
+  channel.on("broadcast", { event: "scores_updated" }, (payload) => {
+    callbacks.onScoresUpdated?.(payload.payload as any);
+  });
+
   // Subscribe to PostgreSQL changes - MUST be before subscribe()
   // Listen to INSERT on game_players table
   channel.on(

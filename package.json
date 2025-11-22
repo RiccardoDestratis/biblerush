@@ -12,6 +12,9 @@
     "seed:test": "tsx scripts/seed-test-questions.ts",
     "import:questions": "tsx scripts/import-questions.ts",
     "test": "pnpm type-check && pnpm build",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:unit:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
@@ -47,6 +50,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitest/ui": "^4.0.13",
     "autoprefixer": "^10.4.0",
     "dotenv": "^17.2.3",
     "eslint": "^9.0.0",
@@ -55,6 +59,7 @@
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "tsx": "^4.20.6",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.13"
   }
 }

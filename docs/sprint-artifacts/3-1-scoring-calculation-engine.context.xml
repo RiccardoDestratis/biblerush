@@ -1,0 +1,269 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.1</storyId>
+    <title>Scoring Calculation Engine</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-1-scoring-calculation-engine.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>a reliable scoring calculation function that computes points based on correctness and speed</iWant>
+    <soThat>players are scored fairly and consistently across all games</soThat>
+    <tasks>
+      - Create scoring utility `lib/game/scoring.ts` with `calculateScore()`, `getSpeedBonus()`, `formatResponseTime()`, `calculateRankings()`
+      - Create Server Action `processQuestionScores()` in `lib/actions/answers.ts`
+      - Update Realtime types for `scores_updated` event
+      - Create unit tests with Vitest (80%+ coverage)
+      - Integrate with question advancement (Story 2.7)
+      - Add error handling and performance optimization
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    **Given** a question has ended (timer expired or all players answered)
+    **When** scoring is calculated
+    **Then** scoring utility in `lib/game/scoring.ts`:
+    - Function `calculateScore(isCorrect: boolean, responseTimeMs: number): number`
+    - Logic: If incorrect → 0, If correct → 10 + speedBonus
+    - Speed bonus: 0-3s = +5 (total 15), 3-5s = +3 (total 13), 5-15s = +0 (total 10)
+
+    **And** Server Action `processQuestionScores(gameId, questionId)`:
+    - Fetches all `player_answers` for this question
+    - Fetches correct answer from `questions` table
+    - Calculates `is_correct` and `points_earned` for each answer
+    - Updates `player_answers` and `game_players.total_score`
+    - Broadcasts `scores_updated` event
+
+    **And** tie-breaking rule:
+    - Same score → rank by lower cumulative `response_time_ms`
+    - Helper function `calculateRankings(players)` returns sorted array with ranks
+
+    **And** unit tests (Vitest):
+    - Test all speed bonus tiers and boundary cases
+    - Test incorrect answers and NULL answers
+    - 80%+ coverage target
+
+    **And** error handling: Continue processing other players if one fails
+    **And** performance: Process 20 players in <500ms
+    **And** response time formatting: Helper function `formatResponseTime()` returns "2.3s" format
+    **And** speed bonus helper: `getSpeedBonus()` returns 5, 3, or 0 for notification display
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.1: Scoring Calculation Engine">
+        Story acceptance criteria, technical notes, and prerequisites. Scoring logic matches FR10 exactly. Server Action in `lib/actions/answers.ts`: `processQuestionScores()`. Unit tests: 80%+ coverage target (Architecture "Testing Requirements"). Tie-breaking: Faster total time wins (Architecture "Scoring System").
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="FR10: Scoring Calculation">
+        The system shall calculate scores using: 10 base points for correct answers + speed bonus (0-3 seconds = +5 points, 3-5 seconds = +3 points, >5 seconds = +0 bonus).
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Scoring System">
+        Scoring system architecture: `lib/game/scoring.ts` for calculation logic, `lib/actions/answers.ts` for Server Action, `player_answers` table for storing scores. Tie-breaking: Faster total time wins.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Database Schema - player_answers Table">
+        `player_answers` table structure: `id UUID PK`, `game_id UUID FK`, `player_id UUID FK`, `question_id UUID FK`, `selected_answer CHAR(1)` ('A', 'B', 'C', 'D', or NULL), `response_time_ms INTEGER`, `is_correct BOOLEAN`, `points_earned INTEGER`, `answered_at TIMESTAMP`. Update `is_correct` and `points_earned` after scoring calculation.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Database Schema - game_players Table">
+        `game_players` table structure: `id UUID PK`, `game_id UUID FK`, `player_id UUID FK`, `player_name TEXT`, `total_score INTEGER DEFAULT 0`, `joined_at TIMESTAMP`. Update `total_score` cumulatively: `total_score += points_earned` for each question.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Database Schema - questions Table">
+        `questions` table structure: `correct_answer CHAR(1)` ('A', 'B', 'C', or 'D'). Fetch correct answer to compare with `selected_answer` from `player_answers`.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Testing Requirements">
+        Unit Tests: Critical business logic (scoring calculations, game state machine, tier validation) using Vitest. 80%+ coverage for scoring logic, game state management, tier enforcement (must be perfect).
+      </doc>
+      <doc path="docs/sprint-artifacts/2-6-answer-submission-confirm-lock-pattern.md" title="Story 2.6">
+        Answer submission stores `response_time_ms` in `player_answers` table. `is_correct` and `points_earned` are set to NULL initially, calculated in Story 3.1.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-7-question-advancement-synchronization.md" title="Story 2.7">
+        Question advancement triggers after timer expires. Scoring should be calculated before or during answer reveal phase (Story 3.2).
+      </doc>
+    </docs>
+    <code>
+      <file path="lib/actions/answers.ts" kind="server-action">
+        Contains Server Action `submitAnswer()` from Story 2.6. Pattern to follow: "use server" directive, createClient from lib/supabase/server, error handling with success/error return types. Add `processQuestionScores(gameId, questionId)` function here following same pattern. Fetch all `player_answers` using `.select()` with `.eq('game_id', gameId)` and `.eq('question_id', questionId)`. Fetch correct answer from `questions` table. Update `player_answers` using `.update()` with `is_correct` and `points_earned`. Update `game_players` using `.update()` with cumulative `total_score`.
+      </file>
+      <file path="lib/game/scoring.ts" kind="utility">
+        Target file for scoring utility functions. Create here: `calculateScore(isCorrect: boolean, responseTimeMs: number): number`, `getSpeedBonus(responseTimeMs: number): number`, `formatResponseTime(responseTimeMs: number): string`, `calculateRankings(players: PlayerScore[]): RankedPlayer[]`. Scoring logic: 0-3s = +5 bonus, 3-5s = +3 bonus, 5-15s = +0 bonus. Base points: 10 for correct, 0 for incorrect.
+      </file>
+      <file path="lib/game/scoring.test.ts" kind="test">
+        Target file for unit tests. Use Vitest. Test cases: Correct answer with 2s, 4s, 10s responses; boundary cases (exactly 3s, 5s); incorrect answers; NULL answers. Achieve 80%+ coverage.
+      </file>
+      <file path="lib/types/realtime.ts" kind="type">
+        Contains TypeScript types for Realtime events. Add `scores_updated` to `RealtimeEvent` type. Add `ScoresUpdatedPayload` interface: `{ gameId: string, questionId: string }`. Update `RealtimeEventPayload` union type. Update `GameChannelCallbacks` interface to include `onScoresUpdated?: (payload: ScoresUpdatedPayload) => void`.
+      </file>
+      <file path="lib/supabase/realtime.ts" kind="utility">
+        Contains Realtime helper functions. Update `subscribeToGameChannel` to handle `scores_updated` event. Add `onScoresUpdated` callback to `GameChannelCallbacks` interface. Use `broadcastGameEvent` to send `scores_updated` event after scoring processing.
+      </file>
+      <file path="lib/supabase/server.ts" kind="utility">
+        Contains `createClient()` function for server-side Supabase client. Use this in Server Action to access database for fetching and updating player answers and game players.
+      </file>
+      <file path="lib/utils/question-advancement.ts" kind="utility">
+        Contains `advanceQuestionAndBroadcast()` function from Story 2.7. May need to integrate scoring calculation here, or call `processQuestionScores()` before advancing question. Ensure scores are calculated before answer reveal (Story 3.2).
+      </file>
+      <file path="lib/actions/games.ts" kind="server-action">
+        Contains Server Actions for game operations. Reference for Server Action pattern. May need to check game status before processing scores (game must be 'active').
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="^15.1.0">Next.js 15 App Router framework</package>
+        <package name="react" version="^19.0.0">React 19</package>
+        <package name="@supabase/supabase-js" version="latest">Supabase client library (already installed)</package>
+        <package name="vitest" version="latest">Unit testing framework. Need to install if not already present.</package>
+        <package name="@vitest/ui" version="latest">Vitest UI for test visualization (optional, dev dependency)</package>
+      </ecosystem>
+      <database>
+        <table name="player_answers">
+          <column name="id" type="UUID" primaryKey="true">Answer identifier</column>
+          <column name="game_id" type="UUID" foreignKey="games.id">Reference to game</column>
+          <column name="player_id" type="UUID" foreignKey="game_players.id">Reference to player</column>
+          <column name="question_id" type="UUID" foreignKey="questions.id">Reference to question</column>
+          <column name="selected_answer" type="CHAR(1)">Selected answer: 'A', 'B', 'C', 'D', or NULL</column>
+          <column name="response_time_ms" type="INTEGER">Response time in milliseconds (0-15000)</column>
+          <column name="is_correct" type="BOOLEAN">Whether answer is correct (NULL until calculated)</column>
+          <column name="points_earned" type="INTEGER">Points earned for this answer (NULL until calculated)</column>
+          <column name="answered_at" type="TIMESTAMP">When answer was submitted</column>
+        </table>
+        <table name="game_players">
+          <column name="id" type="UUID" primaryKey="true">Game player identifier</column>
+          <column name="game_id" type="UUID" foreignKey="games.id">Reference to game</column>
+          <column name="player_id" type="UUID">Player identifier (may reference users table in future)</column>
+          <column name="player_name" type="TEXT">Player display name</column>
+          <column name="total_score" type="INTEGER" default="0">Cumulative score across all questions</column>
+          <column name="joined_at" type="TIMESTAMP">When player joined game</column>
+        </table>
+        <table name="questions">
+          <column name="id" type="UUID" primaryKey="true">Question identifier</column>
+          <column name="correct_answer" type="CHAR(1)">Correct answer: 'A', 'B', 'C', or 'D'</column>
+          <column name="question_set_id" type="UUID" foreignKey="question_sets.id">Reference to question set</column>
+          <column name="order_index" type="INTEGER">Order within question set (1-based)</column>
+        </table>
+        <table name="games">
+          <column name="id" type="UUID" primaryKey="true">Game identifier</column>
+          <column name="status" type="TEXT">Game status: 'waiting', 'active', 'completed'</column>
+          <column name="current_question_index" type="INTEGER">Current question index (0-based)</column>
+        </table>
+      </database>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      Scoring logic must match FR10 exactly: 10 base points + speed bonus (0-3s = +5, 3-5s = +3, >5s = +0).
+    </constraint>
+    <constraint>
+      Server Action must validate game exists and is in 'active' status before processing scores.
+    </constraint>
+    <constraint>
+      Server Action must handle NULL `selected_answer` (no answer submitted) → `is_correct = false`, `points_earned = 0`.
+    </constraint>
+    <constraint>
+      Batch processing: Fetch all answers in one query, update in batch where possible for performance.
+    </constraint>
+    <constraint>
+      Error handling: If scoring fails for any player, log error but continue processing others. Return partial success if some players processed.
+    </constraint>
+    <constraint>
+      Performance: Process 20 players' scores in <500ms. Optimize database queries, use batch updates.
+    </constraint>
+    <constraint>
+      Tie-breaking: If two players have same `total_score`, rank by lower cumulative `response_time_ms` (sum across all questions).
+    </constraint>
+    <constraint>
+      Unit tests: 80%+ coverage target for scoring logic. Use Vitest. Test all speed bonus tiers, boundary cases, incorrect answers, NULL answers.
+    </constraint>
+    <constraint>
+      Response time formatting: Display as "2.3s" format (1 decimal place) for leaderboard display (Stories 3.4, 3.5).
+    </constraint>
+    <constraint>
+      Speed bonus helper: `getSpeedBonus()` returns 5, 3, or 0 for notification display in Story 3.3 (after answer reveal, not on lock).
+    </constraint>
+    <constraint>
+      Event broadcast: After processing scores, broadcast `scores_updated` event via Realtime for leaderboard refresh (Stories 3.4, 3.5).
+    </constraint>
+    <constraint>
+      Integration: Call `processQuestionScores()` after question timer expires, before answer reveal (Story 3.2).
+    </constraint>
+    <constraint>
+      Use Server Actions pattern from `lib/actions/answers.ts`: "use server" directive, createClient, error handling with success/error return types.
+    </constraint>
+    <constraint>
+      Use Realtime pattern from `lib/supabase/realtime.ts`: `broadcastGameEvent` to send `scores_updated` event. Channel naming: `game:${gameId}`.
+    </constraint>
+    <constraint>
+      Always use pnpm as package manager (never npm or yarn) per user rules.
+    </constraint>
+    <constraint>
+      Database updates: Update `player_answers.is_correct` and `player_answers.points_earned` atomically. Update `game_players.total_score` cumulatively (add to existing score).
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="calculateScore" kind="function">
+      <signature>calculateScore(isCorrect: boolean, responseTimeMs: number): number</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Calculate score based on correctness and response time. Returns 0 for incorrect, 10 + speedBonus for correct. Speed bonus: 0-3s = +5, 3-5s = +3, 5-15s = +0.</description>
+    </interface>
+    <interface name="getSpeedBonus" kind="function">
+      <signature>getSpeedBonus(responseTimeMs: number): number</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Get speed bonus points (5, 3, or 0) based on response time. Used for notification display in Story 3.3.</description>
+    </interface>
+    <interface name="formatResponseTime" kind="function">
+      <signature>formatResponseTime(responseTimeMs: number): string</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Format response time in milliseconds to "2.3s" format (1 decimal place). Used for leaderboard display in Stories 3.4, 3.5.</description>
+    </interface>
+    <interface name="calculateRankings" kind="function">
+      <signature>calculateRankings(players: PlayerScore[]): RankedPlayer[]</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Calculate player rankings with tie-breaking. Sort by total_score (descending), then by cumulative response_time_ms (ascending) for ties. Assign rank numbers (1, 2, 3, etc.).</description>
+    </interface>
+    <interface name="processQuestionScores Server Action" kind="function">
+      <signature>processQuestionScores(gameId: string, questionId: string): Promise&lt;{success: true, processedCount: number} | {success: false, error: string}&gt;</signature>
+      <path>lib/actions/answers.ts</path>
+      <description>Server Action to process scores for a question: Fetch all answers, calculate scores, update database, broadcast scores_updated event. Returns processed count on success, error message on failure.</description>
+    </interface>
+    <interface name="ScoresUpdatedPayload" kind="type">
+      <signature>type ScoresUpdatedPayload = { gameId: string; questionId: string; }</signature>
+      <path>lib/types/realtime.ts</path>
+      <description>TypeScript type for scores_updated event payload. Broadcast after scoring processing completes.</description>
+    </interface>
+    <interface name="broadcastGameEvent scores_updated" kind="function">
+      <signature>broadcastGameEvent(channel: RealtimeChannel, event: 'scores_updated', payload: ScoresUpdatedPayload): Promise&lt;void&gt;</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Broadcast scores_updated event to all subscribers of game channel. Use in Server Action after updating database.</description>
+    </interface>
+    <interface name="subscribeToGameChannel onScoresUpdated callback" kind="function">
+      <signature>onScoresUpdated?: (payload: ScoresUpdatedPayload) =&gt; void</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Callback function for scores_updated event. Called when scores_updated broadcast is received. Use in leaderboard components (Stories 3.4, 3.5) to refresh scores.</description>
+    </interface>
+    <interface name="Supabase createClient" kind="function">
+      <signature>createClient(): Promise&lt;SupabaseClient&gt;</signature>
+      <path>lib/supabase/server.ts</path>
+      <description>Server-side Supabase client for database operations. Use in Server Action to fetch and update player answers and game players.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Unit tests: Use Vitest for scoring function tests. Test all speed bonus tiers (0-3s, 3-5s, 5-15s), boundary cases (exactly 3s, 5s), incorrect answers, NULL answers. Achieve 80%+ coverage. Integration testing: Test Server Action with real database, test batch processing of 20 players, test error handling, test performance (<500ms). Manual testing: Create game, submit answers with various response times, verify scores calculated correctly, verify database updated, verify scores_updated event broadcast.
+    </standards>
+    <locations>
+      Test scoring utility: `lib/game/scoring.test.ts` - `calculateScore()`, `getSpeedBonus()`, `formatResponseTime()`, `calculateRankings()`
+      Test Server Action: `lib/actions/answers.ts` - `processQuestionScores()` function
+      Test integration: End-to-end test with real game flow (create game, submit answers, verify scores)
+      Test performance: Measure processing time for 20 players (should be <500ms)
+    </locations>
+    <ideas>
+      Test scoring calculation: Create test cases for all speed bonus tiers (0-3s = 15 points, 3-5s = 13 points, 5-15s = 10 points), test boundary cases (exactly 3000ms, 5000ms), test incorrect answers (should return 0), test NULL answers (should return 0). Test tie-breaking: Create players with same score, verify ranking by response time. Test Server Action: Create game, submit answers with various response times, call processQuestionScores(), verify database updated correctly (is_correct, points_earned, total_score), verify scores_updated event broadcast. Test error handling: Test with invalid gameId, invalid questionId, missing answers, database errors. Test performance: Create 20 players, submit answers, measure processing time (should be <500ms). Test integration: Full flow - create game, start game, submit answers, verify scores calculated, verify leaderboard updates.
+    </ideas>
+  </tests>
+</story-context>
+

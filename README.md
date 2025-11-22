@@ -144,6 +144,15 @@ pnpm start         # Start production server
 pnpm lint          # Run ESLint
 pnpm type-check    # Run TypeScript type checking
 
+# Testing
+pnpm test                    # Run type-check and build (quick validation)
+pnpm test:full              # Run type-check, build, and E2E tests
+pnpm test:e2e               # Run Playwright E2E tests
+pnpm test:e2e:ui            # Run tests in interactive UI mode
+pnpm test:e2e:headed        # Run tests with visible browser
+pnpm test:e2e:debug         # Debug tests step-by-step
+pnpm test:e2e:report        # View test report
+
 # Package Management (ALWAYS use pnpm)
 pnpm add <package>           # Add dependency
 pnpm add -D <package>        # Add dev dependency
@@ -218,6 +227,7 @@ biblerush/
 - **Architecture:** `docs/architecture.md`
 - **UX Design:** `docs/ux-design-specification.md`
 - **Epics & Stories:** `docs/epics.md`
+- **Testing:** `e2e/README.md`
 
 ## Support
 

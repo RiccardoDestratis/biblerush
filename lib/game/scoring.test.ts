@@ -76,6 +76,12 @@ describe("getSpeedBonus", () => {
     expect(getSpeedBonus(10000)).toBe(0);
     expect(getSpeedBonus(15000)).toBe(0);
   });
+
+  it("should handle response times beyond 15 seconds (no bonus)", () => {
+    expect(getSpeedBonus(16000)).toBe(0);
+    expect(getSpeedBonus(30000)).toBe(0);
+    expect(getSpeedBonus(60000)).toBe(0);
+  });
 });
 
 describe("formatResponseTime", () => {
@@ -94,6 +100,16 @@ describe("formatResponseTime", () => {
     expect(formatResponseTime(1234)).toBe("1.2s");
     expect(formatResponseTime(5678)).toBe("5.7s");
     expect(formatResponseTime(9999)).toBe("10.0s"); // Rounds to 1 decimal
+  });
+
+  it("should handle very large response times", () => {
+    expect(formatResponseTime(999999)).toBe("1000.0s"); // 999.999s rounds to 1000.0s
+    expect(formatResponseTime(150000)).toBe("150.0s");
+    expect(formatResponseTime(999900)).toBe("999.9s"); // Exactly 999.9s
+  });
+
+  it("should handle edge case: exactly 1 millisecond", () => {
+    expect(formatResponseTime(1)).toBe("0.0s");
   });
 });
 
@@ -202,6 +218,104 @@ describe("calculateRankings", () => {
     expect(ranked[3].playerId).toBe("4");
     expect(ranked[4].rank).toBe(4); // Same rank
     expect(ranked[4].playerId).toBe("5");
+  });
+
+  it("should handle 100+ players efficiently", () => {
+    // Generate 150 players with varying scores
+    const players: PlayerScore[] = [];
+    for (let i = 0; i < 150; i++) {
+      players.push({
+        playerId: `player-${i}`,
+        totalScore: Math.floor(Math.random() * 200), // 0-199 points
+        cumulativeResponseTimeMs: Math.floor(Math.random() * 150000), // 0-150 seconds total
+      });
+    }
+
+    const startTime = performance.now();
+    const ranked = calculateRankings(players);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+
+    // Verify all players are ranked
+    expect(ranked).toHaveLength(150);
+
+    // Verify ranking order (descending by score, then ascending by time)
+    for (let i = 0; i < ranked.length - 1; i++) {
+      const current = ranked[i];
+      const next = ranked[i + 1];
+
+      // Either current score is higher, or same score with faster time
+      expect(
+        current.totalScore > next.totalScore ||
+          (current.totalScore === next.totalScore &&
+            current.cumulativeResponseTimeMs <= next.cumulativeResponseTimeMs)
+      ).toBe(true);
+    }
+
+    // Verify ranks are assigned correctly (1, 2, 3, ...)
+    // Ranks should be sequential or same for ties
+    for (let i = 0; i < ranked.length; i++) {
+      expect(ranked[i].rank).toBeGreaterThanOrEqual(1);
+      expect(ranked[i].rank).toBeLessThanOrEqual(150);
+    }
+
+    // Performance check: Should complete in reasonable time (<100ms for 150 players)
+    expect(executionTime).toBeLessThan(100);
+
+    // Verify first player has highest score (or tied highest with fastest time)
+    const highestScore = Math.max(...players.map((p) => p.totalScore));
+    const topPlayers = ranked.filter((p) => p.totalScore === highestScore);
+    const fastestTopPlayer = topPlayers.reduce((fastest, current) =>
+      current.cumulativeResponseTimeMs < fastest.cumulativeResponseTimeMs
+        ? current
+        : fastest
+    );
+    expect(ranked[0].totalScore).toBe(highestScore);
+    expect(ranked[0].playerId).toBe(fastestTopPlayer.playerId);
+  });
+
+  it("should handle 100+ players with many ties", () => {
+    // Create 100 players, many with same scores
+    const players: PlayerScore[] = [];
+    for (let i = 0; i < 100; i++) {
+      players.push({
+        playerId: `player-${i}`,
+        totalScore: i % 10 === 0 ? 50 : i % 5 === 0 ? 40 : 30, // Many ties
+        cumulativeResponseTimeMs: i * 100, // Different times
+      });
+    }
+
+    const ranked = calculateRankings(players);
+
+    expect(ranked).toHaveLength(100);
+
+    // Verify ranking order is maintained
+    for (let i = 0; i < ranked.length - 1; i++) {
+      const current = ranked[i];
+      const next = ranked[i + 1];
+
+      expect(
+        current.totalScore > next.totalScore ||
+          (current.totalScore === next.totalScore &&
+            current.cumulativeResponseTimeMs <= next.cumulativeResponseTimeMs)
+      ).toBe(true);
+    }
+
+    // Verify players with same score and time get same rank
+    const scoreTimeGroups = new Map<string, number[]>();
+    ranked.forEach((player, index) => {
+      const key = `${player.totalScore}-${player.cumulativeResponseTimeMs}`;
+      if (!scoreTimeGroups.has(key)) {
+        scoreTimeGroups.set(key, []);
+      }
+      scoreTimeGroups.get(key)!.push(player.rank);
+    });
+
+    // All players with same score+time should have same rank
+    scoreTimeGroups.forEach((ranks) => {
+      const uniqueRanks = new Set(ranks);
+      expect(uniqueRanks.size).toBe(1); // All should have same rank
+    });
   });
 });
 

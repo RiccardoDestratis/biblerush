@@ -10,6 +10,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "seed:test": "tsx scripts/seed-test-questions.ts",
+    "import:questions": "tsx scripts/import-questions.ts",
     "test": "pnpm type-check && pnpm build",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

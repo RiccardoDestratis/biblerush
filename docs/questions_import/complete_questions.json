@@ -1,0 +1,899 @@
+{
+  "question_sets": [
+    {
+      "set_name": {
+        "en": "Jesus' Life: The Greatest Story",
+        "de": "Das Leben Jesu: Die größte Geschichte",
+        "it": "La Vita di Gesù: La Storia più Grande"
+      },
+      "set_description": {
+        "en": "Essential moments from the life of Jesus Christ for beginners",
+        "de": "Wesentliche Momente aus dem Leben Jesu Christi für Anfänger",
+        "it": "Momenti essenziali della vita di Gesù Cristo per principianti"
+      },
+      "difficulty": "beginner",
+      "questions": [
+        {
+          "question": {
+            "en": "In which town was Jesus born?",
+            "de": "In welcher Stadt wurde Jesus geboren?",
+            "it": "In quale città nacque Gesù?"
+          },
+          "option_a": {
+            "en": "Nazareth",
+            "de": "Nazareth",
+            "it": "Nazaret"
+          },
+          "option_b": {
+            "en": "Bethlehem",
+            "de": "Bethlehem",
+            "it": "Betlemme"
+          },
+          "option_c": {
+            "en": "Jerusalem",
+            "de": "Jerusalem",
+            "it": "Gerusalemme"
+          },
+          "option_d": {
+            "en": "Capernaum",
+            "de": "Kapernaum",
+            "it": "Cafarnao"
+          },
+          "right_answer": {
+            "en": "Bethlehem",
+            "de": "Bethlehem",
+            "it": "Betlemme"
+          },
+          "verse_reference": {
+            "en": "Luke 2:4,7",
+            "de": "Lukas 2:4,7",
+            "it": "Luca 2:4,7"
+          },
+          "verse_content": {
+            "en": "Joseph also went up from Galilee, out of the city of Nazareth, into Judea, to David's city, which is called Bethlehem, because he was of the house and family of David; She gave birth to her firstborn son.",
+            "de": "Da machte sich auf auch Josef aus Galiläa, aus der Stadt Nazareth, in das judäische Land zur Stadt Davids, die da heißt Bethlehem, darum dass er von dem Hause und Geschlechte Davids war... Und sie gebar ihren ersten Sohn und wickelte ihn in Windeln und legte ihn in eine Krippe.",
+            "it": "Dalla Galilea, dalla città di Nazaret, anche Giuseppe salì in Giudea, alla città di Davide chiamata Betlemme, perché era della casa e della famiglia di Davide... ed ella diede alla luce il suo figlio primogenito, lo fasciò e lo coricò in una mangiatoia."
+          },
+          "image_prompt": "Biblical times, ancient town of Bethlehem circa 4 BC Middle East at night, humble stable scene with newborn baby in wooden manger filled with straw, soft divine light emanating from infant, Mary and Joseph in simple robes looking at child with wonder, stone walls and wooden beams, warm oil lamp glow, peaceful holy night atmosphere, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Who were Jesus' earthly parents?",
+            "de": "Wer waren die irdischen Eltern Jesu?",
+            "it": "Chi erano i genitori terreni di Gesù?"
+          },
+          "option_a": {
+            "en": "Abraham and Sarah",
+            "de": "Abraham und Sara",
+            "it": "Abramo e Sara"
+          },
+          "option_b": {
+            "en": "Mary and Joseph",
+            "de": "Maria und Josef",
+            "it": "Maria e Giuseppe"
+          },
+          "option_c": {
+            "en": "Elizabeth and Zechariah",
+            "de": "Elisabeth und Zacharias",
+            "it": "Elisabetta e Zaccaria"
+          },
+          "option_d": {
+            "en": "Ruth and Boaz",
+            "de": "Ruth und Boas",
+            "it": "Rut e Boaz"
+          },
+          "right_answer": {
+            "en": "Mary and Joseph",
+            "de": "Maria und Josef",
+            "it": "Maria e Giuseppe"
+          },
+          "verse_reference": {
+            "en": "Matthew 1:18",
+            "de": "Matthäus 1:18",
+            "it": "Matteo 1:18"
+          },
+          "verse_content": {
+            "en": "Now the birth of Jesus Christ was like this: After his mother, Mary, was engaged to Joseph, before they came together, she was found pregnant by the Holy Spirit.",
+            "de": "Die Geburt Jesu Christi geschah aber so: Als Maria, seine Mutter, dem Josef vertraut war, fand es sich, ehe sie zusammenkamen, dass sie schwanger war von dem Heiligen Geist.",
+            "it": "La nascita di Gesù Cristo avvenne in questo modo: Maria, sua madre, era stata promessa sposa a Giuseppe e, prima che fossero venuti a stare insieme, si trovò incinta per opera dello Spirito Santo."
+          },
+          "image_prompt": "Biblical times, interior of humble carpenter's workshop in Nazareth circa 4 BC Middle East, young Mary in blue head covering holding baby Jesus, Joseph the carpenter with work-worn hands standing beside them in simple brown tunic, wooden tools and furniture in background, warm afternoon sunlight streaming through window, authentic first-century Galilean dwelling",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "How many disciples did Jesus choose?",
+            "de": "Wie viele Jünger wählte Jesus aus?",
+            "it": "Quanti discepoli scelse Gesù?"
+          },
+          "option_a": {
+            "en": "7",
+            "de": "7",
+            "it": "7"
+          },
+          "option_b": {
+            "en": "10",
+            "de": "10",
+            "it": "10"
+          },
+          "option_c": {
+            "en": "12",
+            "de": "12",
+            "it": "12"
+          },
+          "option_d": {
+            "en": "40",
+            "de": "40",
+            "it": "40"
+          },
+          "right_answer": {
+            "en": "12",
+            "de": "12",
+            "it": "12"
+          },
+          "verse_reference": {
+            "en": "Matthew 10:1",
+            "de": "Matthäus 10:1",
+            "it": "Matteo 10:1"
+          },
+          "verse_content": {
+            "en": "He called to himself his twelve disciples, and gave them authority over unclean spirits, to cast them out, and to heal every disease and every sickness.",
+            "de": "Und er rief seine zwölf Jünger zu sich und gab ihnen Macht über die unreinen Geister, dass sie die austrieben und heilten alle Krankheiten und alle Gebrechen.",
+            "it": "Poi, chiamati a sé i suoi dodici discepoli, diede loro il potere di scacciare gli spiriti immondi e di guarire qualunque malattia e qualunque infermità."
+          },
+          "image_prompt": "Biblical times, hillside near Sea of Galilee circa 30 AD Middle East, Jesus in white robe standing with group of twelve men of various ages in simple tunics and robes, fishermen's nets and walking staffs visible, sunny day with blue waters of Galilee in background, men listening intently to Jesus, diverse group representing different professions, first century Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "On which day of the week did Jesus rise from the dead?",
+            "de": "An welchem Wochentag stand Jesus von den Toten auf?",
+            "it": "In che giorno della settimana Gesù risorse dai morti?"
+          },
+          "option_a": {
+            "en": "Friday",
+            "de": "Freitag",
+            "it": "Venerdì"
+          },
+          "option_b": {
+            "en": "Saturday",
+            "de": "Samstag",
+            "it": "Sabato"
+          },
+          "option_c": {
+            "en": "Sunday",
+            "de": "Sonntag",
+            "it": "Domenica"
+          },
+          "option_d": {
+            "en": "Monday",
+            "de": "Montag",
+            "it": "Lunedì"
+          },
+          "right_answer": {
+            "en": "Sunday",
+            "de": "Sonntag",
+            "it": "Domenica"
+          },
+          "verse_reference": {
+            "en": "Matthew 28:1,6",
+            "de": "Matthäus 28:1,6",
+            "it": "Matteo 28:1,6"
+          },
+          "verse_content": {
+            "en": "Now after the Sabbath, as it began to dawn on the first day of the week, Mary Magdalene and the other Mary came to see the tomb... He is not here, for he has risen, just like he said.",
+            "de": "Als aber der Sabbat vorüber war und der erste Tag der Woche anbrach, kamen Maria Magdalena und die andere Maria, um nach dem Grab zu sehen... Er ist nicht hier; er ist auferstanden, wie er gesagt hat. Kommt und seht die Stätte, wo er gelegen hat.",
+            "it": "Dopo il sabato, verso l'alba del primo giorno della settimana, Maria Maddalena e l'altra Maria andarono a vedere il sepolcro... Egli non è qui, perché è risuscitato come aveva detto; venite a vedere il luogo dove giaceva."
+          },
+          "image_prompt": "Biblical times, empty tomb carved in rock face outside Jerusalem circa 30 AD Middle East at dawn, large circular stone rolled away from entrance, interior tomb visible showing empty burial cloths on stone shelf, golden morning sunlight breaking through, women in robes approaching with expressions of amazement, beautiful sunrise sky, atmosphere of divine miracle and hope, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic dawn lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What was Jesus' occupation before He began His ministry?",
+            "de": "Was war Jesus von Beruf, bevor er seinen Dienst begann?",
+            "it": "Qual era il mestiere di Gesù prima di iniziare il suo ministero?"
+          },
+          "option_a": {
+            "en": "Fisherman",
+            "de": "Fischer",
+            "it": "Pescatore"
+          },
+          "option_b": {
+            "en": "Carpenter",
+            "de": "Zimmermann",
+            "it": "Falegname"
+          },
+          "option_c": {
+            "en": "Shepherd",
+            "de": "Hirte",
+            "it": "Pastore"
+          },
+          "option_d": {
+            "en": "Tax collector",
+            "de": "Zöllner",
+            "it": "Esattore delle tasse"
+          },
+          "right_answer": {
+            "en": "Carpenter",
+            "de": "Zimmermann",
+            "it": "Falegname"
+          },
+          "verse_reference": {
+            "en": "Mark 6:3",
+            "de": "Markus 6:3",
+            "it": "Marco 6:3"
+          },
+          "verse_content": {
+            "en": "Isn't this the carpenter, the son of Mary?",
+            "de": "Ist der nicht der Zimmermann, Marias Sohn und der Bruder des Jakobus und Joses und Judas und Simon?",
+            "it": "Non è costui il falegname, il figlio di Maria?"
+          },
+          "image_prompt": "Biblical times, carpenter's workshop in Nazareth circa 25 AD Middle East, young adult Jesus working with wooden beam using hand tools, wood shavings on floor, various carpenter tools hanging on stone walls, wooden furniture pieces in progress, warm afternoon sunlight streaming through doorway, honest labor and craftsmanship, peaceful workshop atmosphere, first century Galilee",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "At what age did Jesus first teach in the temple?",
+            "de": "In welchem Alter lehrte Jesus zum ersten Mal im Tempel?",
+            "it": "A che età Gesù insegnò per la prima volta nel tempio?"
+          },
+          "option_a": {
+            "en": "8 years old",
+            "de": "8 Jahre alt",
+            "it": "8 anni"
+          },
+          "option_b": {
+            "en": "12 years old",
+            "de": "12 Jahre alt",
+            "it": "12 anni"
+          },
+          "option_c": {
+            "en": "18 years old",
+            "de": "18 Jahre alt",
+            "it": "18 anni"
+          },
+          "option_d": {
+            "en": "30 years old",
+            "de": "30 Jahre alt",
+            "it": "30 anni"
+          },
+          "right_answer": {
+            "en": "12 years old",
+            "de": "12 Jahre alt",
+            "it": "12 anni"
+          },
+          "verse_reference": {
+            "en": "Luke 2:42",
+            "de": "Lukas 2:42",
+            "it": "Luca 2:42"
+          },
+          "verse_content": {
+            "en": "When he was twelve years old, they went up to Jerusalem according to the custom of the feast.",
+            "de": "Und als er zwölf Jahre alt war, gingen sie hinauf nach dem Brauch des Festes.",
+            "it": "Quando giunse all'età di dodici anni, salirono a Gerusalemme, secondo l'usanza della festa."
+          },
+          "image_prompt": "Biblical times, interior courtyard of Jerusalem Temple circa 8 AD Middle East, young twelve-year-old Jesus sitting among elderly Jewish teachers and rabbis in traditional robes, scrolls of Torah visible, boy gesturing while speaking with wisdom beyond his years, teachers listening with amazed expressions, grand temple columns and architecture, afternoon sunlight in courtyard, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What were Jesus' last words on the cross?",
+            "de": "Was waren Jesu letzte Worte am Kreuz?",
+            "it": "Quali furono le ultime parole di Gesù sulla croce?"
+          },
+          "option_a": {
+            "en": "Forgive them",
+            "de": "Vergib ihnen",
+            "it": "Perdona loro"
+          },
+          "option_b": {
+            "en": "It is finished",
+            "de": "Es ist vollbracht",
+            "it": "È compiuto"
+          },
+          "option_c": {
+            "en": "I am thirsty",
+            "de": "Mich dürstet",
+            "it": "Ho sete"
+          },
+          "option_d": {
+            "en": "Why have you forsaken me",
+            "de": "Warum hast du mich verlassen",
+            "it": "Perché mi hai abbandonato"
+          },
+          "right_answer": {
+            "en": "It is finished",
+            "de": "Es ist vollbracht",
+            "it": "È compiuto"
+          },
+          "verse_reference": {
+            "en": "John 19:30",
+            "de": "Johannes 19:30",
+            "it": "Giovanni 19:30"
+          },
+          "verse_content": {
+            "en": "When Jesus therefore had received the vinegar, he said, 'It is finished.' He bowed his head, and gave up his spirit.",
+            "de": "Da nun Jesus den Essig genommen hatte, sprach er: Es ist vollbracht. Und neigte das Haupt und verschied.",
+            "it": "Quando Gesù ebbe preso l'aceto, disse: 'È compiuto!' E, chinato il capo, rese lo spirito."
+          },
+          "image_prompt": "Biblical times, Golgotha hill outside Jerusalem circa 30 AD Middle East at afternoon, three wooden crosses silhouetted against darkening dramatic sky, Jesus on central cross with head bowed, crowd of people at distance below, storm clouds gathering, powerful moment of sacrifice, somber yet reverent atmosphere, historically accurate Roman crucifixion scene, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Who baptized Jesus?",
+            "de": "Wer taufte Jesus?",
+            "it": "Chi battezzò Gesù?"
+          },
+          "option_a": {
+            "en": "Peter",
+            "de": "Petrus",
+            "it": "Pietro"
+          },
+          "option_b": {
+            "en": "John the Baptist",
+            "de": "Johannes der Täufer",
+            "it": "Giovanni Battista"
+          },
+          "option_c": {
+            "en": "James",
+            "de": "Jakobus",
+            "it": "Giacomo"
+          },
+          "option_d": {
+            "en": "Paul",
+            "de": "Paulus",
+            "it": "Paolo"
+          },
+          "right_answer": {
+            "en": "John the Baptist",
+            "de": "Johannes der Täufer",
+            "it": "Giovanni Battista"
+          },
+          "verse_reference": {
+            "en": "Matthew 3:13",
+            "de": "Matthäus 3:13",
+            "it": "Matteo 3:13"
+          },
+          "verse_content": {
+            "en": "Then Jesus came from Galilee to the Jordan to John, to be baptized by him.",
+            "de": "Zu der Zeit kam Jesus aus Galiläa an den Jordan zu Johannes, dass er sich von ihm taufen ließe.",
+            "it": "Allora Gesù dalla Galilea si recò al Giordano da Giovanni per farsi battezzare da lui."
+          },
+          "image_prompt": "Biblical times, Jordan River circa 30 AD Middle East, John the Baptist in rough camel hair garment standing waist-deep in flowing water with Jesus, John pouring water over Jesus' head, white dove descending from bright heavenly light breaking through clouds above, onlookers on riverbank watching, lush vegetation along river, moment of divine revelation and blessing, first century Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "How many days did Jesus fast in the wilderness?",
+            "de": "Wie viele Tage fastete Jesus in der Wüste?",
+            "it": "Per quanti giorni Gesù digiunò nel deserto?"
+          },
+          "option_a": {
+            "en": "3 days",
+            "de": "3 Tage",
+            "it": "3 giorni"
+          },
+          "option_b": {
+            "en": "7 days",
+            "de": "7 Tage",
+            "it": "7 giorni"
+          },
+          "option_c": {
+            "en": "40 days",
+            "de": "40 Tage",
+            "it": "40 giorni"
+          },
+          "option_d": {
+            "en": "100 days",
+            "de": "100 Tage",
+            "it": "100 giorni"
+          },
+          "right_answer": {
+            "en": "40 days",
+            "de": "40 Tage",
+            "it": "40 giorni"
+          },
+          "verse_reference": {
+            "en": "Matthew 4:2",
+            "de": "Matthäus 4:2",
+            "it": "Matteo 4:2"
+          },
+          "verse_content": {
+            "en": "When he had fasted forty days and forty nights, he was hungry afterward.",
+            "de": "Und als er vierzig Tage und vierzig Nächte gefastet hatte, hungerte ihn.",
+            "it": "Dopo aver digiunato quaranta giorni e quaranta notti, ebbe fame."
+          },
+          "image_prompt": "Biblical times, harsh Judean wilderness circa 30 AD Middle East, rocky desert terrain with sparse vegetation, Jesus in simple robe sitting on rocky outcrop in contemplation, intense desert sun, barren hills in background, atmosphere of spiritual testing and solitude, no food or water visible, stark beauty of desert landscape, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, harsh natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What did Jesus say He came to do?",
+            "de": "Was sagte Jesus, wozu er gekommen sei?",
+            "it": "Cosa disse Gesù di essere venuto a fare?"
+          },
+          "option_a": {
+            "en": "Build a temple",
+            "de": "Einen Tempel bauen",
+            "it": "Costruire un tempio"
+          },
+          "option_b": {
+            "en": "Seek and save the lost",
+            "de": "Die Verlorenen suchen und retten",
+            "it": "Cercare e salvare i perduti"
+          },
+          "option_c": {
+            "en": "Overthrow Rome",
+            "de": "Rom stürzen",
+            "it": "Rovesciare Roma"
+          },
+          "option_d": {
+            "en": "Become a king",
+            "de": "König werden",
+            "it": "Diventare re"
+          },
+          "right_answer": {
+            "en": "Seek and save the lost",
+            "de": "Die Verlorenen suchen und retten",
+            "it": "Cercare e salvare i perduti"
+          },
+          "verse_reference": {
+            "en": "Luke 19:10",
+            "de": "Lukas 19:10",
+            "it": "Luca 19:10"
+          },
+          "verse_content": {
+            "en": "For the Son of Man came to seek and to save that which was lost.",
+            "de": "Denn der Menschensohn ist gekommen, zu suchen und selig zu machen, was verloren ist.",
+            "it": "Perché il Figlio dell'uomo è venuto per cercare e salvare ciò che era perduto."
+          },
+          "image_prompt": "Biblical times, village street in Galilee circa 30 AD Middle East, Jesus in white robe walking among diverse crowd of ordinary people - poor, sick, outcasts, children - reaching out to them with compassion, marketplace scene with simple clay buildings, warm afternoon light, people responding with hope and joy, inclusive and welcoming atmosphere, first century Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What did Roman soldiers place on Jesus' head to mock Him?",
+            "de": "Was setzten die römischen Soldaten Jesus auf den Kopf, um ihn zu verspotten?",
+            "it": "Cosa posero i soldati romani sulla testa di Gesù per deriderlo?"
+          },
+          "option_a": {
+            "en": "A golden crown",
+            "de": "Eine goldene Krone",
+            "it": "Una corona d'oro"
+          },
+          "option_b": {
+            "en": "A crown of thorns",
+            "de": "Eine Dornenkrone",
+            "it": "Una corona di spine"
+          },
+          "option_c": {
+            "en": "A royal turban",
+            "de": "Ein königlicher Turban",
+            "it": "Un turbante reale"
+          },
+          "option_d": {
+            "en": "A soldier's helmet",
+            "de": "Einen Soldatenhelm",
+            "it": "Un elmo da soldato"
+          },
+          "right_answer": {
+            "en": "A crown of thorns",
+            "de": "Eine Dornenkrone",
+            "it": "Una corona di spine"
+          },
+          "verse_reference": {
+            "en": "Matthew 27:29",
+            "de": "Matthäus 27:29",
+            "it": "Matteo 27:29"
+          },
+          "verse_content": {
+            "en": "They braided a crown of thorns and put it on his head, and a reed in his right hand; and they kneeled down before him, and mocked him, saying, 'Hail, King of the Jews!'",
+            "de": "Und flochten eine Krone aus Dornen und setzten sie auf sein Haupt und gaben ihm ein Rohr in seine rechte Hand und beugten die Knie vor ihm und verspotteten ihn und sprachen: Gegrüßet seist du, der Juden König!",
+            "it": "Intrecciata una corona di spine, gliela misero sul capo e gli misero una canna nella destra; poi, inginocchiandosi davanti a lui, lo schernivano dicendo: 'Salve, re dei Giudei!'"
+          },
+          "image_prompt": "Biblical times, interior of Roman praetorium in Jerusalem circa 30 AD Middle East, Jesus in purple robe with crown of thorns on head, Roman soldiers in armor mocking and kneeling before him, stone walls and columns, harsh torch light, scene of cruel mockery yet Jesus maintains dignity, historically accurate Roman military setting, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic torch lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "According to John 3:16, why did God send His Son?",
+            "de": "Warum sandte Gott laut Johannes 3:16 seinen Sohn?",
+            "it": "Secondo Giovanni 3:16, perché Dio mandò suo Figlio?"
+          },
+          "option_a": {
+            "en": "To judge the world",
+            "de": "Um die Welt zu richten",
+            "it": "Per giudicare il mondo"
+          },
+          "option_b": {
+            "en": "Because He loved the world",
+            "de": "Weil er die Welt liebte",
+            "it": "Perché amava il mondo"
+          },
+          "option_c": {
+            "en": "To punish sinners",
+            "de": "Um Sünder zu bestrafen",
+            "it": "Per punire i peccatori"
+          },
+          "option_d": {
+            "en": "To establish a kingdom",
+            "de": "Um ein Königreich zu errichten",
+            "it": "Per stabilire un regno"
+          },
+          "right_answer": {
+            "en": "Because He loved the world",
+            "de": "Weil er die Welt liebte",
+            "it": "Perché amava il mondo"
+          },
+          "verse_reference": {
+            "en": "John 3:16",
+            "de": "Johannes 3:16",
+            "it": "Giovanni 3:16"
+          },
+          "verse_content": {
+            "en": "For God so loved the world, that he gave his one and only Son, that whoever believes in him should not perish, but have eternal life.",
+            "de": "Denn so sehr hat Gott die Welt geliebt, dass er seinen eingeborenen Sohn gab, damit jeder, der an ihn glaubt, nicht verloren geht, sondern ewiges Leben hat.",
+            "it": "Perché Dio ha tanto amato il mondo, che ha dato il suo unigenito Figlio, affinché chiunque crede in lui non perisca, ma abbia vita eterna."
+          },
+          "image_prompt": "Biblical times, symbolic scene showing earth from space with warm golden divine light radiating down from heavens, representing God's love for humanity, peaceful and hopeful atmosphere, stars in deep space background, beautiful blue and green earth below, spiritual and transcendent feeling, inspirational divine love concept",
+          "image_style": "Photorealistic, symbolic biblical concept, warm divine lighting, cinematic composition, reverent tone suitable for all ages, inspirational and uplifting, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What did Jesus say from the cross about His enemies?",
+            "de": "Was sagte Jesus am Kreuz über seine Feinde?",
+            "it": "Cosa disse Gesù dalla croce riguardo ai suoi nemici?"
+          },
+          "option_a": {
+            "en": "Punish them",
+            "de": "Bestrafe sie",
+            "it": "Puniscili"
+          },
+          "option_b": {
+            "en": "Forgive them",
+            "de": "Vergib ihnen",
+            "it": "Perdona loro"
+          },
+          "option_c": {
+            "en": "Remember them",
+            "de": "Gedenke ihrer",
+            "it": "Ricordali"
+          },
+          "option_d": {
+            "en": "Curse them",
+            "de": "Verfluche sie",
+            "it": "Maledicili"
+          },
+          "right_answer": {
+            "en": "Forgive them",
+            "de": "Vergib ihnen",
+            "it": "Perdona loro"
+          },
+          "verse_reference": {
+            "en": "Luke 23:34",
+            "de": "Lukas 23:34",
+            "it": "Luca 23:34"
+          },
+          "verse_content": {
+            "en": "Jesus said, 'Father, forgive them, for they don't know what they are doing.'",
+            "de": "Jesus aber sprach: Vater, vergib ihnen; denn sie wissen nicht, was sie tun!",
+            "it": "Gesù diceva: 'Padre, perdona loro, perché non sanno quello che fanno.'"
+          },
+          "image_prompt": "Biblical times, Golgotha crucifixion scene circa 30 AD Middle East, Jesus on cross looking upward to heaven with expression of compassion and prayer, Roman soldiers and mocking crowd below, dark storm clouds overhead with rays of divine light breaking through, moment of supreme forgiveness and love, powerful spiritual atmosphere, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Where did Jesus go after His resurrection?",
+            "de": "Wohin ging Jesus nach seiner Auferstehung?",
+            "it": "Dove andò Gesù dopo la sua risurrezione?"
+          },
+          "option_a": {
+            "en": "He ascended to heaven",
+            "de": "Er fuhr auf in den Himmel",
+            "it": "Ascese al cielo"
+          },
+          "option_b": {
+            "en": "He went to Rome",
+            "de": "Er ging nach Rom",
+            "it": "Andò a Roma"
+          },
+          "option_c": {
+            "en": "He stayed in Jerusalem",
+            "de": "Er blieb in Jerusalem",
+            "it": "Rimase a Gerusalemme"
+          },
+          "option_d": {
+            "en": "He returned to Nazareth",
+            "de": "Er kehrte nach Nazareth zurück",
+            "it": "Tornò a Nazaret"
+          },
+          "right_answer": {
+            "en": "He ascended to heaven",
+            "de": "Er fuhr auf in den Himmel",
+            "it": "Ascese al cielo"
+          },
+          "verse_reference": {
+            "en": "Acts 1:9",
+            "de": "Apostelgeschichte 1:9",
+            "it": "Atti 1:9"
+          },
+          "verse_content": {
+            "en": "When he had said these things, as they were looking, he was taken up, and a cloud received him out of their sight.",
+            "de": "Und als er das gesagt hatte, wurde er vor ihren Augen emporgehoben, und eine Wolke nahm ihn auf, weg vor ihren Augen.",
+            "it": "Dette queste cose, mentre essi guardavano, fu elevato; e una nuvola, accogliendolo, lo sottrasse ai loro sguardi."
+          },
+          "image_prompt": "Biblical times, Mount of Olives near Jerusalem circa 30 AD Middle East, Jesus in white robes ascending into bright clouds with arms raised in blessing, disciples below looking upward with amazement and joy, two angels in white standing nearby, morning sunlight breaking through clouds, glorious moment of ascension, olive trees on hillside, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Who followed a star to find baby Jesus?",
+            "de": "Wer folgte einem Stern, um das Jesuskind zu finden?",
+            "it": "Chi seguì una stella per trovare Gesù bambino?"
+          },
+          "option_a": {
+            "en": "Shepherds",
+            "de": "Hirten",
+            "it": "Pastori"
+          },
+          "option_b": {
+            "en": "Wise men from the East",
+            "de": "Weise aus dem Morgenland",
+            "it": "Magi dall'Oriente"
+          },
+          "option_c": {
+            "en": "Roman soldiers",
+            "de": "Römische Soldaten",
+            "it": "Soldati romani"
+          },
+          "option_d": {
+            "en": "Temple priests",
+            "de": "Tempelpriester",
+            "it": "Sacerdoti del tempio"
+          },
+          "right_answer": {
+            "en": "Wise men from the East",
+            "de": "Weise aus dem Morgenland",
+            "it": "Magi dall'Oriente"
+          },
+          "verse_reference": {
+            "en": "Matthew 2:1-2",
+            "de": "Matthäus 2:1-2",
+            "it": "Matteo 2:1-2"
+          },
+          "verse_content": {
+            "en": "Now when Jesus was born in Bethlehem of Judea in the days of King Herod, behold, wise men from the east came to Jerusalem, saying, 'Where is he who is born King of the Jews? For we saw his star in the east, and have come to worship him.'",
+            "de": "Als Jesus geboren war in Bethlehem in Judäa zur Zeit des Königs Herodes, siehe, da kamen Weise aus dem Morgenland nach Jerusalem und sprachen: Wo ist der neugeborene König der Juden? Wir haben seinen Stern aufgehen sehen und sind gekommen, ihn anzubeten.",
+            "it": "Gesù era nato in Betlemme di Giudea, all'epoca del re Erode. Dei magi d'Oriente arrivarono a Gerusalemme, dicendo: 'Dov'è il re dei Giudei che è nato? Poiché noi abbiamo visto la sua stella in Oriente e siamo venuti per adorarlo.'"
+          },
+          "image_prompt": "Biblical times, desert landscape at night circa 4 BC Middle East, three wise men in rich robes and turbans riding camels across sand dunes, brilliant star shining brightly in dark sky above, following the star's light, distant Bethlehem visible on horizon, mystical night journey atmosphere, historically accurate Persian/Babylonian travelers, first century Middle East",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic night lighting with starlight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What did Jesus do as He grew up?",
+            "de": "Was tat Jesus, als er aufwuchs?",
+            "it": "Cosa fece Gesù mentre cresceva?"
+          },
+          "option_a": {
+            "en": "He traveled the world",
+            "de": "Er bereiste die Welt",
+            "it": "Viaggiò per il mondo"
+          },
+          "option_b": {
+            "en": "He grew in wisdom and stature",
+            "de": "Er nahm zu an Weisheit und Gestalt",
+            "it": "Crebbe in sapienza e statura"
+          },
+          "option_c": {
+            "en": "He became a soldier",
+            "de": "Er wurde Soldat",
+            "it": "Divenne soldato"
+          },
+          "option_d": {
+            "en": "He built many houses",
+            "de": "Er baute viele Häuser",
+            "it": "Costruì molte case"
+          },
+          "right_answer": {
+            "en": "He grew in wisdom and stature",
+            "de": "Er nahm zu an Weisheit und Gestalt",
+            "it": "Crebbe in sapienza e statura"
+          },
+          "verse_reference": {
+            "en": "Luke 2:52",
+            "de": "Lukas 2:52",
+            "it": "Luca 2:52"
+          },
+          "verse_content": {
+            "en": "And Jesus increased in wisdom and stature, and in favor with God and men.",
+            "de": "Und Jesus nahm zu an Weisheit, Alter und Gnade bei Gott und den Menschen.",
+            "it": "E Gesù cresceva in sapienza, in statura e in grazia davanti a Dio e agli uomini."
+          },
+          "image_prompt": "Biblical times, peaceful scene in Nazareth circa 15 AD Middle East, teenage Jesus in carpenter's workshop learning from Joseph, studying Torah scrolls, helping neighbors, playing with other children in village, progression of growth shown through multiple vignettes, warm family atmosphere, simple Galilean village life, wholesome development in wisdom and character, first century Galilee",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What meal did Jesus share with His disciples before His death?",
+            "de": "Welche Mahlzeit teilte Jesus mit seinen Jüngern vor seinem Tod?",
+            "it": "Quale pasto condivise Gesù con i suoi discepoli prima della sua morte?"
+          },
+          "option_a": {
+            "en": "Breakfast by the sea",
+            "de": "Frühstück am Meer",
+            "it": "Colazione al mare"
+          },
+          "option_b": {
+            "en": "The Last Supper",
+            "de": "Das letzte Abendmahl",
+            "it": "L'Ultima Cena"
+          },
+          "option_c": {
+            "en": "A wedding feast",
+            "de": "Ein Hochzeitsfest",
+            "it": "Un banchetto nuziale"
+          },
+          "option_d": {
+            "en": "A Sabbath meal",
+            "de": "Ein Sabbatmahl",
+            "it": "Un pasto di Sabato"
+          },
+          "right_answer": {
+            "en": "The Last Supper",
+            "de": "Das letzte Abendmahl",
+            "it": "L'Ultima Cena"
+          },
+          "verse_reference": {
+            "en": "Matthew 26:26",
+            "de": "Matthäus 26:26",
+            "it": "Matteo 26:26"
+          },
+          "verse_content": {
+            "en": "As they were eating, Jesus took bread, gave thanks for it, and broke it. He gave to the disciples, and said, 'Take, eat; this is my body.'",
+            "de": "Als sie aber aßen, nahm Jesus das Brot, dankte und brach's und gab's den Jüngern und sprach: Nehmet, esset; das ist mein Leib.",
+            "it": "Mentre mangiavano, Gesù prese del pane e, dopo aver detto la benedizione, lo ruppe e lo diede ai suoi discepoli dicendo: 'Prendete, mangiate, questo è il mio corpo.'"
+          },
+          "image_prompt": "Biblical times, upper room in Jerusalem circa 30 AD Middle East at evening, Jesus and twelve disciples reclining around low table for Passover meal, unleavened bread and wine cups on table, Jesus breaking bread with solemn expression, oil lamps casting warm golden light, intimate atmosphere of final meal together, historically accurate first-century Jewish Passover setting, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm candlelight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What humble act did Jesus perform at the Last Supper?",
+            "de": "Welche demütige Handlung vollzog Jesus beim letzten Abendmahl?",
+            "it": "Quale atto umile compì Gesù durante l'Ultima Cena?"
+          },
+          "option_a": {
+            "en": "He cooked the meal",
+            "de": "Er kochte das Essen",
+            "it": "Cucinò il pasto"
+          },
+          "option_b": {
+            "en": "He washed the disciples' feet",
+            "de": "Er wusch den Jüngern die Füße",
+            "it": "Lavò i piedi ai discepoli"
+          },
+          "option_c": {
+            "en": "He served the wine",
+            "de": "Er schenkte den Wein ein",
+            "it": "Servì il vino"
+          },
+          "option_d": {
+            "en": "He cleaned the room",
+            "de": "Er reinigte den Raum",
+            "it": "Pulì la stanza"
+          },
+          "right_answer": {
+            "en": "He washed the disciples' feet",
+            "de": "Er wusch den Jüngern die Füße",
+            "it": "Lavò i piedi ai discepoli"
+          },
+          "verse_reference": {
+            "en": "John 13:5",
+            "de": "Johannes 13:5",
+            "it": "Giovanni 13:5"
+          },
+          "verse_content": {
+            "en": "Then he poured water into the basin, and began to wash the disciples' feet, and to wipe them with the towel that was wrapped around him.",
+            "de": "Danach goss er Wasser in ein Becken, fing an, den Jüngern die Füße zu waschen, und trocknete sie mit dem Schurz, mit dem er umgürtet war.",
+            "it": "Poi mise dell'acqua in una bacinella, e cominciò a lavare i piedi ai discepoli, e ad asciugarli con l'asciugatoio del quale era cinto."
+          },
+          "image_prompt": "Biblical times, upper room in Jerusalem circa 30 AD Middle East, Jesus kneeling on floor with basin of water washing Peter's feet, other disciples seated around watching with surprised expressions, Jesus wearing towel around waist as servant, oil lamps glowing, powerful lesson in humility and service, intimate moment of teaching through action, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm lamplight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Which disciple betrayed Jesus with a kiss?",
+            "de": "Welcher Jünger verriet Jesus mit einem Kuss?",
+            "it": "Quale discepolo tradì Gesù con un bacio?"
+          },
+          "option_a": {
+            "en": "Peter",
+            "de": "Petrus",
+            "it": "Pietro"
+          },
+          "option_b": {
+            "en": "John",
+            "de": "Johannes",
+            "it": "Giovanni"
+          },
+          "option_c": {
+            "en": "Judas",
+            "de": "Judas",
+            "it": "Giuda"
+          },
+          "option_d": {
+            "en": "Thomas",
+            "de": "Thomas",
+            "it": "Tommaso"
+          },
+          "right_answer": {
+            "en": "Judas",
+            "de": "Judas",
+            "it": "Giuda"
+          },
+          "verse_reference": {
+            "en": "Matthew 26:47-48",
+            "de": "Matthäus 26:47-48",
+            "it": "Matteo 26:47-48"
+          },
+          "verse_content": {
+            "en": "While he was still speaking, behold, Judas, one of the twelve, came, and with him a great multitude with swords and clubs, from the chief priests and elders of the people. Now he who betrayed him gave them a sign, saying, 'Whoever I kiss, he is the one. Seize him.'",
+            "de": "Und als er noch redete, siehe, da kam Judas, einer der Zwölf, und mit ihm eine große Schar mit Schwertern und mit Stangen, von den Hohenpriestern und Ältesten des Volkes. Und der Verräter hatte ihnen ein Zeichen genannt und gesagt: Welchen ich küssen werde, der ist's; den ergreift.",
+            "it": "E mentre ancora parlava, ecco arrivare Giuda, uno dei dodici, e con lui una gran folla con spade e bastoni, mandati dai capi dei sacerdoti e dagli anziani del popolo. Colui che lo tradiva aveva dato loro un segnale, dicendo: 'Quello che bacerò, è lui; prendetelo.'"
+          },
+          "image_prompt": "Biblical times, Garden of Gethsemane at night circa 30 AD Middle East, Judas approaching Jesus to kiss his cheek in act of betrayal, armed temple guards with torches visible in background approaching, olive trees, Jesus with expression of sadness and knowledge, dark night atmosphere illuminated by torchlight, moment of tragic betrayal, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic torch lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Which disciple doubted Jesus' resurrection until he saw Him?",
+            "de": "Welcher Jünger zweifelte an Jesu Auferstehung, bis er ihn sah?",
+            "it": "Quale discepolo dubitò della risurrezione di Gesù finché non lo vide?"
+          },
+          "option_a": {
+            "en": "Peter",
+            "de": "Petrus",
+            "it": "Pietro"
+          },
+          "option_b": {
+            "en": "Thomas",
+            "de": "Thomas",
+            "it": "Tommaso"
+          },
+          "option_c": {
+            "en": "Matthew",
+            "de": "Matthäus",
+            "it": "Matteo"
+          },
+          "option_d": {
+            "en": "Andrew",
+            "de": "Andreas",
+            "it": "Andrea"
+          },
+          "right_answer": {
+            "en": "Thomas",
+            "de": "Thomas",
+            "it": "Tommaso"
+          },
+          "verse_reference": {
+            "en": "John 20:25",
+            "de": "Johannes 20:25",
+            "it": "Giovanni 20:25"
+          },
+          "verse_content": {
+            "en": "The other disciples therefore said to him, 'We have seen the Lord!' But he said to them, 'Unless I see in his hands the print of the nails, put my finger into the print of the nails, and put my hand into his side, I will not believe.'",
+            "de": "Da sagten die andern Jünger zu ihm: Wir haben den Herrn gesehen. Er aber sprach zu ihnen: Wenn ich nicht in seinen Händen die Nägelmale sehe und lege meinen Finger in die Nägelmale und lege meine Hand in seine Seite, kann ich's nicht glauben.",
+            "it": "Gli altri discepoli dunque gli dissero: 'Abbiamo visto il Signore!' Ma egli disse loro: 'Se non vedo nelle sue mani il segno dei chiodi, e se non metto il mio dito nel segno dei chiodi, e se non metto la mia mano nel suo costato, io non crederò.'"
+          },
+          "image_prompt": "Biblical times, upper room in Jerusalem circa 30 AD Middle East, risen Jesus standing before Thomas who reaches out to touch wounds in Jesus' hands, other disciples watching with joy, Jesus with gentle patient expression, warm lamplight, moment of doubt transformed to faith, atmosphere of grace and proof of resurrection, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        }
+      ]
+    }
+  ]
+}

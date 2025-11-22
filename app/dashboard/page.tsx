@@ -15,6 +15,9 @@ import { Plus } from "lucide-react";
 // Players don't have a dashboard in Epic 1 - they join games via /join
 // and wait on the player view (/game/[gameId]/play).
 
+// Force dynamic rendering since we need to fetch fresh game data
+export const dynamic = "force-dynamic";
+
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
@@ -94,7 +97,7 @@ export default async function DashboardPage() {
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                   <div className="flex-1">
                     <CardTitle className="text-xl">
-                      {game.question_set_title || "Untitled Game"}
+                      {game.question_set_name || "Untitled Game"}
                     </CardTitle>
                     <CardDescription className="mt-1">
                       Room Code: {game.room_code} • {game.question_count}{" "}

@@ -7,8 +7,11 @@ import { Button } from "@/components/ui/button";
 import { cancelGame } from "@/lib/actions/games";
 import { getPlayerCount, getPlayers, removePlayer, renamePlayer } from "@/lib/actions/players";
 import { PlayerList } from "@/components/game/player-list";
-import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
-import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload } from "@/lib/types/realtime";
+import { createGameChannel, subscribeToGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
+import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload, GameStartPayload } from "@/lib/types/realtime";
+import { startGame } from "@/lib/actions/games";
+import { getQuestions } from "@/lib/actions/questions";
+import { useGameStore } from "@/lib/store/game-store";
 import { toast } from "sonner";
 import { Loader2, X, MoreVertical, Trash2, Edit2 } from "lucide-react";
 
@@ -34,10 +37,13 @@ export function HostWaitingRoom({
   const [renamingPlayerId, setRenamingPlayerId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [menuPosition, setMenuPosition] = useState<{ top: number; right: number } | null>(null);
+  const [isStartingGame, setIsStartingGame] = useState(false);
+  const [isGameStarting, setIsGameStarting] = useState(false);
   const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const processedPlayerIdsRef = useRef<Set<string>>(new Set());
   const menuRef = useRef<HTMLDivElement>(null);
+  const { startGame: startGameStore, setGameStatus, addPreloadedQuestion } = useGameStore();
 
   // Fetch initial players from database
   const fetchPlayers = useCallback(async () => {
@@ -156,11 +162,29 @@ export function HostWaitingRoom({
       }
     };
 
+    // Handle game_start event
+    const handleGameStart = (payload: GameStartPayload) => {
+      setIsGameStarting(true);
+      
+      // Update Zustand store with question data
+      // totalQuestions is now included in the payload from the Server Action
+      startGameStore(payload, payload.totalQuestions);
+      setGameStatus("active");
+      
+      // Transition to question display (for now, just show a message)
+      // In Story 2.4, this will transition to actual question display
+      toast.success("Game started!");
+      
+      // TODO: Navigate to question display view (Story 2.4)
+      // For now, we'll just show a loading state
+    };
+
     // Subscribe to game channel
     const unsubscribe = subscribeToGameChannel(channel, gameId, {
       onPlayerJoined: handlePlayerJoined,
       onPlayerRemoved: handlePlayerRemoved,
       onPlayerRenamed: handlePlayerRenamed,
+      onGameStart: handleGameStart,
       onStatusChange: (status) => {
         if (status === "connected") {
           console.log("Realtime connected for game:", gameId);
@@ -275,6 +299,71 @@ export function HostWaitingRoom({
   const handleCancelRename = () => {
     setRenamingPlayerId(null);
     setRenameValue("");
+  };
+
+  const handleStartGame = async () => {
+    if (playerCount === 0) {
+      toast.error("At least 1 player must join before starting the game");
+      return;
+    }
+
+    setIsStartingGame(true);
+
+    try {
+      // Call Server Action to start game
+      const result = await startGame(gameId);
+
+      if (!result.success) {
+        toast.error(result.error || "Failed to start game. Please try again.");
+        setIsStartingGame(false);
+        return;
+      }
+
+      // Show loading state
+      setIsGameStarting(true);
+      toast.loading("Starting game...", { id: "game-start" });
+
+      // Broadcast game_start event to all subscribers
+      const channel = channelRef.current;
+      if (channel) {
+        await broadcastGameEvent(channel, "game_start", result.questionData);
+      }
+
+      // Update Zustand store
+      // totalQuestions is now included in the payload from the Server Action
+      startGameStore(result.questionData, result.questionData.totalQuestions);
+      setGameStatus("active");
+
+      // Pre-load next 3 questions in background (non-blocking)
+      if (result.questionData.questionSetId) {
+        getQuestions(result.questionData.questionSetId, 2, 3)
+          .then((preloadResult) => {
+            if (preloadResult.success && preloadResult.questions.length > 0) {
+              // Store pre-loaded questions in Zustand store
+              preloadResult.questions.forEach((q) => {
+                addPreloadedQuestion(q);
+              });
+              console.log(`Pre-loaded ${preloadResult.questions.length} questions`);
+            }
+          })
+          .catch((error) => {
+            // Non-blocking - errors are logged but don't affect game start
+            console.warn("Failed to pre-load questions:", error);
+          });
+      }
+
+      // Dismiss loading toast
+      toast.dismiss("game-start");
+      toast.success("Game started!");
+
+      // TODO: Navigate to question display view (Story 2.4)
+      // For now, we'll just show a loading state
+    } catch (error) {
+      console.error("Error starting game:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+      setIsStartingGame(false);
+      setIsGameStarting(false);
+    }
   };
 
   const handleCancelGame = async () => {
@@ -486,20 +575,44 @@ export function HostWaitingRoom({
           </div>
         </div>
 
-        {/* Start Game Button - Disabled */}
+        {/* Start Game Button */}
         <div className="mt-12">
-          <Button
-            size="lg"
-            disabled={playerCount === 0}
-            className="min-w-[300px] h-16 text-xl"
-          >
-            Start Game
-          </Button>
-          <p className="text-sm text-muted-foreground mt-2">
-            {playerCount === 0
-              ? "(Will be enabled when players join)"
-              : `Ready to start with ${playerCount} ${playerCount === 1 ? "player" : "players"}`}
-          </p>
+          {isGameStarting ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-center gap-3">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-2xl font-semibold text-foreground">
+                  Starting game...
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Loading first question...
+              </p>
+            </div>
+          ) : (
+            <>
+              <Button
+                size="lg"
+                disabled={playerCount === 0 || isStartingGame}
+                onClick={handleStartGame}
+                className="min-w-[300px] h-16 text-xl"
+              >
+                {isStartingGame ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Starting...
+                  </>
+                ) : (
+                  "Start Game"
+                )}
+              </Button>
+              <p className="text-sm text-muted-foreground mt-2">
+                {playerCount === 0
+                  ? "(Will be enabled when players join)"
+                  : `Ready to start with ${playerCount} ${playerCount === 1 ? "player" : "players"}`}
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -1,0 +1,248 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.3</storyId>
+    <title>Game Start & Question Data Loading</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-3-game-start-question-data-loading.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>host user</asA>
+    <iWant>to start the game and load the first question across all devices</iWant>
+    <soThat>gameplay begins simultaneously for everyone</soThat>
+    <tasks>
+      - Create Server Action `startGame(gameId)` in `lib/actions/games.ts`
+      - Update `games` table: set `status='active'`, `started_at=NOW()`, `current_question_index=0`
+      - Fetch first question from `questions` table (WHERE `question_set_id` matches game's `question_set_id` AND `order_index=1`)
+      - Broadcast `game_start` event via Realtime channel with question data
+      - Implement `game_start` event listener in host waiting room
+      - Implement `game_start` event listener in player waiting view
+      - Implement synchronized timer start using server timestamp
+      - Implement question pre-loading (background fetch of next 3 questions)
+      - Update Zustand game store with game state management
+      - Add loading states and error handling
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    **Given** I am on the host waiting room with at least 1 player
+    **When** I click "Start Game" button
+    **Then** a Server Action is triggered that:
+    - Updates `games` table: `status='active'`, `started_at=NOW()`, `current_question_index=0`
+    - Fetches first question from `questions` table WHERE `question_set_id` AND `order_index=1`
+    - Broadcasts `game_start` event via Realtime with first question data
+
+    **And** question data payload includes:
+    - `questionId` (UUID)
+    - `questionText` (string)
+    - `options` (array: [optionA, optionB, optionC, optionD])
+    - `questionNumber` (e.g., 1 of 15)
+    - `timerDuration` (15 seconds)
+
+    **And** host waiting room listens for `game_start` event and redirects internally to question display state
+    **And** player waiting view listens for `game_start` event and transitions to question display state
+    **And** loading state: Both views show "Starting game..." spinner during transition
+    **And** timer starts automatically when question data loads (synchronized across all devices)
+    **And** error handling: If question fetch fails, shows error toast and stays in waiting room
+    **And** question pre-loading: Fetches next 3 questions in background after game starts (Epic 4 will add images)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 2.3: Game Start & Question Data Loading">
+        Story acceptance criteria, technical notes, and prerequisites. Server Action in `lib/actions/games.ts`: `startGame(gameId)`. Use Zustand store for game state (current question, timer, player answers) per Architecture. Question pre-loading strategy matches NFR3 (image loading optimization). Synchronization: Server timestamp ensures all devices start timer at same time. Follow Architecture document "Real-Time Game State Synchronization" pattern.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Real-Time Game State Synchronization">
+        Pattern: Supabase Realtime channels (`game:${gameId}`). Events: `player_joined`, `game_start`, `question_advance`, `answer_submitted`, `game_end`. Latency Target: &lt;500ms p95. Implementation: `lib/supabase/realtime.ts`, `hooks/useRealtime.ts`. Use Supabase Realtime channel per game: `supabase.channel('game:${gameId}')`. Subscribe to PostgreSQL changes for real-time updates. Use broadcast events for custom game events.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Novel Pattern Designs - Pattern 1: Real-Time Multi-Device Game State Synchronization">
+        Data Flow: Host advances question → Server Action → Database update → Realtime broadcast `question_advance`. Implementation Guide: Use Supabase Realtime channel per game: `supabase.channel('game:${gameId}')`. Subscribe to PostgreSQL changes for real-time updates. Use broadcast events for custom game events. Implement presence tracking for connection status. Handle reconnection with exponential backoff (1s, 2s, 4s).
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Database Schema - Questions Table">
+        Questions table structure: `id UUID PK`, `question_set_id UUID FK`, `question_text TEXT`, `option_a/b/c/d TEXT`, `correct_answer CHAR(1)`, `order_index INT`, `image_url TEXT`, `scripture_reference TEXT`. Fetch first question: WHERE `question_set_id` matches game's `question_set_id` AND `order_index=1`.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Database Schema - Games Table">
+        Games table structure: `id UUID PK`, `status TEXT DEFAULT 'waiting'` ('waiting', 'active', 'completed'), `current_question_index INT DEFAULT 0`, `started_at TIMESTAMP`, `question_set_id UUID FK`, `question_count INT`. Update on game start: `status='active'`, `started_at=NOW()`, `current_question_index=0`.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="State Management">
+        Server state: Server Components + Server Actions. Client state: React Context for game state. Realtime state: Supabase Realtime subscriptions. UI state: useState for local component state. Use Zustand store for game state (current question, timer, player answers) per Architecture.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="2.1 Defining Experience">
+        Core Experience Pattern: Two-screen synchronized gameplay. Projector = Shared spectacle: Large text, dramatic visuals, leaderboard reveals, winner celebrations. Phone = Personal control center: Answer selection and confirmation, score tracking, minimal distraction. Loading states: Skeleton loaders for content, spinners for actions.
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="FR7: Question Display">
+        The system shall present multiple-choice questions with 4 answer options (A/B/C/D) simultaneously on both projector and player devices with synchronized timing. Timer starts automatically when question data loads (synchronized across all devices).
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="FR8: Countdown Timer">
+        The system shall enforce a 15-second countdown timer per question, displaying time remaining on all devices with visual countdown. Timer starts automatically when question data loads (synchronized across all devices).
+      </doc>
+    </docs>
+    <code>
+      <file path="lib/actions/games.ts" kind="server-action">
+        Contains Server Actions for game operations: `createGame`, `getGame`, `cancelGame`. Pattern to follow: "use server" directive, createClient from lib/supabase/server, error handling with success/error return types, revalidatePath for cache invalidation. Add `startGame(gameId)` function here following same pattern. Update `games` table using `.update()` with `status='active'`, `started_at=NOW()`, `current_question_index=0`. Fetch question from `questions` table using `.select()` with `.eq('question_set_id', game.question_set_id)` and `.eq('order_index', 1)`.
+      </file>
+      <file path="lib/supabase/realtime.ts" kind="utility">
+        Contains Realtime helper functions: `createGameChannel(gameId)`, `subscribeToGameChannel(channel, gameId, callbacks)`, `broadcastGameEvent(channel, event, payload)`. Already has `game_start` event listener setup in `subscribeToGameChannel` (line 62-64). Use `broadcastGameEvent` to send `game_start` event with question data payload. Channel naming: `game:${gameId}`.
+      </file>
+      <file path="lib/supabase/server.ts" kind="utility">
+        Contains `createClient()` function for server-side Supabase client. Use this in Server Action to access database for updating games table and fetching questions.
+      </file>
+      <file path="lib/types/realtime.ts" kind="type">
+        Contains TypeScript types for Realtime events. Check if `GameStartPayload` type exists, or add it with fields: `questionId`, `questionText`, `options`, `questionNumber`, `timerDuration`, `startedAt` (server timestamp for synchronization).
+      </file>
+      <file path="app/game/[gameId]/host/page.tsx" kind="page">
+        Host waiting room page. Currently shows waiting room with player list. Need to add `game_start` event listener that transitions to question display state. Use `subscribeToGameChannel` from `lib/supabase/realtime.ts`. Show "Starting game..." loading spinner when event received. Update game state (Zustand store) with question data. Transition to question display (internal route change or conditional render).
+      </file>
+      <file path="app/game/[gameId]/play/page.tsx" kind="page">
+        Player waiting view page. Currently shows player waiting dashboard. Need to add `game_start` event listener that transitions to question display state. Use `subscribeToGameChannel` from `lib/supabase/realtime.ts`. Show "Starting game..." loading spinner when event received. Update game state (Zustand store) with question data. Transition to question display state.
+      </file>
+      <file path="lib/store/" kind="directory">
+        Target directory for Zustand game store. Currently doesn't exist. Create `lib/store/game-store.ts` here with game state: `currentQuestion`, `questionNumber`, `totalQuestions`, `timerDuration`, `gameStatus` ('waiting', 'active', 'ended'). Add actions: `setCurrentQuestion()`, `startGame()`, `setGameStatus()`. Ensure store is accessible from both host and player views.
+      </file>
+      <file path="lib/actions/questions.ts" kind="server-action">
+        Target file for question-related Server Actions. Currently doesn't exist. May need to create `getQuestion(questionSetId, orderIndex)` function for fetching questions, or include in `startGame` Server Action. For pre-loading, create `getQuestions(questionSetId, startIndex, count)` function to fetch multiple questions.
+      </file>
+      <file path="components/ui/spinner.tsx" kind="component">
+        Loading spinner component. Use for "Starting game..." loading state. Check if exists from Story 1.3, or use shadcn/ui spinner/skeleton component.
+      </file>
+      <file path="components/ui/toast.tsx" kind="component">
+        shadcn/ui Toast component (via sonner). Use for error messages (question fetch fails, network errors). Already installed from Story 1.3.
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="^15.1.0">Next.js 15 App Router framework</package>
+        <package name="react" version="^19.0.0">React 19</package>
+        <package name="react-dom" version="^19.0.0">React DOM 19</package>
+        <package name="@supabase/supabase-js" version="latest">Supabase client library (already installed)</package>
+        <package name="zustand" version="latest">State management library for game state. Need to install if not already present.</package>
+        <package name="sonner" version="latest">Toast notification library (already installed from Story 1.3)</package>
+        <package name="lucide-react" version="^0.554.0">Icon library for loading spinner (already installed)</package>
+      </ecosystem>
+      <database>
+        <table name="games">
+          <column name="id" type="UUID" primaryKey="true">Game identifier</column>
+          <column name="status" type="TEXT">Game status: 'waiting', 'active', 'completed'</column>
+          <column name="current_question_index" type="INTEGER" default="0">Current question index (0-based)</column>
+          <column name="started_at" type="TIMESTAMP">When game started (NULL until game starts)</column>
+          <column name="question_set_id" type="UUID" foreignKey="question_sets.id">Reference to question set</column>
+          <column name="question_count" type="INTEGER">Number of questions in game (10, 15, or 20)</column>
+        </table>
+        <table name="questions">
+          <column name="id" type="UUID" primaryKey="true">Question identifier</column>
+          <column name="question_set_id" type="UUID" foreignKey="question_sets.id">Reference to question set</column>
+          <column name="question_text" type="TEXT">Question text (English for MVP)</column>
+          <column name="option_a" type="TEXT">Answer option A</column>
+          <column name="option_b" type="TEXT">Answer option B</column>
+          <column name="option_c" type="TEXT">Answer option C</column>
+          <column name="option_d" type="TEXT">Answer option D</column>
+          <column name="correct_answer" type="CHAR(1)">Correct answer: 'A', 'B', 'C', or 'D'</column>
+          <column name="order_index" type="INTEGER">Order within question set (1-based)</column>
+          <column name="image_url" type="TEXT">Supabase Storage URL (NULL for MVP, Epic 4 adds images)</column>
+          <column name="scripture_reference" type="TEXT">Scripture reference citation</column>
+        </table>
+      </database>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      Server Action must update `games` table atomically: `status='active'`, `started_at=NOW()`, `current_question_index=0` in single transaction.
+    </constraint>
+    <constraint>
+      Question fetch must validate question exists. If question not found (e.g., question set has no questions), return error and stay in waiting room.
+    </constraint>
+    <constraint>
+      Game start validation: Must have at least 1 player joined before allowing start. Check `game_players` table count.
+    </constraint>
+    <constraint>
+      Game start validation: Game must be in 'waiting' status. If already 'active' or 'completed', return error.
+    </constraint>
+    <constraint>
+      Timer synchronization: Extract server timestamp from `game_start` event payload. Calculate timer start time based on server timestamp to ensure all devices start at same moment (&lt;500ms latency requirement).
+    </constraint>
+    <constraint>
+      Question pre-loading: Fetch next 3 questions in background after game starts. Store in Zustand store or local state. Non-blocking - errors should not prevent game from starting.
+    </constraint>
+    <constraint>
+      Loading states: Show "Starting game..." spinner on both host and player views during transition. Disable "Start Game" button during server action execution to prevent double-clicks.
+    </constraint>
+    <constraint>
+      Error handling: If question fetch fails, show error toast "Failed to start game. Please try again." and stay in waiting room. Allow retry.
+    </constraint>
+    <constraint>
+      Error handling: If Realtime broadcast fails, fallback to PostgreSQL change tracking (already configured in Story 2.1).
+    </constraint>
+    <constraint>
+      Use Server Actions pattern from `lib/actions/games.ts`: "use server" directive, createClient, error handling with success/error return types.
+    </constraint>
+    <constraint>
+      Use Realtime pattern from `lib/supabase/realtime.ts`: `createGameChannel`, `subscribeToGameChannel`, `broadcastGameEvent`. Channel naming: `game:${gameId}`.
+    </constraint>
+    <constraint>
+      Zustand store must be accessible from both host and player views. Use singleton pattern or React Context provider.
+    </constraint>
+    <constraint>
+      Question data payload format: `{ questionId, questionText, options: [optionA, optionB, optionC, optionD], questionNumber, timerDuration, startedAt }`. Match TypeScript types in `lib/types/realtime.ts`.
+    </constraint>
+    <constraint>
+      Always use pnpm as package manager (never npm or yarn) per user rules.
+    </constraint>
+    <constraint>
+      Follow Architecture document "Real-Time Game State Synchronization" pattern for all Realtime operations.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="startGame Server Action" kind="function">
+      <signature>startGame(gameId: string): Promise&lt;{success: true, questionData: GameStartPayload} | {success: false, error: string}&gt;</signature>
+      <path>lib/actions/games.ts</path>
+      <description>Server Action to start game: Update games table, fetch first question, broadcast game_start event. Returns question data on success, error message on failure.</description>
+    </interface>
+    <interface name="GameStartPayload" kind="type">
+      <signature>type GameStartPayload = { questionId: string; questionText: string; options: string[]; questionNumber: number; timerDuration: number; startedAt: string; }</signature>
+      <path>lib/types/realtime.ts</path>
+      <description>TypeScript type for game_start event payload. Includes question data and server timestamp for synchronization.</description>
+    </interface>
+    <interface name="broadcastGameEvent" kind="function">
+      <signature>broadcastGameEvent(channel: RealtimeChannel, event: 'game_start', payload: GameStartPayload): Promise&lt;void&gt;</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Broadcast game_start event to all subscribers of game channel. Use in Server Action after updating database.</description>
+    </interface>
+    <interface name="subscribeToGameChannel onGameStart callback" kind="function">
+      <signature>onGameStart?: (payload: GameStartPayload) =&gt; void</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Callback function for game_start event. Called when game_start broadcast is received. Use in host and player waiting views to transition to question display.</description>
+    </interface>
+    <interface name="Zustand game store" kind="store">
+      <signature>useGameStore(): { currentQuestion: QuestionData | null; questionNumber: number; totalQuestions: number; timerDuration: number; gameStatus: 'waiting' | 'active' | 'ended'; setCurrentQuestion: (question: QuestionData) =&gt; void; startGame: (questionData: GameStartPayload) =&gt; void; setGameStatus: (status: 'waiting' | 'active' | 'ended') =&gt; void; }</signature>
+      <path>lib/store/game-store.ts</path>
+      <description>Zustand store for game state management. Accessible from both host and player views. Stores current question, timer, game status.</description>
+    </interface>
+    <interface name="Supabase createClient" kind="function">
+      <signature>createClient(): Promise&lt;SupabaseClient&gt;</signature>
+      <path>lib/supabase/server.ts</path>
+      <description>Server-side Supabase client for database operations. Use in Server Action to update games table and fetch questions.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing: Create game, join as player, click "Start Game" button, verify game starts, verify question loads on both host and player views, verify timer starts synchronized, verify loading states, verify error handling. Test question pre-loading: Verify next 3 questions fetched in background. Test error scenarios: Missing question, network failures, invalid game state. Test timer synchronization: Open multiple devices, verify timer starts at same moment. No automated tests required for this story.
+    </standards>
+    <locations>
+      Test Server Action: `lib/actions/games.ts` - `startGame` function
+      Test host view: `app/game/[gameId]/host/page.tsx` - game_start event listener
+      Test player view: `app/game/[gameId]/play/page.tsx` - game_start event listener
+      Test Realtime: Use browser dev tools to monitor Realtime channel broadcasts
+      Test timer sync: Open multiple browser tabs/devices, verify synchronized timer start
+    </locations>
+    <ideas>
+      Test game start flow: Create game, join as player, click "Start Game", verify database updated (status='active', started_at set, current_question_index=0), verify question fetched and displayed, verify game_start event broadcast, verify both views transition to question display. Test question fetch: Verify first question fetched correctly (order_index=1), verify question data payload includes all required fields. Test error handling: Try starting game with no questions in set (should show error), try starting game with no players (should show error), try starting game that's already active (should show error). Test loading states: Verify "Starting game..." spinner shows during transition, verify "Start Game" button disabled during execution. Test timer synchronization: Open host view and 2 player views, start game, verify all timers start at same moment (within 500ms). Test question pre-loading: After game starts, verify next 3 questions fetched in background (check network tab or Zustand store).
+    </ideas>
+  </tests>
+</story-context>
+

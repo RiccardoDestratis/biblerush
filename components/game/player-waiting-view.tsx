@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
-import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload } from "@/lib/types/realtime";
+import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload, GameStartPayload } from "@/lib/types/realtime";
+import { useGameStore } from "@/lib/store/game-store";
 import { getPlayerCount, getPlayers, removePlayer, renamePlayer } from "@/lib/actions/players";
 import { PlayerList } from "@/components/game/player-list";
 import { toast } from "sonner";
@@ -33,10 +34,12 @@ export function PlayerWaitingView({
   const [players, setPlayers] = useState<Array<{ id: string; player_name: string }>>([]);
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState("");
+  const [isGameStarting, setIsGameStarting] = useState(false);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const processedPlayerIdsRef = useRef<Set<string>>(new Set());
   const removalTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasRemovedRef = useRef(false);
+  const { startGame: startGameStore, setGameStatus } = useGameStore();
 
   // Cookie key for storing player info for restoration
   const COOKIE_KEY = useRef(`player_${gameId}`).current;
@@ -259,11 +262,28 @@ export function PlayerWaitingView({
       }
     };
 
+    // Handle game_start event
+    const handleGameStart = (payload: GameStartPayload) => {
+      setIsGameStarting(true);
+      
+      // Update Zustand store with question data
+      // totalQuestions is now included in the payload from the Server Action
+      startGameStore(payload, payload.totalQuestions);
+      setGameStatus("active");
+      
+      // Show loading state
+      toast.loading("Starting game...", { id: "game-start" });
+      
+      // TODO: Navigate to question display view (Story 2.5)
+      // For now, we'll just show a loading state
+    };
+
     // Subscribe to game channel
     const unsubscribe = subscribeToGameChannel(channel, gameId, {
       onPlayerJoined: handlePlayerJoined,
       onPlayerRemoved: handlePlayerRemoved,
       onPlayerRenamed: handlePlayerRenamed,
+      onGameStart: handleGameStart,
       onStatusChange: (status) => {
         if (status === "connected") {
           console.log("Realtime connected for player view:", gameId);
@@ -308,6 +328,24 @@ export function PlayerWaitingView({
     setIsRenaming(false);
     setRenameValue("");
   };
+
+  if (isGameStarting || gameStatus === "active") {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+        <div className="text-center space-y-6 max-w-md w-full">
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <h1 className="text-[24px] font-semibold text-foreground">
+              Starting game...
+            </h1>
+          </div>
+          <p className="text-base text-muted-foreground">
+            Loading first question...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (gameStatus === "waiting") {
     return (
@@ -405,20 +443,6 @@ export function PlayerWaitingView({
     );
   }
 
-  if (gameStatus === "active") {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
-        <div className="text-center space-y-6 max-w-md w-full">
-          <h1 className="text-[24px] font-semibold text-foreground">
-            Game starting soon...
-          </h1>
-          <p className="text-base text-muted-foreground">
-            The game is about to begin!
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">

@@ -128,14 +128,18 @@ export function subscribeToGameChannel(
         // Note: questionData would need to be fetched separately or included in the update
         // For now, we'll trigger the callback with minimal data
         if (callbacks.onQuestionAdvance) {
+          // Note: questionData will be fetched by client via Server Action
+          // This event just notifies that question index changed
           callbacks.onQuestionAdvance({
-            questionIndex: newRecord.current_question_index,
-            questionData: {
-              id: "",
-              question: "",
-              options: [],
-              correctAnswer: "",
-            },
+            questionIndex: newRecord.current_question_index || 0,
+            questionNumber: (newRecord.current_question_index || 0) + 1,
+            questionId: "",
+            questionText: "",
+            options: [],
+            correctAnswer: "",
+            timerDuration: 15,
+            startedAt: new Date().toISOString(),
+            totalQuestions: newRecord.question_count || 0,
           });
         }
       }

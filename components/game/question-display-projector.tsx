@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useGameStore } from "@/lib/store/game-store";
 import { CircularTimer } from "@/components/game/circular-timer";
-import { createGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
-import type { TimerExpiredPayload } from "@/lib/types/realtime";
+import { createGameChannel, subscribeToGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
+import type { TimerExpiredPayload, QuestionAdvancePayload, GameEndPayload } from "@/lib/types/realtime";
 import { getPlayerCount } from "@/lib/actions/players";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,8 +14,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, Pause, SkipForward } from "lucide-react";
+import { Settings, Pause, SkipForward, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { advanceQuestionAndBroadcast } from "@/lib/utils/question-advancement";
 
 interface QuestionDisplayProjectorProps {
   gameId: string;
@@ -37,10 +38,13 @@ export function QuestionDisplayProjector({
     totalQuestions,
     timerDuration,
     startedAt,
+    advanceQuestion: advanceQuestionStore,
+    setGameStatus,
   } = useGameStore();
 
   const [playerCount, setPlayerCount] = useState(initialPlayerCount);
   const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
   const hasBroadcastExpiredRef = useRef(false);
   const currentQuestionIdRef = useRef<string | null>(null);
 
@@ -78,17 +82,39 @@ export function QuestionDisplayProjector({
     }
   }, [currentQuestion]);
 
-  // Create Realtime channel for broadcasting timer_expired
+  // Create Realtime channel for broadcasting timer_expired and listening for question_advance
   useEffect(() => {
     if (!channelRef.current) {
       channelRef.current = createGameChannel(gameId);
-      // Subscribe to channel (required before broadcasting)
-      channelRef.current.subscribe();
+      
+      // Subscribe to channel with event handlers
+      unsubscribeRef.current = subscribeToGameChannel(channelRef.current, gameId, {
+        onQuestionAdvance: (payload: QuestionAdvancePayload) => {
+          // Update game store with new question data
+          advanceQuestionStore(payload);
+          toast.dismiss(); // Dismiss any previous toasts
+        },
+        onGameEnd: (payload: GameEndPayload) => {
+          // Game ended - update status
+          setGameStatus("ended");
+          toast.success("Game completed!");
+          // TODO: Navigate to results screen (Story 3.6)
+        },
+      });
     }
+    
+    // Cleanup on unmount
     return () => {
-      // Channel cleanup handled by parent component
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+      if (channelRef.current) {
+        channelRef.current.unsubscribe();
+        channelRef.current = null;
+      }
     };
-  }, [gameId]);
+  }, [gameId, advanceQuestionStore, setGameStatus]);
 
   // Handle timer expiration
   const handleTimerExpire = async () => {
@@ -175,6 +201,31 @@ export function QuestionDisplayProjector({
                 <SkipForward className="h-4 w-4 mr-2" />
                 Skip Question
               </DropdownMenuItem>
+              {/* Test button - only in development or test mode */}
+              {(process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") && (
+                <DropdownMenuItem
+                  onClick={async () => {
+                    // Test button to manually advance question
+                    toast.loading("Advancing question...", { id: "advance-question" });
+                    const result = await advanceQuestionAndBroadcast(gameId, channelRef.current || undefined);
+                    if (result.success) {
+                      toast.dismiss("advance-question");
+                      if (result.gameEnded) {
+                        toast.success("Game completed!");
+                      } else {
+                        toast.success("Question advanced!");
+                      }
+                    } else {
+                      toast.dismiss("advance-question");
+                      toast.error(result.error || "Failed to advance question");
+                    }
+                  }}
+                  className="cursor-pointer border-t border-gray-200 mt-1"
+                >
+                  <ArrowRight className="h-4 w-4 mr-2" />
+                  Test: Advance Question
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

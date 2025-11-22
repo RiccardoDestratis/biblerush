@@ -53,7 +53,9 @@ test.describe('Question Display - Projector View (Story 2.4)', () => {
     const playerContexts: Array<{ context: any; page: any; name: string }> = [];
     
     for (const playerName of playerNames) {
-      const playerContext = await browser.newContext();
+      const playerContext = await browser.newContext({
+        viewport: { width: 375, height: 667 }, // Mobile viewport
+      });
       const playerPage = await playerContext.newPage();
       
       await playerPage.goto(`${baseURL}/join`);

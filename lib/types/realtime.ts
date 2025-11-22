@@ -49,7 +49,7 @@ export interface PlayerRenamedPayload {
  */
 export interface GameStartPayload {
   questionId: string; // UUID from questions.id
-  questionText: string; // From questions.question_text
+  questionText: string; // From questions.question_en
   options: string[]; // [optionA, optionB, optionC, optionD]
   questionNumber: number; // e.g., 1 of 15
   timerDuration: number; // 15 seconds
@@ -63,14 +63,16 @@ export interface GameStartPayload {
  * Uses database types for question data
  */
 export interface QuestionAdvancePayload {
-  questionIndex: number; // From games.current_question_index
-  questionData: {
-    id: string; // From questions.id
-    question: string; // From questions.question_text
-    options: string[]; // From questions.option_a, option_b, option_c, option_d
-    correctAnswer: string; // From questions.correct_answer
-    scriptureReference?: string; // From questions.scripture_reference
-  };
+  questionIndex: number; // From games.current_question_index (0-based)
+  questionNumber: number; // Display question number (1-based, e.g., "Question 3 of 15")
+  questionId: string; // From questions.id
+  questionText: string; // From questions.question_en
+  options: string[]; // From questions.option_a_en, option_b_en, option_c_en, option_d_en
+  correctAnswer: string; // From questions.correct_answer
+  scriptureReference?: string; // From questions.verse_reference_en
+  timerDuration: number; // Timer duration in seconds (15)
+  startedAt: string; // ISO timestamp (server timestamp for synchronization)
+  totalQuestions: number; // Total questions in game (from games.question_count)
 }
 
 /**

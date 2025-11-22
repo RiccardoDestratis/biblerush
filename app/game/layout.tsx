@@ -6,3 +6,4 @@ export default function GameLayout({
   return <>{children}</>;
 }
 
+

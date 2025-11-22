@@ -46,7 +46,9 @@ test.describe('Create Game and Join Flow', () => {
     const playerPages: Array<{ page: any; name: string }> = [];
     
     for (const playerName of playerNames) {
-      const playerContext = await browser.newContext();
+      const playerContext = await browser.newContext({
+        viewport: { width: 375, height: 667 }, // Mobile viewport
+      });
       const playerPage = await playerContext.newPage();
       
       // Navigate to join page

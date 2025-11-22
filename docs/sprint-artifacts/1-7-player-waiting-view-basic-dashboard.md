@@ -103,3 +103,4 @@ So that I know my connection is working while waiting for the host to start.
 - [Source: docs/architecture.md#React-Server-Components] - Server Component patterns
 - [Source: docs/prd.md#FR6] - Functional requirement for waiting room
 
+

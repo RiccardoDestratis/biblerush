@@ -8,9 +8,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { QuestionSetCard } from "@/components/game/question-set-card";
 import { createGame } from "@/lib/actions/games";
+import { getQuestionSets } from "@/lib/actions/question-sets";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { getPlaceholderQuestionSets } from "./question-sets";
 
 interface QuestionSetDisplay {
   id: string;
@@ -29,28 +29,39 @@ export default function CreateGamePage() {
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load question sets on mount
+  // Load question sets from database
   useEffect(() => {
-    // For MVP, use placeholder question sets
-    // In production, this would fetch from the database
-    const placeholders = getPlaceholderQuestionSets();
-    const displaySets: QuestionSetDisplay[] = placeholders.map((set) => ({
-      id: set.id,
-      title: set.title,
-      description: set.description,
-      questionCount: set.question_count,
-      tier: set.tier_required,
-      isComingSoon: set.isComingSoon || !set.is_published,
-    }));
-    setQuestionSets(displaySets);
-    
-    // Auto-select the first available (non-coming-soon) set
-    const firstAvailable = displaySets.find((set) => !set.isComingSoon);
-    if (firstAvailable) {
-      setSelectedQuestionSetId(firstAvailable.id);
+    async function loadQuestionSets() {
+      const result = await getQuestionSets();
+      
+      if (!result.success) {
+        toast.error(result.error || "Failed to load question sets");
+        setIsLoading(false);
+        return;
+      }
+
+      const displaySets: QuestionSetDisplay[] = result.questionSets.map((set) => ({
+        id: set.id,
+        title: set.name,
+        description: set.description,
+        questionCount: set.questionCount,
+        tier: set.tier as "free" | "pro" | "church",
+        isComingSoon: false, // All fetched sets are published
+      }));
+      
+      setQuestionSets(displaySets);
+      
+      // Auto-select the first available set
+      if (displaySets.length > 0) {
+        setSelectedQuestionSetId(displaySets[0].id);
+      } else {
+        toast.info("No question sets available. Please import some questions first.");
+      }
+      
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
+
+    loadQuestionSets();
   }, []);
 
   const handleCreateGame = async () => {
@@ -62,8 +73,7 @@ export default function CreateGamePage() {
     setIsCreating(true);
 
     try {
-      // For MVP, we'll use the placeholder ID directly
-      // In production, this will be a real UUID from the database
+      // Use the UUID from the database
       const result = await createGame(selectedQuestionSetId, questionCount);
 
       if (!result.success) {

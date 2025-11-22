@@ -117,3 +117,4 @@ COMMENT ON TABLE games IS 'Game sessions created by hosts';
 COMMENT ON TABLE game_players IS 'Players who have joined a game';
 COMMENT ON TABLE player_answers IS 'Answers submitted by players during gameplay';
 
+

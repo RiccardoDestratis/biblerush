@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import type { QuestionAdvancePayload } from "@/lib/types/realtime";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -65,49 +66,9 @@ async function getOrCreateQuestionSet(
     return data?.id || null;
   }
 
-  // Handle placeholder IDs
-  const placeholderMap: Record<string, { title: string; description: string }> = {
-    gospels: {
-      title: "Gospels: Life of Jesus",
-      description: "Questions about the life, ministry, and teachings of Jesus Christ",
-    },
-  };
-
-  const placeholder = placeholderMap[questionSetId];
-  if (!placeholder) {
-    return null;
-  }
-
-  // Try to find existing question set by title
-  const { data: existing } = await supabase
-    .from("question_sets")
-    .select("id")
-    .eq("title", placeholder.title)
-    .single();
-
-  if (existing?.id) {
-    return existing.id;
-  }
-
-  // Create the question set if it doesn't exist
-  const { data: created, error } = await supabase
-    .from("question_sets")
-    .insert({
-      title: placeholder.title,
-      description: placeholder.description,
-      tier_required: "free",
-      is_published: true,
-      question_count: 0,
-    })
-    .select("id")
-    .single();
-
-  if (error || !created?.id) {
-    console.error("Error creating question set:", error);
-    return null;
-  }
-
-  return created.id;
+  // If it's not a UUID, it's invalid (no more placeholder support)
+  console.error("Invalid question set ID format:", questionSetId);
+  return null;
 }
 
 /**
@@ -370,7 +331,7 @@ export async function getPastGames(): Promise<
         status: string;
         question_count: number;
         created_at: string;
-        question_set_title: string | null;
+        question_set_name: string | null;
         player_count: number;
       }>;
     }
@@ -396,7 +357,7 @@ export async function getPastGames(): Promise<
         created_at,
         question_set_id,
         question_sets (
-          title
+          name_en
         )
       `
       )
@@ -429,17 +390,17 @@ export async function getPastGames(): Promise<
         const playerCount = countError ? 0 : count || 0;
 
         // Handle question_sets relation (Supabase returns as array or object)
-        let questionSetTitle: string | null = null;
+        let questionSetName: string | null = null;
         if (game.question_sets) {
           if (Array.isArray(game.question_sets)) {
-            questionSetTitle =
+            questionSetName =
               game.question_sets.length > 0 &&
               typeof game.question_sets[0] === "object" &&
-              "title" in game.question_sets[0]
-                ? (game.question_sets[0] as { title: string }).title
+              "name_en" in game.question_sets[0]
+                ? (game.question_sets[0] as { name_en: string }).name_en
                 : null;
-          } else if (typeof game.question_sets === "object" && "title" in game.question_sets) {
-            questionSetTitle = (game.question_sets as { title: string }).title;
+          } else if (typeof game.question_sets === "object" && "name_en" in game.question_sets) {
+            questionSetName = (game.question_sets as { name_en: string }).name_en;
           }
         }
 
@@ -449,7 +410,7 @@ export async function getPastGames(): Promise<
           status: game.status || "waiting",
           question_count: game.question_count,
           created_at: game.created_at || new Date().toISOString(),
-          question_set_title: questionSetTitle,
+          question_set_name: questionSetName,
           player_count: playerCount,
         };
       })
@@ -546,7 +507,7 @@ export async function startGame(
     // 3. Fetch first question (order_index = 1)
     const { data: question, error: questionError } = await supabase
       .from("questions")
-      .select("id, question_text, option_a, option_b, option_c, option_d, correct_answer, scripture_reference")
+      .select("id, question_en, option_a_en, option_b_en, option_c_en, option_d_en, correct_answer, verse_reference_en")
       .eq("question_set_id", game.question_set_id)
       .eq("order_index", 1)
       .single();
@@ -580,12 +541,12 @@ export async function startGame(
     // 5. Format question data payload
     const questionData = {
       questionId: question.id,
-      questionText: question.question_text,
+      questionText: question.question_en,
       options: [
-        question.option_a,
-        question.option_b,
-        question.option_c,
-        question.option_d,
+        question.option_a_en,
+        question.option_b_en,
+        question.option_c_en,
+        question.option_d_en,
       ],
       questionNumber: 1,
       timerDuration: 15,
@@ -610,6 +571,166 @@ export async function startGame(
     };
   } catch (error) {
     console.error("Unexpected error starting game:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
+ * Advance game to next question by incrementing current_question_index and fetching next question
+ * Called after leaderboard phase completes (Story 3.4)
+ * If all questions are complete, ends the game instead
+ * @param gameId - UUID of the game to advance
+ * @returns Question data on success, error message on failure, or game_end signal
+ */
+export async function advanceQuestion(
+  gameId: string
+): Promise<
+  | {
+      success: true;
+      questionData: QuestionAdvancePayload;
+      gameEnded: false;
+    }
+  | { success: true; gameEnded: true; completedAt: string }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // 1. Validate game exists and is in 'active' status
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id, status, question_set_id, question_count, current_question_index")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    if (game.status !== "active") {
+      return {
+        success: false,
+        error: `Game cannot be advanced. Current status: ${game.status}`,
+      };
+    }
+
+    // Validate question_set_id exists
+    if (!game.question_set_id) {
+      return {
+        success: false,
+        error: "Game does not have a question set assigned",
+      };
+    }
+
+    // 2. Check if all questions are complete
+    const currentIndex = game.current_question_index ?? 0;
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex >= game.question_count) {
+      // Game is complete - end game
+      const completedAt = new Date().toISOString();
+      const { error: updateError } = await supabase
+        .from("games")
+        .update({
+          status: "completed",
+          completed_at: completedAt,
+        })
+        .eq("id", gameId);
+
+      if (updateError) {
+        console.error("Error ending game:", updateError);
+        return {
+          success: false,
+          error: "Failed to end game. Please try again.",
+        };
+      }
+
+      // Revalidate paths
+      revalidatePath(`/game/${gameId}/host`);
+      revalidatePath(`/game/${gameId}/play`);
+
+      // Note: Client will broadcast game_end event after receiving this response
+      return {
+        success: true,
+        gameEnded: true,
+        completedAt,
+      };
+    }
+
+    // 3. Fetch next question (order_index = nextIndex + 1, since order_index is 1-based)
+    const nextQuestionOrderIndex = nextIndex + 1;
+    const { data: question, error: questionError } = await supabase
+      .from("questions")
+      .select("id, question_en, option_a_en, option_b_en, option_c_en, option_d_en, correct_answer, verse_reference_en")
+      .eq("question_set_id", game.question_set_id)
+      .eq("order_index", nextQuestionOrderIndex)
+      .single();
+
+    if (questionError || !question) {
+      return {
+        success: false,
+        error: `Failed to load question ${nextQuestionOrderIndex}. The question set may be incomplete.`,
+      };
+    }
+
+    // 4. Update games table: current_question_index = nextIndex
+    const startedAt = new Date().toISOString();
+    const { error: updateError } = await supabase
+      .from("games")
+      .update({
+        current_question_index: nextIndex,
+      })
+      .eq("id", gameId);
+
+    if (updateError) {
+      console.error("Error updating game:", updateError);
+      return {
+        success: false,
+        error: "Failed to advance question. Please try again.",
+      };
+    }
+
+    // 5. Format question data payload for broadcast
+    const questionData = {
+      questionIndex: nextIndex, // 0-based index
+      questionNumber: nextIndex + 1, // Display question number (1-based)
+      questionId: question.id,
+      questionText: question.question_en,
+      options: [
+        question.option_a_en,
+        question.option_b_en,
+        question.option_c_en,
+        question.option_d_en,
+      ],
+      correctAnswer: question.correct_answer,
+      scriptureReference: question.verse_reference_en || undefined,
+      timerDuration: 15,
+      startedAt,
+      totalQuestions: game.question_count,
+      questionSetId: game.question_set_id || "",
+    };
+
+    // 6. Note: Realtime broadcast will be done client-side after receiving this response
+    // The client (host leaderboard component) will broadcast the question_advance event to all subscribers
+    // PostgreSQL change tracking will also notify clients about the current_question_index change
+
+    // Revalidate paths
+    revalidatePath(`/game/${gameId}/host`);
+    revalidatePath(`/game/${gameId}/play`);
+
+    return {
+      success: true,
+      questionData,
+      gameEnded: false,
+    };
+  } catch (error) {
+    console.error("Unexpected error advancing question:", error);
     return {
       success: false,
       error: "An unexpected error occurred. Please try again.",

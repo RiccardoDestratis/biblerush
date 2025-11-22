@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { GameStartPayload } from "@/lib/types/realtime";
+import type { GameStartPayload, QuestionAdvancePayload } from "@/lib/types/realtime";
 
 /**
  * Question data structure
@@ -36,6 +36,7 @@ interface GameState {
   // Actions
   setCurrentQuestion: (question: QuestionData) => void;
   startGame: (questionData: GameStartPayload, totalQuestions: number) => void;
+  advanceQuestion: (questionData: QuestionAdvancePayload) => void;
   setGameStatus: (status: "waiting" | "active" | "ended") => void;
   addPreloadedQuestion: (question: QuestionData) => void;
   clearPreloadedQuestions: () => void;
@@ -87,6 +88,25 @@ export const useGameStore = create<GameState>((set) => ({
       timerDuration: questionData.timerDuration,
       startedAt: questionData.startedAt,
       gameStatus: "active",
+    }),
+
+  /**
+   * Advance to next question
+   */
+  advanceQuestion: (questionData: QuestionAdvancePayload) =>
+    set({
+      currentQuestion: {
+        id: questionData.questionId,
+        questionText: questionData.questionText,
+        options: questionData.options,
+        correctAnswer: questionData.correctAnswer,
+        scriptureReference: questionData.scriptureReference,
+      },
+      questionNumber: questionData.questionNumber,
+      totalQuestions: questionData.totalQuestions,
+      timerDuration: questionData.timerDuration,
+      startedAt: questionData.startedAt,
+      // Keep gameStatus as "active" (will change to "ended" when game ends)
     }),
 
   /**

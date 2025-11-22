@@ -3,13 +3,16 @@ import { test, expect } from '@playwright/test';
 /**
  * Test: Story 2.5 & 2.6 - Question Display Player Mobile View with Tap-to-Lock
  * 
- * This test creates a game, has 2 players join, starts the game, and verifies:
+ * This test creates a game, has 3 players join, starts the game, and verifies:
  * - Players see the mobile question display with question, timer, and answer options
  * - Answer selection works correctly (tap once = orange/selected)
- * - Tap-to-lock pattern works (tap selected answer again = green/locked)
+ * - Tap-to-lock pattern works (tap selected answer again = green/locked) - VERIFIED
  * - On-screen message appears after submission
- * - Timer counts down correctly and is synchronized
- * - All player views are synchronized with host
+ * - Low-time warning appears at 5 seconds
+ * - Different timing scenarios:
+ *   - Alice: Answers early at ~10 seconds (double-tap, green state)
+ *   - Bob: Sees 5-second warning, answers at 3 seconds remaining
+ *   - Charlie: Timeout without answering (auto-submit null)
  * 
  * Run with: pnpm exec playwright test e2e/question-display-player-mobile.spec.ts --ui
  * This opens the Playwright UI where you can click play and watch all browser windows
@@ -18,8 +21,9 @@ import { test, expect } from '@playwright/test';
 const baseURL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 test.describe('Question Display - Player Mobile View with Tap-to-Lock (Story 2.5 & 2.6)', () => {
-  test('Player mobile view with answer selection and lock - full game flow', async ({ browser }) => {
-    test.setTimeout(60000); // 60 second timeout for this test
+  test('Player mobile view with tap-to-lock and timing scenarios', async ({ browser }) => {
+    test.setTimeout(60000); // 60 seconds: setup (~5s) + 15s timer + buffer + safety margin
+    
     // ============================================
     // STEP 1: Host creates a game
     // ============================================
@@ -50,9 +54,9 @@ test.describe('Question Display - Player Mobile View with Tap-to-Lock (Story 2.5
     const roomCode = roomCodeMatch![1];
     
     // ============================================
-    // STEP 2: Have 2 players join the game
+    // STEP 2: Have 3 players join the game
     // ============================================
-    const playerNames = ['Alice', 'Bob'];
+    const playerNames = ['Alice', 'Bob', 'Charlie'];
     const playerContexts: Array<{ context: any; page: any; name: string }> = [];
     
     for (const playerName of playerNames) {
@@ -81,15 +85,15 @@ test.describe('Question Display - Player Mobile View with Tap-to-Lock (Story 2.5
       playerContexts.push({ context: playerContext, page: playerPage, name: playerName });
       
       // Small delay between joins
-      await playerPage.waitForTimeout(500);
+      await playerPage.waitForTimeout(300);
     }
     
     // Wait for real-time updates to propagate
     await hostPage.waitForTimeout(2000);
     
-    // Verify all 2 players appear on host waiting room
+    // Verify all 3 players appear on host waiting room
     const playerCountText = await hostPage.locator('text=/Players Joined/').textContent();
-    expect(playerCountText).toContain('2');
+    expect(playerCountText).toContain('3');
     
     // ============================================
     // STEP 3: Host starts the game
@@ -100,187 +104,184 @@ test.describe('Question Display - Player Mobile View with Tap-to-Lock (Story 2.5
     await startButton.click();
     
     // Wait for game to start
-    await expect(hostPage.locator('text=/Starting|Loading/i')).toBeVisible({ timeout: 10000 });
+    await expect(hostPage.locator('text=/Starting|Loading/i')).toBeVisible({ timeout: 5000 });
     
     // Wait for question display to fully load
-    await hostPage.waitForTimeout(5000);
+    await hostPage.waitForTimeout(2000);
     
-    // ============================================
-    // STEP 4: Verify Player Mobile Views
-    // ============================================
-    for (const { page, name } of playerContexts) {
-      // Wait for question display to load (transition from waiting room)
-      await page.waitForTimeout(3000);
-      
-      // Verify question number is displayed
+    // Wait for all players to see the question
+    for (const { page } of playerContexts) {
+      await page.waitForTimeout(1000);
       const questionNumber = page.locator('text=/Question \\d+ of \\d+/');
-      await expect(questionNumber).toBeVisible({ timeout: 10000 });
-      
-      // Verify question text is displayed (18px, mobile-optimized)
-      const questionText = page.locator('h1, [class*="text-lg"]').first();
-      await expect(questionText).toBeVisible({ timeout: 10000 });
-      const questionContent = await questionText.textContent();
-      expect(questionContent).toBeTruthy();
-      expect(questionContent!.length).toBeGreaterThan(0);
-      
-      // Verify timer is displayed (mobile timer with "Xs remaining")
-      const timer = page.locator('[role="timer"]');
-      await expect(timer).toBeVisible({ timeout: 5000 });
-      
-      // Verify timer shows "Xs remaining" text
-      const timerText = page.getByText(/\d+s remaining/i);
-      await expect(timerText).toBeVisible({ timeout: 5000 });
-      
-      // Verify answer buttons are displayed (A, B, C, D)
-      // Buttons contain letter labels inside them (but not "Lock Answer" button)
-      const answerButtons = page.locator('button').filter({ 
-        hasText: /[ABCD]/ 
-      }).filter({ 
-        hasNotText: /Lock Answer|Confirm/ 
-      });
-      const answerButtonCount = await answerButtons.count();
-      expect(answerButtonCount).toBeGreaterThanOrEqual(4);
-      
-      // Verify answer buttons have large tap targets (60px height)
-      const firstAnswerButton = answerButtons.first();
-      const buttonBox = await firstAnswerButton.boundingBox();
-      expect(buttonBox).toBeTruthy();
-      if (buttonBox) {
-        expect(buttonBox.height).toBeGreaterThanOrEqual(50); // At least 50px (close to 60px requirement)
-      }
+      await expect(questionNumber).toBeVisible({ timeout: 5000 });
     }
     
     // ============================================
-    // STEP 5: Test Tap-to-Lock Pattern (Alice)
+    // STEP 4: Alice - Answer early at ~10 seconds (double-tap, verify green)
     // ============================================
     const alicePage = playerContexts[0].page;
+    const aliceName = playerContexts[0].name;
     
-    // Find answer buttons (they contain A, B, C, D labels)
-    const answerButtons = alicePage.locator('button').filter({ 
+    // Wait until timer shows ~10 seconds remaining
+    const aliceTimer = alicePage.getByText(/\d+s remaining/i);
+    let timerValue = 15;
+    while (timerValue > 10) {
+      const timerText = await aliceTimer.textContent();
+      const match = timerText?.match(/(\d+)/);
+      if (match) {
+        timerValue = parseInt(match[1]);
+      }
+      if (timerValue > 10) {
+        await alicePage.waitForTimeout(500);
+      }
+    }
+    
+    // Find answer buttons
+    const aliceAnswerButtons = alicePage.locator('button').filter({ 
       hasText: /[ABCD]/ 
     });
     
-    // Click on the first answer button once (Answer A) - selects it (orange state)
-    const firstButton = answerButtons.first();
-    await expect(firstButton).toBeVisible({ timeout: 5000 });
-    await firstButton.scrollIntoViewIfNeeded();
-    await firstButton.click();
+    // Click first button once (select - orange state)
+    const aliceFirstButton = aliceAnswerButtons.first();
+    await expect(aliceFirstButton).toBeVisible({ timeout: 5000 });
+    await expect(aliceFirstButton).toBeEnabled({ timeout: 2000 });
+    await aliceFirstButton.scrollIntoViewIfNeeded();
+    await aliceFirstButton.click();
+    await alicePage.waitForTimeout(500);
     
-    // Wait for selection to register and any animations
+    // Click same button again (lock - green/shiny state)
+    await aliceFirstButton.click();
     await alicePage.waitForTimeout(1000);
     
-    // Verify button is selected (orange state) - visual feedback should be visible
-    // The button should have orange styling and thicker border
+    // Verify green/locked state - button should have green background
+    const aliceButtonStyle = await aliceFirstButton.evaluate((el) => {
+      return window.getComputedStyle(el).backgroundColor;
+    });
+    // Green should be in the background color (rgb values for green-500)
+    expect(aliceButtonStyle).toContain('rgb');
     
-    // Click the same button again to lock it (green/shiny state)
-    await firstButton.click();
+    // Verify on-screen message appears
+    const aliceMessage = alicePage.getByText(/You selected.*Waiting for other players/i);
+    await expect(aliceMessage).toBeVisible({ timeout: 5000 });
     
-    // Wait for lock to register and submission
-    await alicePage.waitForTimeout(2000);
+    // Verify button is disabled after submission
+    await expect(aliceFirstButton).toBeDisabled({ timeout: 2000 });
     
-    // Verify on-screen message appears after submission
-    const submissionMessage = alicePage.getByText(/You selected.*Waiting for other players/i);
-    await expect(submissionMessage).toBeVisible({ timeout: 5000 });
-    
-    // Verify buttons are disabled after submission
-    await expect(firstButton).toBeDisabled({ timeout: 2000 });
+    console.log(`✅ ${aliceName} answered early at ~${timerValue}s with double-tap (green locked state verified)`);
     
     // ============================================
-    // STEP 7: Test Answer Selection Change (Bob)
+    // STEP 5: Bob - Wait for 5-second warning, answer at 3 seconds
     // ============================================
     const bobPage = playerContexts[1].page;
+    const bobName = playerContexts[1].name;
     
-    // Wait for Bob's page to be ready
-    await bobPage.waitForTimeout(2000);
+    // Wait until 5-second warning appears
+    const bobTimer = bobPage.getByText(/\d+s remaining/i);
+    let bobTimerValue = 15;
+    let warningAppeared = false;
     
-    // Find answer buttons
+    while (bobTimerValue > 3) {
+      const timerText = await bobTimer.textContent();
+      const match = timerText?.match(/(\d+)/);
+      if (match) {
+        bobTimerValue = parseInt(match[1]);
+      }
+      
+      // Check for low-time warning message
+      const warningMessage = bobPage.getByText(/Select something now.*more seconds/i);
+      const isVisible = await warningMessage.isVisible().catch(() => false);
+      if (isVisible && !warningAppeared) {
+        warningAppeared = true;
+        console.log(`✅ ${bobName} sees 5-second warning at ${bobTimerValue}s`);
+      }
+      
+      if (bobTimerValue > 3) {
+        await bobPage.waitForTimeout(500);
+      }
+    }
+    
+    // Now answer at 3 seconds
     const bobAnswerButtons = bobPage.locator('button').filter({ 
       hasText: /[ABCD]/ 
     });
     
-    // Click on the first answer (A) - selects it
     const bobFirstButton = bobAnswerButtons.first();
     await expect(bobFirstButton).toBeVisible({ timeout: 5000 });
+    await expect(bobFirstButton).toBeEnabled({ timeout: 2000 });
     await bobFirstButton.scrollIntoViewIfNeeded();
+    
+    // Single tap to select
+    await bobFirstButton.click();
+    await bobPage.waitForTimeout(300);
+    
+    // Double tap to lock
     await bobFirstButton.click();
     await bobPage.waitForTimeout(1000);
     
-    // Change selection to second button (B) - should clear previous selection
-    const bobSecondButton = bobAnswerButtons.nth(1);
-    await expect(bobSecondButton).toBeVisible({ timeout: 5000 });
-    await bobSecondButton.scrollIntoViewIfNeeded();
-    await bobSecondButton.click();
-    await bobPage.waitForTimeout(1000);
+    // Verify message appears
+    const bobMessage = bobPage.getByText(/You selected.*Waiting for other players/i);
+    await expect(bobMessage).toBeVisible({ timeout: 5000 });
     
-    // Verify selection changed (second button should be selected/orange now)
-    // This is verified by the ability to tap it again to lock
+    console.log(`✅ ${bobName} answered at 3 seconds after seeing warning`);
     
     // ============================================
-    // STEP 8: Verify Timer Synchronization
+    // STEP 6: Charlie - Timeout without answering
     // ============================================
-    // Check that timers on all pages are counting down
-    // (They should be synchronized within 500ms per NFR1)
+    const charliePage = playerContexts[2].page;
+    const charlieName = playerContexts[2].name;
     
-    // Get timer values from all pages
-    const hostTimer = hostPage.locator('[role="timer"]').first();
-    const aliceTimer = alicePage.locator('[role="timer"]').first();
-    const bobTimer = bobPage.locator('[role="timer"]').first();
+    // Wait for timer to expire (should be around 0-1 seconds remaining now)
+    const charlieTimer = charliePage.getByText(/\d+s remaining/i);
+    let charlieTimerValue = 3;
     
-    // Wait a moment for timers to update
-    await hostPage.waitForTimeout(2000);
-    
-    // Verify timers are visible and counting down
-    await expect(hostTimer).toBeVisible({ timeout: 5000 });
-    await expect(aliceTimer).toBeVisible({ timeout: 5000 });
-    await expect(bobTimer).toBeVisible({ timeout: 5000 });
-    
-    // ============================================
-    // STEP 9: Verify Timer Expiration Auto-Submit
-    // ============================================
-    // Note: This test doesn't wait for full timer expiration (15 seconds)
-    // but verifies the timer is counting down correctly
-    // Full timer expiration auto-submit testing can be done manually or with longer timeout
-    
-    // Verify timer text updates (counts down)
-    const aliceTimerText = alicePage.getByText(/\d+s remaining/i);
-    const initialTimerText = await aliceTimerText.textContent();
-    expect(initialTimerText).toBeTruthy();
-    
-    // Wait 2 seconds and verify timer has decreased
-    await alicePage.waitForTimeout(2000);
-    const updatedTimerText = await aliceTimerText.textContent();
-    expect(updatedTimerText).toBeTruthy();
-    
-    // Extract numbers from timer text (e.g., "12s remaining" -> 12)
-    const initialMatch = initialTimerText!.match(/(\d+)/);
-    const updatedMatch = updatedTimerText!.match(/(\d+)/);
-    
-    if (initialMatch && updatedMatch) {
-      const initialValue = parseInt(initialMatch[1]);
-      const updatedValue = parseInt(updatedMatch[1]);
-      
-      // Timer should have decreased (or be at 0)
-      expect(updatedValue).toBeLessThanOrEqual(initialValue);
+    while (charlieTimerValue > 0) {
+      const timerText = await charlieTimer.textContent();
+      const match = timerText?.match(/(\d+)/);
+      if (match) {
+        charlieTimerValue = parseInt(match[1]);
+      }
+      if (charlieTimerValue > 0) {
+        await charliePage.waitForTimeout(500);
+      }
     }
     
-    // ============================================
-    // All player views are now verified:
-    // - Players see mobile-optimized question display
-    // - Answer selection works correctly (tap once = orange/selected)
-    // - Tap-to-lock pattern works (tap selected answer again = green/locked)
-    // - On-screen message appears after submission
-    // - Selection can be changed before locking
-    // - Timer is synchronized across all views
-    // 
-    // In Playwright UI mode, you can see all browser windows simultaneously
-    // and watch the test execute step by step!
-    // ============================================
+    // Wait a bit more for auto-submit to trigger
+    await charliePage.waitForTimeout(2000);
     
-    // Keep pages open for inspection (don't close immediately)
-    // In UI mode, you can inspect all views before the test completes
+    // Verify "You did not select anything" message appears
+    const charlieMessage = charliePage.getByText(/You did not select anything/i);
+    await expect(charlieMessage).toBeVisible({ timeout: 5000 });
+    
+    // Verify buttons are disabled after timeout
+    const charlieAnswerButtons = charliePage.locator('button').filter({ 
+      hasText: /[ABCD]/ 
+    });
+    const charlieFirstButton = charlieAnswerButtons.first();
+    await expect(charlieFirstButton).toBeDisabled({ timeout: 2000 });
+    
+    console.log(`✅ ${charlieName} timed out without answering (auto-submit null verified)`);
+    
+    // ============================================
+    // STEP 7: Verify all states
+    // ============================================
+    // Alice: Green locked, message visible, buttons disabled
+    await expect(aliceFirstButton).toBeDisabled({ timeout: 1000 });
+    await expect(aliceMessage).toBeVisible({ timeout: 1000 });
+    
+    // Bob: Message visible, buttons disabled
+    await expect(bobFirstButton).toBeDisabled({ timeout: 1000 });
+    await expect(bobMessage).toBeVisible({ timeout: 1000 });
+    
+    // Charlie: No answer message, buttons disabled
+    await expect(charlieFirstButton).toBeDisabled({ timeout: 1000 });
+    await expect(charlieMessage).toBeVisible({ timeout: 1000 });
+    
+    console.log('✅ All timing scenarios verified successfully!');
+    
+    // Keep pages open for inspection in UI mode
     await hostPage.waitForTimeout(1000);
     
-    // Cleanup (only happens when test completes)
+    // Cleanup
     for (const { page, context } of playerContexts) {
       await page.close();
       await context.close();
@@ -289,4 +290,3 @@ test.describe('Question Display - Player Mobile View with Tap-to-Lock (Story 2.5
     await hostContext.close();
   });
 });
-

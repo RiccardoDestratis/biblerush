@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/lib/store/game-store";
 import { MobileTimer } from "@/components/game/mobile-timer";
 import { submitAnswer } from "@/lib/actions/answers";
+import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
+import type { QuestionAdvancePayload, GameEndPayload } from "@/lib/types/realtime";
 import { toast } from "sonner";
 
 interface QuestionDisplayPlayerProps {
@@ -29,7 +31,12 @@ export function QuestionDisplayPlayer({
     totalQuestions,
     timerDuration,
     startedAt,
+    advanceQuestion: advanceQuestionStore,
+    setGameStatus,
   } = useGameStore();
+  
+  const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   // State for answer selection (string format: 'A', 'B', 'C', 'D')
   const [selectedAnswer, setSelectedAnswer] = useState<"A" | "B" | "C" | "D" | null>(null);
@@ -202,6 +209,50 @@ export function QuestionDisplayPlayer({
       toast.dismiss("game-start");
     }
   }, [currentQuestion, startedAt]);
+
+  // Create Realtime channel for listening to question_advance
+  useEffect(() => {
+    if (!channelRef.current) {
+      channelRef.current = createGameChannel(gameId);
+      
+      // Subscribe to channel with event handlers
+      unsubscribeRef.current = subscribeToGameChannel(channelRef.current, gameId, {
+        onQuestionAdvance: (payload: QuestionAdvancePayload) => {
+          // Update game store with new question data
+          advanceQuestionStore(payload);
+          // Reset answer selection state when question advances
+          setSelectedAnswer(null);
+          setLockedAnswer(null);
+          setSubmissionStatus("idle");
+          setShowLowTimeWarning(false);
+          setLowTimeRemaining(null);
+          setShowTimerEnlargement(false);
+          setShowMessage(false);
+          setMessageText("");
+          setHasAutoSubmitted(false);
+          toast.dismiss(); // Dismiss any previous toasts
+        },
+        onGameEnd: (payload: GameEndPayload) => {
+          // Game ended - update status
+          setGameStatus("ended");
+          toast.success("Game completed!");
+          // TODO: Navigate to results screen (Story 3.7)
+        },
+      });
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+      if (channelRef.current) {
+        channelRef.current.unsubscribe();
+        channelRef.current = null;
+      }
+    };
+  }, [gameId, advanceQuestionStore, setGameStatus]);
 
   // Reset state when question changes
   useEffect(() => {

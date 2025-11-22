@@ -162,32 +162,47 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          description_de: string | null
+          description_en: string | null
+          description_it: string | null
           difficulty: string | null
           id: string
           is_published: boolean | null
+          name_de: string | null
+          name_en: string
+          name_it: string | null
           question_count: number | null
           tier_required: string | null
-          title: string
         }
         Insert: {
           created_at?: string | null
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
+          description_it?: string | null
           difficulty?: string | null
           id?: string
           is_published?: boolean | null
+          name_de?: string | null
+          name_en: string
+          name_it?: string | null
           question_count?: number | null
           tier_required?: string | null
-          title: string
         }
         Update: {
           created_at?: string | null
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
+          description_it?: string | null
           difficulty?: string | null
           id?: string
           is_published?: boolean | null
+          name_de?: string | null
+          name_en?: string
+          name_it?: string | null
           question_count?: number | null
           tier_required?: string | null
-          title?: string
         }
         Relationships: []
       }
@@ -196,55 +211,109 @@ export type Database = {
           correct_answer: string
           created_at: string | null
           id: string
-          image_content_prompt: string | null
+          image_location: string | null
+          image_prompt: string | null
           image_style: string | null
-          image_url: string | null
           is_custom_image: boolean | null
-          option_a: string
-          option_b: string
-          option_c: string
-          option_d: string
+          option_a_de: string | null
+          option_a_en: string
+          option_a_it: string | null
+          option_b_de: string | null
+          option_b_en: string
+          option_b_it: string | null
+          option_c_de: string | null
+          option_c_en: string
+          option_c_it: string | null
+          option_d_de: string | null
+          option_d_en: string
+          option_d_it: string | null
           order_index: number | null
+          question_de: string | null
+          question_en: string
+          question_it: string | null
           question_set_id: string | null
-          question_text: string
-          scripture_reference: string | null
-          verse_content: string | null
+          right_answer_de: string | null
+          right_answer_en: string
+          right_answer_it: string | null
+          verse_content_de: string | null
+          verse_content_en: string | null
+          verse_content_it: string | null
+          verse_reference_de: string | null
+          verse_reference_en: string | null
+          verse_reference_it: string | null
+          video_location: string | null
         }
         Insert: {
           correct_answer: string
           created_at?: string | null
           id?: string
-          image_content_prompt?: string | null
+          image_location?: string | null
+          image_prompt?: string | null
           image_style?: string | null
-          image_url?: string | null
           is_custom_image?: boolean | null
-          option_a: string
-          option_b: string
-          option_c: string
-          option_d: string
+          option_a_de?: string | null
+          option_a_en: string
+          option_a_it?: string | null
+          option_b_de?: string | null
+          option_b_en: string
+          option_b_it?: string | null
+          option_c_de?: string | null
+          option_c_en: string
+          option_c_it?: string | null
+          option_d_de?: string | null
+          option_d_en: string
+          option_d_it?: string | null
           order_index?: number | null
+          question_de?: string | null
+          question_en: string
+          question_it?: string | null
           question_set_id?: string | null
-          question_text: string
-          scripture_reference?: string | null
-          verse_content?: string | null
+          right_answer_de?: string | null
+          right_answer_en: string
+          right_answer_it?: string | null
+          verse_content_de?: string | null
+          verse_content_en?: string | null
+          verse_content_it?: string | null
+          verse_reference_de?: string | null
+          verse_reference_en?: string | null
+          verse_reference_it?: string | null
+          video_location?: string | null
         }
         Update: {
           correct_answer?: string
           created_at?: string | null
           id?: string
-          image_content_prompt?: string | null
+          image_location?: string | null
+          image_prompt?: string | null
           image_style?: string | null
-          image_url?: string | null
           is_custom_image?: boolean | null
-          option_a?: string
-          option_b?: string
-          option_c?: string
-          option_d?: string
+          option_a_de?: string | null
+          option_a_en?: string
+          option_a_it?: string | null
+          option_b_de?: string | null
+          option_b_en?: string
+          option_b_it?: string | null
+          option_c_de?: string | null
+          option_c_en?: string
+          option_c_it?: string | null
+          option_d_de?: string | null
+          option_d_en?: string
+          option_d_it?: string | null
           order_index?: number | null
+          question_de?: string | null
+          question_en?: string
+          question_it?: string | null
           question_set_id?: string | null
-          question_text?: string
-          scripture_reference?: string | null
-          verse_content?: string | null
+          right_answer_de?: string | null
+          right_answer_en?: string
+          right_answer_it?: string | null
+          verse_content_de?: string | null
+          verse_content_en?: string | null
+          verse_content_it?: string | null
+          verse_reference_de?: string | null
+          verse_reference_en?: string | null
+          verse_reference_it?: string | null
+          video_location?: string | null
         }
         Relationships: [
           {
@@ -316,8 +385,8 @@ export type Tables<
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
@@ -427,4 +496,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-

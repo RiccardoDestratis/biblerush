@@ -468,4 +468,152 @@ export async function getPastGames(): Promise<
   }
 }
 
+/**
+ * Start a game by updating status, fetching first question, and broadcasting game_start event
+ * @param gameId - UUID of the game to start
+ * @returns Question data on success, error message on failure
+ */
+export async function startGame(
+  gameId: string
+): Promise<
+  | {
+      success: true;
+      questionData: {
+        questionId: string;
+        questionText: string;
+        options: string[];
+        questionNumber: number;
+        timerDuration: number;
+        startedAt: string;
+        questionSetId: string;
+        totalQuestions: number;
+      };
+    }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // 1. Validate game exists and is in 'waiting' status
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id, status, question_set_id, question_count")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    if (game.status !== "waiting") {
+      return {
+        success: false,
+        error: `Game cannot be started. Current status: ${game.status}`,
+      };
+    }
+
+    // Validate question_set_id exists
+    if (!game.question_set_id) {
+      return {
+        success: false,
+        error: "Game does not have a question set assigned",
+      };
+    }
+
+    // 2. Validate at least 1 player has joined
+    const { count, error: countError } = await supabase
+      .from("game_players")
+      .select("*", { count: "exact", head: true })
+      .eq("game_id", gameId);
+
+    if (countError) {
+      return {
+        success: false,
+        error: "Failed to check player count",
+      };
+    }
+
+    if (!count || count === 0) {
+      return {
+        success: false,
+        error: "At least 1 player must join before starting the game",
+      };
+    }
+
+    // 3. Fetch first question (order_index = 1)
+    const { data: question, error: questionError } = await supabase
+      .from("questions")
+      .select("id, question_text, option_a, option_b, option_c, option_d, correct_answer, scripture_reference")
+      .eq("question_set_id", game.question_set_id)
+      .eq("order_index", 1)
+      .single();
+
+    if (questionError || !question) {
+      return {
+        success: false,
+        error: "Failed to load first question. Please ensure the question set has questions.",
+      };
+    }
+
+    // 4. Update games table: status='active', started_at=NOW(), current_question_index=0
+    const startedAt = new Date().toISOString();
+    const { error: updateError } = await supabase
+      .from("games")
+      .update({
+        status: "active",
+        started_at: startedAt,
+        current_question_index: 0,
+      })
+      .eq("id", gameId);
+
+    if (updateError) {
+      console.error("Error updating game:", updateError);
+      return {
+        success: false,
+        error: "Failed to start game. Please try again.",
+      };
+    }
+
+    // 5. Format question data payload
+    const questionData = {
+      questionId: question.id,
+      questionText: question.question_text,
+      options: [
+        question.option_a,
+        question.option_b,
+        question.option_c,
+        question.option_d,
+      ],
+      questionNumber: 1,
+      timerDuration: 15,
+      startedAt,
+      totalQuestions: game.question_count, // Include total questions from game data
+    };
+
+    // 6. Note: Realtime broadcast will be done client-side after receiving this response
+    // The client (host waiting room) will broadcast the game_start event to all subscribers
+    // PostgreSQL change tracking will also notify clients about the status change
+
+    // Revalidate paths
+    revalidatePath(`/game/${gameId}/host`);
+    revalidatePath(`/game/${gameId}/play`);
+
+    return {
+      success: true,
+      questionData: {
+        ...questionData,
+        questionSetId: game.question_set_id!, // Include for pre-loading (validated above)
+      },
+    };
+  } catch (error) {
+    console.error("Unexpected error starting game:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
 

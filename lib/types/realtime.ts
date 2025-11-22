@@ -17,7 +17,8 @@ export type RealtimeEvent =
   | "player_renamed"
   | "game_start"
   | "question_advance"
-  | "game_end";
+  | "game_end"
+  | "timer_expired";
 
 /**
  * Payload for player_joined event
@@ -47,7 +48,14 @@ export interface PlayerRenamedPayload {
  * Payload for game_start event
  */
 export interface GameStartPayload {
-  startedAt: string; // ISO timestamp
+  questionId: string; // UUID from questions.id
+  questionText: string; // From questions.question_text
+  options: string[]; // [optionA, optionB, optionC, optionD]
+  questionNumber: number; // e.g., 1 of 15
+  timerDuration: number; // 15 seconds
+  startedAt: string; // ISO timestamp (server timestamp for synchronization)
+  questionSetId?: string; // UUID of question set (for pre-loading)
+  totalQuestions: number; // Total number of questions in the game (from games.question_count)
 }
 
 /**
@@ -73,6 +81,15 @@ export interface GameEndPayload {
 }
 
 /**
+ * Payload for timer_expired event
+ */
+export interface TimerExpiredPayload {
+  questionId: string; // UUID from questions.id
+  questionNumber: number; // Current question number
+  timestamp: string; // ISO timestamp when timer expired
+}
+
+/**
  * Union type for all event payloads
  */
 export type RealtimeEventPayload =
@@ -81,7 +98,8 @@ export type RealtimeEventPayload =
   | PlayerRenamedPayload
   | GameStartPayload
   | QuestionAdvancePayload
-  | GameEndPayload;
+  | GameEndPayload
+  | TimerExpiredPayload;
 
 /**
  * Callback function type for realtime event handlers
@@ -100,6 +118,7 @@ export interface GameChannelCallbacks {
   onGameStart?: RealtimeEventHandler<GameStartPayload>;
   onQuestionAdvance?: RealtimeEventHandler<QuestionAdvancePayload>;
   onGameEnd?: RealtimeEventHandler<GameEndPayload>;
+  onTimerExpired?: RealtimeEventHandler<TimerExpiredPayload>;
   onError?: (error: Error) => void;
   onStatusChange?: (status: ConnectionStatus) => void;
 }

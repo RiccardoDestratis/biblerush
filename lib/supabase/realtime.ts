@@ -71,6 +71,10 @@ export function subscribeToGameChannel(
     callbacks.onGameEnd?.(payload.payload as any);
   });
 
+  channel.on("broadcast", { event: "timer_expired" }, (payload) => {
+    callbacks.onTimerExpired?.(payload.payload as any);
+  });
+
   // Subscribe to PostgreSQL changes - MUST be before subscribe()
   // Listen to INSERT on game_players table
   channel.on(
@@ -108,9 +112,10 @@ export function subscribeToGameChannel(
       // Track status changes
       if (oldRecord?.status !== newRecord?.status) {
         if (newRecord.status === "active" && callbacks.onGameStart) {
-          callbacks.onGameStart({
-            startedAt: new Date().toISOString(),
-          });
+          // Note: This is a fallback for PostgreSQL change tracking
+          // The actual game_start event with full payload is broadcast client-side
+          // This callback should not be used for game start - it's just for status tracking
+          // The proper game_start event comes from the broadcast event handler above
         } else if (newRecord.status === "completed" && callbacks.onGameEnd) {
           callbacks.onGameEnd({
             completedAt: new Date().toISOString(),

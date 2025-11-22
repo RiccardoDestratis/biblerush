@@ -7,6 +7,15 @@ import { CircularTimer } from "@/components/game/circular-timer";
 import { createGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
 import type { TimerExpiredPayload } from "@/lib/types/realtime";
 import { getPlayerCount } from "@/lib/actions/players";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Settings, Pause, SkipForward } from "lucide-react";
+import { toast } from "sonner";
 
 interface QuestionDisplayProjectorProps {
   gameId: string;
@@ -120,9 +129,46 @@ export function QuestionDisplayProjector({
           {playerCount} {playerCount === 1 ? "player" : "players"}
         </div>
 
-        {/* Question number */}
-        <div className="text-2xl font-semibold text-gray-700">
-          Question {questionNumber} of {totalQuestions}
+        {/* Question number and Controls */}
+        <div className="flex items-center gap-4">
+          <div className="text-2xl font-semibold text-gray-700">
+            Question {questionNumber} of {totalQuestions}
+          </div>
+          
+          {/* Host Controls - Small icon next to question number */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg"
+              >
+                <Settings className="h-5 w-5 text-gray-700" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                onClick={() => {
+                  // TODO: Implement pause game (Story 2.7 or later)
+                  toast.info("Pause game - Coming soon");
+                }}
+                className="cursor-pointer"
+              >
+                <Pause className="h-4 w-4 mr-2" />
+                Pause Game
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  // TODO: Implement skip question (Story 2.7 or later)
+                  toast.info("Skip question - Coming soon");
+                }}
+                className="cursor-pointer"
+              >
+                <SkipForward className="h-4 w-4 mr-2" />
+                Skip Question
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

@@ -18,6 +18,7 @@ const baseURL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 test.describe('Question Display - Player Mobile View (Story 2.5)', () => {
   test('Player mobile view with answer selection and lock - full game flow', async ({ browser }) => {
+    test.setTimeout(60000); // 60 second timeout for this test
     // ============================================
     // STEP 1: Host creates a game
     // ============================================

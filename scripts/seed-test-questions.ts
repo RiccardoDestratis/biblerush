@@ -50,15 +50,19 @@ async function seedTestQuestions() {
         .select()
         .single();
 
-      if (createError) {
+      if (createError || !created) {
         console.error("❌ Error creating Gospels question set:", createError);
         return;
       }
       gospelsSet = created;
-      console.log("✅ Created Gospels question set:", gospelsSet.id);
-    } else {
-      console.log("✅ Found existing Gospels question set:", gospelsSet.id);
     }
+
+    if (!gospelsSet?.id) {
+      console.error("❌ Failed to get or create Gospels question set");
+      return;
+    }
+
+    console.log("✅ Using Gospels question set:", gospelsSet.id);
 
     // Create a test question set
     const { data: questionSet, error: setError } = await supabase
@@ -82,7 +86,7 @@ async function seedTestQuestions() {
     // Sample test questions for both question sets
     const gospelsQuestions = [
       {
-        question_set_id: gospelsSet.id,
+        question_set_id: gospelsSet!.id,
         question_text: "Where was Jesus born?",
         option_a: "Nazareth",
         option_b: "Bethlehem",

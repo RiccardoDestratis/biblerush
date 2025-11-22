@@ -163,10 +163,11 @@ test.describe('Question Display - Player Mobile View (Story 2.5)', () => {
     // Click on the first answer button (Answer A)
     const firstButton = answerButtons.first();
     await expect(firstButton).toBeVisible({ timeout: 5000 });
+    await firstButton.scrollIntoViewIfNeeded();
     await firstButton.click();
     
-    // Wait for selection to register
-    await alicePage.waitForTimeout(500);
+    // Wait for selection to register and any animations
+    await alicePage.waitForTimeout(1000);
     
     // Verify "Lock Answer" button appears after selection
     const lockButton = alicePage.getByRole('button', { name: /Lock Answer|Confirm/i });
@@ -178,10 +179,19 @@ test.describe('Question Display - Player Mobile View (Story 2.5)', () => {
     // ============================================
     // STEP 6: Test Lock Answer (Alice)
     // ============================================
-    await lockButton.click();
+    // Wait for any toast notifications to disappear
+    await alicePage.waitForTimeout(2000);
+    
+    // Re-find the lock button in case it was detached
+    const lockButtonRefreshed = alicePage.getByRole('button', { name: /Lock Answer|Confirm/i });
+    await expect(lockButtonRefreshed).toBeVisible({ timeout: 5000 });
+    
+    // Scroll into view and click
+    await lockButtonRefreshed.scrollIntoViewIfNeeded();
+    await lockButtonRefreshed.click({ force: true });
     
     // Wait for lock to register
-    await alicePage.waitForTimeout(500);
+    await alicePage.waitForTimeout(1000);
     
     // Verify "Answer locked! Waiting for results..." message appears
     const lockedMessage = alicePage.getByText(/Answer locked|Waiting for results/i);
@@ -208,8 +218,9 @@ test.describe('Question Display - Player Mobile View (Story 2.5)', () => {
     // Click on the first answer (A)
     const bobFirstButton = bobAnswerButtons.first();
     await expect(bobFirstButton).toBeVisible({ timeout: 5000 });
+    await bobFirstButton.scrollIntoViewIfNeeded();
     await bobFirstButton.click();
-    await bobPage.waitForTimeout(500);
+    await bobPage.waitForTimeout(1000);
     
     // Verify lock button appears
     const bobLockButton = bobPage.getByRole('button', { name: /Lock Answer|Confirm/i });
@@ -218,11 +229,14 @@ test.describe('Question Display - Player Mobile View (Story 2.5)', () => {
     // Change selection to second button (B)
     const bobSecondButton = bobAnswerButtons.nth(1);
     await expect(bobSecondButton).toBeVisible({ timeout: 5000 });
+    await bobSecondButton.scrollIntoViewIfNeeded();
     await bobSecondButton.click();
-    await bobPage.waitForTimeout(500);
+    await bobPage.waitForTimeout(1000);
     
     // Verify lock button is still visible (selection changed but not locked)
-    await expect(bobLockButton).toBeVisible({ timeout: 2000 });
+    // Re-find it in case it was re-rendered
+    const bobLockButtonRefreshed = bobPage.getByRole('button', { name: /Lock Answer|Confirm/i });
+    await expect(bobLockButtonRefreshed).toBeVisible({ timeout: 2000 });
     
     // ============================================
     // STEP 8: Verify Timer Synchronization

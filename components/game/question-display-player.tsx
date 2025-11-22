@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useGameStore } from "@/lib/store/game-store";
 import { MobileTimer } from "@/components/game/mobile-timer";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface QuestionDisplayPlayerProps {
   gameId: string;
@@ -39,6 +40,14 @@ export function QuestionDisplayPlayer({
       // TODO: Auto-submit in Story 2.6
     }
   };
+
+  // Dismiss "Starting game..." toast when question display appears
+  useEffect(() => {
+    if (currentQuestion && startedAt) {
+      // Dismiss the loading toast from PlayerWaitingView
+      toast.dismiss("game-start");
+    }
+  }, [currentQuestion, startedAt]);
 
   // Reset selection when question changes
   useEffect(() => {

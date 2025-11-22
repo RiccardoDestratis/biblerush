@@ -62,6 +62,14 @@ export function QuestionDisplayProjector({
     return () => clearInterval(interval);
   }, [gameId, initialPlayerCount]);
 
+  // Dismiss "Starting game..." toast when question display appears
+  useEffect(() => {
+    if (currentQuestion && startedAt) {
+      // Dismiss the loading toast from HostWaitingRoom
+      toast.dismiss("game-start");
+    }
+  }, [currentQuestion, startedAt]);
+
   // Reset expired flag when question changes
   useEffect(() => {
     if (currentQuestion && currentQuestion.id !== currentQuestionIdRef.current) {

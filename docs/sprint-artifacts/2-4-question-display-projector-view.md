@@ -1,6 +1,6 @@
 # Story 2.4: Question Display - Projector View
 
-Status: in-progress
+Status: done
 
 ## Story
 

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getGame } from "@/lib/actions/games";
 import { getPlayers } from "@/lib/actions/players";
-import { PlayerWaitingView } from "@/components/game/player-waiting-view";
+import { PlayerGameView } from "@/components/game/player-game-view";
 
 interface PlayerPageProps {
   params: Promise<{ gameId: string }>;
@@ -48,7 +48,7 @@ export default async function PlayerPage({
   }
 
   return (
-    <PlayerWaitingView
+    <PlayerGameView
       gameId={gameId}
       playerId={player.id}
       gameStatus={gameResult.game.status}

@@ -92,10 +92,10 @@ export async function createGame(
       };
     }
 
-    if (![10, 15, 20].includes(questionCount)) {
+    if (![3, 10, 15, 20].includes(questionCount)) {
       return {
         success: false,
-        error: "Question count must be 10, 15, or 20",
+        error: "Question count must be 3, 10, 15, or 20",
       };
     }
 
@@ -108,9 +108,9 @@ export async function createGame(
       };
     }
 
-    // Clean up old waiting games before creating new one (prevents accumulation)
-    // In production, this should be a scheduled cron job instead
-    await cleanupOldWaitingGames(30);
+    // Note: Cleanup of old waiting games is now handled by a scheduled cron job
+    // See: /api/cron/cleanup-waiting-games (configured in vercel.json)
+    // This prevents cleanup from slowing down game creation
 
     // Generate unique room code
     const roomCode = await generateUniqueRoomCode();
@@ -249,6 +249,11 @@ export async function cancelGame(
 /**
  * Clean up old waiting games that haven't been started
  * Deletes games in 'waiting' status that are older than the specified minutes
+ * 
+ * NOTE: This is currently not called automatically (removed from createGame/getPastGames).
+ * For MVP, old games don't cost money - they're just database records.
+ * Can be implemented later in production with a cron job if needed.
+ * 
  * @param maxAgeMinutes - Maximum age in minutes before cleanup (default: 30)
  * @returns Number of games deleted
  */
@@ -338,9 +343,9 @@ export async function getPastGames(): Promise<
   | { success: false; error: string }
 > {
   try {
-    // Clean up old waiting games (30 minutes old) before fetching
-    // This prevents accumulation of abandoned games
-    await cleanupOldWaitingGames(30);
+    // Note: Cleanup of old waiting games is now handled by a scheduled cron job
+    // See: /api/cron/cleanup-waiting-games (configured in vercel.json)
+    // This prevents cleanup from slowing down dashboard loading
 
     const supabase = await createClient();
 
@@ -632,30 +637,36 @@ export async function advanceQuestion(
     const currentIndex = game.current_question_index ?? 0;
     const nextIndex = currentIndex + 1;
 
+    console.log(`[advanceQuestion] 📊 Current question index: ${currentIndex}, Next: ${nextIndex}, Total questions: ${game.question_count}`);
+
     if (nextIndex >= game.question_count) {
       // Game is complete - end game
+      console.log(`[advanceQuestion] 🏁 Game complete! All ${game.question_count} questions finished. Ending game...`);
       const completedAt = new Date().toISOString();
       const { error: updateError } = await supabase
         .from("games")
         .update({
-          status: "completed",
+          status: "completed", // Database schema uses "completed", not "ended"
           completed_at: completedAt,
         })
         .eq("id", gameId);
 
       if (updateError) {
-        console.error("Error ending game:", updateError);
+        console.error(`[advanceQuestion] ❌ Error ending game:`, updateError);
         return {
           success: false,
           error: "Failed to end game. Please try again.",
         };
       }
 
+      console.log(`[advanceQuestion] ✅ Game status updated to "completed" at ${completedAt}`);
+
       // Revalidate paths
       revalidatePath(`/game/${gameId}/host`);
       revalidatePath(`/game/${gameId}/play`);
 
       // Note: Client will broadcast game_end event after receiving this response
+      console.log(`[advanceQuestion] 📤 Returning gameEnded=true, client should broadcast game_end event`);
       return {
         success: true,
         gameEnded: true,
@@ -681,6 +692,7 @@ export async function advanceQuestion(
 
     // 4. Update games table: current_question_index = nextIndex
     const startedAt = new Date().toISOString();
+    console.log(`[advanceQuestion] 📝 Updating game: current_question_index = ${nextIndex} (question ${nextIndex + 1} of ${game.question_count})`);
     const { error: updateError } = await supabase
       .from("games")
       .update({
@@ -689,12 +701,14 @@ export async function advanceQuestion(
       .eq("id", gameId);
 
     if (updateError) {
-      console.error("Error updating game:", updateError);
+      console.error(`[advanceQuestion] ❌ Error updating game:`, updateError);
       return {
         success: false,
         error: "Failed to advance question. Please try again.",
       };
     }
+
+    console.log(`[advanceQuestion] ✅ Game updated successfully`);
 
     // 5. Format question data payload for broadcast
     const questionData = {
@@ -731,6 +745,584 @@ export async function advanceQuestion(
     };
   } catch (error) {
     console.error("Unexpected error advancing question:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server Action: Fetch correct answer and scripture reference for answer reveal
+ * Used by Story 3.2: Answer Reveal on Projector
+ * 
+ * @param gameId - UUID of the game
+ * @param questionId - UUID of the question
+ * @returns Success with correct answer, answer content, show_source flag, verse reference and verse content, or error response
+ */
+export async function broadcastAnswerReveal(
+  gameId: string,
+  questionId: string
+): Promise<
+  | { 
+      success: true; 
+      correctAnswer: string; 
+      answerContent: string;
+      showSource: boolean;
+      verseReference: string | null;
+      verseContent: string | null;
+    }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Validate inputs
+    if (!gameId || !questionId) {
+      return {
+        success: false,
+        error: "Game ID and Question ID are required",
+      };
+    }
+
+    // Validate UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(gameId) || !uuidRegex.test(questionId)) {
+      return {
+        success: false,
+        error: "Invalid UUID format for game or question ID",
+      };
+    }
+
+    // Verify game exists
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    // Fetch correct answer, answer content, show_source, verse reference and verse content from questions table
+    const { data: question, error: questionError } = await supabase
+      .from("questions")
+      .select("correct_answer, right_answer_en, show_source, verse_reference_en, verse_content_en")
+      .eq("id", questionId)
+      .single();
+
+    if (questionError || !question) {
+      return {
+        success: false,
+        error: "Question not found",
+      };
+    }
+
+    // Validate correct_answer format
+    if (!question.correct_answer || !["A", "B", "C", "D"].includes(question.correct_answer)) {
+      return {
+        success: false,
+        error: "Invalid correct answer format",
+      };
+    }
+
+    // Get the answer content (right_answer_en contains the full text)
+    const answerContent = question.right_answer_en || "";
+
+    return {
+      success: true,
+      correctAnswer: question.correct_answer,
+      answerContent: answerContent,
+      showSource: question.show_source || false,
+      verseReference: question.verse_reference_en || null,
+      verseContent: question.verse_content_en || null,
+    };
+  } catch (error) {
+    console.error("Unexpected error in broadcastAnswerReveal:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server Action: Get leaderboard data for a game
+ * Returns top 10 players ranked by total_score (DESC) and cumulative response time (ASC)
+ * Used by Story 3.4 (Projector Leaderboard) and Story 3.5 (Personal Leaderboard)
+ * 
+ * @param gameId - UUID of the game
+ * @returns Success with ranked players and total count, or error response
+ */
+export async function getLeaderboard(
+  gameId: string
+): Promise<
+  | {
+      success: true;
+      players: Array<{
+        playerId: string;
+        playerName: string;
+        totalScore: number;
+        cumulativeResponseTimeMs: number;
+        rank: number;
+      }>;
+      totalCount: number;
+    }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Validate inputs
+    if (!gameId) {
+      return {
+        success: false,
+        error: "Game ID is required",
+      };
+    }
+
+    // Validate UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(gameId)) {
+      return {
+        success: false,
+        error: "Invalid UUID format for game ID",
+      };
+    }
+
+    // Verify game exists
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    // Fetch all players for this game
+    const { data: players, error: playersError } = await supabase
+      .from("game_players")
+      .select("id, player_name, total_score")
+      .eq("game_id", gameId);
+
+    if (playersError) {
+      console.error("Error fetching players:", playersError);
+      return {
+        success: false,
+        error: "Failed to fetch players",
+      };
+    }
+
+    if (!players || players.length === 0) {
+      return {
+        success: true,
+        players: [],
+        totalCount: 0,
+      };
+    }
+
+    // Calculate cumulative response time for each player
+    const playersWithResponseTime = await Promise.all(
+      players.map(async (player) => {
+        // Sum all response_time_ms for this player across all questions
+        const { data: answers, error: answersError } = await supabase
+          .from("player_answers")
+          .select("response_time_ms")
+          .eq("game_id", gameId)
+          .eq("player_id", player.id);
+
+        if (answersError) {
+          console.error(
+            `Error fetching answers for player ${player.id}:`,
+            answersError
+          );
+          return {
+            playerId: player.id,
+            playerName: player.player_name || "Unknown",
+            totalScore: player.total_score || 0,
+            cumulativeResponseTimeMs: 0,
+          };
+        }
+
+        const cumulativeResponseTimeMs =
+          answers?.reduce(
+            (sum, answer) => sum + (answer.response_time_ms || 0),
+            0
+          ) || 0;
+
+        return {
+          playerId: player.id,
+          playerName: player.player_name || "Unknown",
+          totalScore: player.total_score || 0,
+          cumulativeResponseTimeMs,
+        };
+      })
+    );
+
+    // Import calculateRankings from scoring utility
+    const { calculateRankings } = await import("@/lib/game/scoring");
+    const rankedPlayers = calculateRankings(playersWithResponseTime);
+
+    // Map ranked players to include playerName
+    const playersWithNames = rankedPlayers.map((ranked) => {
+      const player = playersWithResponseTime.find((p) => p.playerId === ranked.playerId);
+      return {
+        ...ranked,
+        playerName: player?.playerName || "Unknown",
+      };
+    });
+
+    // Return top 10 players
+    const topPlayers = playersWithNames.slice(0, 10);
+
+    return {
+      success: true,
+      players: topPlayers,
+      totalCount: playersWithNames.length,
+    };
+  } catch (error) {
+    console.error("Unexpected error in getLeaderboard:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server Action: Get final results for projector view
+ * Returns winner, all players ranked, and game statistics
+ * 
+ * @param gameId - UUID of the game
+ * @returns Success with final results or error response
+ */
+export async function getFinalResults(
+  gameId: string
+): Promise<
+  | {
+      success: true;
+      winner: {
+        playerId: string;
+        playerName: string;
+        totalScore: number;
+        cumulativeResponseTimeMs: number;
+        rank: number;
+      };
+      players: Array<{
+        playerId: string;
+        playerName: string;
+        totalScore: number;
+        cumulativeResponseTimeMs: number;
+        rank: number;
+      }>;
+      gameStats: {
+        totalQuestions: number;
+        gameDurationMinutes: number;
+        averageScore: number;
+      };
+    }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Validate inputs
+    if (!gameId) {
+      return {
+        success: false,
+        error: "Game ID is required",
+      };
+    }
+
+    // Validate UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(gameId)) {
+      return {
+        success: false,
+        error: "Invalid UUID format for game ID",
+      };
+    }
+
+    // Fetch game data with stats
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id, question_count, started_at, completed_at, status")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      console.error(`[getFinalResults] ❌ Error fetching game:`, gameError);
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+    
+    console.log(`[getFinalResults] 📊 Game status: "${game.status}", completed_at: ${game.completed_at}`);
+    
+    // Don't check status - just proceed if game exists
+    // The game might be transitioning to "completed" status
+
+    // Fetch all players for this game
+    const { data: players, error: playersError } = await supabase
+      .from("game_players")
+      .select("id, player_name, total_score")
+      .eq("game_id", gameId);
+
+    if (playersError) {
+      console.error("Error fetching players:", playersError);
+      return {
+        success: false,
+        error: "Failed to fetch players",
+      };
+    }
+
+    if (!players || players.length === 0) {
+      return {
+        success: false,
+        error: "No players found in game",
+      };
+    }
+
+    // Calculate cumulative response time for each player
+    const playersWithResponseTime = await Promise.all(
+      players.map(async (player) => {
+        // Sum all response_time_ms for this player across all questions
+        const { data: answers, error: answersError } = await supabase
+          .from("player_answers")
+          .select("response_time_ms")
+          .eq("game_id", gameId)
+          .eq("player_id", player.id);
+
+        if (answersError) {
+          console.error(
+            `Error fetching answers for player ${player.id}:`,
+            answersError
+          );
+          return {
+            playerId: player.id,
+            playerName: player.player_name || "Unknown",
+            totalScore: player.total_score || 0,
+            cumulativeResponseTimeMs: 0,
+          };
+        }
+
+        const cumulativeResponseTimeMs =
+          answers?.reduce(
+            (sum, answer) => sum + (answer.response_time_ms || 0),
+            0
+          ) || 0;
+
+        return {
+          playerId: player.id,
+          playerName: player.player_name || "Unknown",
+          totalScore: player.total_score || 0,
+          cumulativeResponseTimeMs,
+        };
+      })
+    );
+
+    // Import calculateRankings from scoring utility
+    const { calculateRankings } = await import("@/lib/game/scoring");
+    const rankedPlayers = calculateRankings(playersWithResponseTime);
+
+    // Map ranked players to include playerName
+    const playersWithNames = rankedPlayers.map((ranked) => {
+      const player = playersWithResponseTime.find((p) => p.playerId === ranked.playerId);
+      return {
+        ...ranked,
+        playerName: player?.playerName || "Unknown",
+      };
+    });
+
+    // Get winner (rank 1)
+    const winner = playersWithNames.find((p) => p.rank === 1);
+    if (!winner) {
+      return {
+        success: false,
+        error: "Could not determine winner",
+      };
+    }
+
+    // Calculate game stats
+    const totalQuestions = game.question_count || 0;
+    
+    // Calculate game duration in minutes
+    let gameDurationMinutes = 0;
+    if (game.started_at && game.completed_at) {
+      const startTime = new Date(game.started_at).getTime();
+      const endTime = new Date(game.completed_at).getTime();
+      const durationMs = endTime - startTime;
+      gameDurationMinutes = Math.round(durationMs / (1000 * 60));
+    }
+
+    // Calculate average score
+    const totalScoreSum = playersWithNames.reduce(
+      (sum, player) => sum + player.totalScore,
+      0
+    );
+    const averageScore =
+      playersWithNames.length > 0
+        ? Math.round(totalScoreSum / playersWithNames.length)
+        : 0;
+
+    return {
+      success: true,
+      winner,
+      players: playersWithNames,
+      gameStats: {
+        totalQuestions,
+        gameDurationMinutes,
+        averageScore,
+      },
+    };
+  } catch (error) {
+    console.error("Unexpected error in getFinalResults:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
+ * Server Action: Get player's final results for player view
+ * Returns player's rank, score, accuracy, average response time, and top 3
+ * 
+ * @param gameId - UUID of the game
+ * @param playerId - UUID of the player
+ * @returns Success with player final results or error response
+ */
+export async function getPlayerFinalResults(
+  gameId: string,
+  playerId: string
+): Promise<
+  | {
+      success: true;
+      playerRank: number;
+      playerScore: number;
+      accuracy: {
+        correct: number;
+        total: number;
+        percentage: number;
+      };
+      averageResponseTime: number; // in seconds
+      top3Players: Array<{
+        playerId: string;
+        playerName: string;
+        totalScore: number;
+        cumulativeResponseTimeMs: number;
+        rank: number;
+      }>;
+      totalPlayers: number;
+    }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Validate inputs
+    if (!gameId || !playerId) {
+      return {
+        success: false,
+        error: "Game ID and Player ID are required",
+      };
+    }
+
+    // Validate UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(gameId) || !uuidRegex.test(playerId)) {
+      return {
+        success: false,
+        error: "Invalid UUID format",
+      };
+    }
+
+    // Get full leaderboard to find player's rank and top 3
+    const finalResults = await getFinalResults(gameId);
+    if (!finalResults.success) {
+      return finalResults;
+    }
+
+    // Find player in leaderboard
+    const player = finalResults.players.find((p) => p.playerId === playerId);
+    if (!player) {
+      return {
+        success: false,
+        error: "Player not found in game",
+      };
+    }
+
+    // Fetch player's answers to calculate accuracy and average response time
+    const { data: answers, error: answersError } = await supabase
+      .from("player_answers")
+      .select("is_correct, response_time_ms, selected_answer")
+      .eq("game_id", gameId)
+      .eq("player_id", playerId);
+
+    if (answersError) {
+      console.error("Error fetching player answers:", answersError);
+      return {
+        success: false,
+        error: "Failed to fetch player answers",
+      };
+    }
+
+    // Calculate accuracy
+    const totalAnswered = answers?.filter(
+      (answer) => answer.selected_answer !== null
+    ).length || 0;
+    const correctAnswers = answers?.filter(
+      (answer) => answer.is_correct === true
+    ).length || 0;
+    const accuracyPercentage =
+      totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
+
+    // Calculate average response time
+    const totalResponseTimeMs =
+      answers?.reduce(
+        (sum, answer) => sum + (answer.response_time_ms || 0),
+        0
+      ) || 0;
+    const answeredCount = answers?.filter(
+      (answer) => answer.selected_answer !== null
+    ).length || 1; // Avoid division by zero
+    const averageResponseTimeSeconds =
+      totalResponseTimeMs / (answeredCount * 1000); // Convert to seconds
+
+    // Get top 3 players
+    const top3Players = finalResults.players
+      .filter((p) => p.rank <= 3)
+      .slice(0, 3);
+
+    return {
+      success: true,
+      playerRank: player.rank,
+      playerScore: player.totalScore,
+      accuracy: {
+        correct: correctAnswers,
+        total: totalAnswered,
+        percentage: accuracyPercentage,
+      },
+      averageResponseTime: averageResponseTimeSeconds,
+      top3Players,
+      totalPlayers: finalResults.players.length,
+    };
+  } catch (error) {
+    console.error("Unexpected error in getPlayerFinalResults:", error);
     return {
       success: false,
       error: "An unexpected error occurred. Please try again.",

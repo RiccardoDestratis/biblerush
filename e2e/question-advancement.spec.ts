@@ -26,6 +26,12 @@ test.describe('Question Advancement - Story 2.7', () => {
     const hostContext = await browser.newContext();
     const hostPage = await hostContext.newPage();
     
+    // Capture ALL console logs
+    hostPage.on('console', msg => {
+      const text = msg.text();
+      console.log(`[HOST CONSOLE ${msg.type().toUpperCase()}] ${text}`);
+    });
+    
     await hostPage.goto(`${baseURL}/create`);
     await hostPage.waitForLoadState('networkidle');
     
@@ -254,9 +260,16 @@ test.describe('Question Advancement - Story 2.7', () => {
     
     // Click the skip button to trigger advancement
     await skipButton.click();
-      
-    // Wait for advancement to complete (Server Action + broadcast)
-    await hostPage.waitForTimeout(3000);
+    
+    // Wait for reveal → leaderboard transition
+    await hostPage.waitForTimeout(7000); // 2s reveal delay + 5s reveal countdown
+    
+    // Wait for leaderboard to appear
+    await expect(hostPage.locator('text=/Leaderboard/i')).toBeVisible({ timeout: 5000 });
+    
+    // Wait for leaderboard countdown to finish (10 seconds)
+    console.log('Waiting for leaderboard countdown (10 seconds)...');
+    await hostPage.waitForTimeout(11000); // Wait for 10s countdown + 1s buffer
     
     // ============================================
     // STEP 7: Verify Question Advancement Worked

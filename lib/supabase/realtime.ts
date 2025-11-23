@@ -7,233 +7,217 @@ import type {
   RealtimeEventPayload,
   GameChannelCallbacks,
   ConnectionStatus,
+  PlayerJoinedPayload,
+  PlayerRemovedPayload,
+  PlayerRenamedPayload,
+  GameStartPayload,
+  QuestionAdvancePayload,
+  GameEndPayload,
+  TimerExpiredPayload,
+  GamePausePayload,
+  GameResumePayload,
+  ScoresUpdatedPayload,
+  AnswerRevealPayload,
+  LeaderboardReadyPayload,
+  AnswerSubmittedPayload,
 } from "@/lib/types/realtime";
-import { toast } from "sonner";
 
 /**
- * Realtime helper utility for game channels
- * Manages Supabase Realtime channel subscriptions with reconnection logic
+ * SIMPLE Realtime Channel Manager
+ * 
+ * One channel per game. All components (host and player) share the same channel.
+ * Simple callback registration - no complex wrappers.
  */
 
-/**
- * Creates a Realtime channel for a specific game
- * Channel naming convention: `game:${gameId}` for per-game isolation
- *
- * @param gameId - The game ID to create a channel for
- * @returns A Supabase Realtime channel instance
- */
-export function createGameChannel(gameId: string): RealtimeChannel {
-  const supabase = createClient();
-  const channelName = `game:${gameId}`;
-  return supabase.channel(channelName);
+// Single client instance for all realtime connections
+let realtimeClient: ReturnType<typeof createClient> | null = null;
+
+function getRealtimeClient() {
+  if (!realtimeClient) {
+    realtimeClient = createClient();
+  }
+  return realtimeClient;
 }
 
+// Global registry: one channel per game
+const channels = new Map<string, {
+  channel: RealtimeChannel;
+  callbacks: Set<GameChannelCallbacks>;
+  unsubscribe: () => void;
+}>();
+
 /**
- * Subscribes to a game channel with event handlers
- * Uses Supabase's built-in reconnection - no manual reconnection needed
- *
- * @param channel - The Realtime channel to subscribe to
- * @param gameId - The game ID (used for postgres_changes filters)
- * @param callbacks - Event handlers for different events
- * @returns A cleanup function to unsubscribe
+ * Subscribe to game events
+ * Returns cleanup function to unsubscribe
  */
-export function subscribeToGameChannel(
-  channel: RealtimeChannel,
+export function subscribeToGame(
   gameId: string,
   callbacks: GameChannelCallbacks
 ): () => void {
-  let wasConnected = false; // Track if we've ever been successfully connected
-  let errorToastShown = false;
-
-  // IMPORTANT: All listeners must be added BEFORE calling subscribe()
-  // Subscribe to broadcast events
-  channel.on("broadcast", { event: "player_joined" }, (payload) => {
-    callbacks.onPlayerJoined?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "player_removed" }, (payload) => {
-    callbacks.onPlayerRemoved?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "player_renamed" }, (payload) => {
-    callbacks.onPlayerRenamed?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "game_start" }, (payload) => {
-    callbacks.onGameStart?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "question_advance" }, (payload) => {
-    callbacks.onQuestionAdvance?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "game_end" }, (payload) => {
-    callbacks.onGameEnd?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "timer_expired" }, (payload) => {
-    callbacks.onTimerExpired?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "game_pause" }, (payload) => {
-    callbacks.onGamePause?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "game_resume" }, (payload) => {
-    callbacks.onGameResume?.(payload.payload as any);
-  });
-
-  channel.on("broadcast", { event: "scores_updated" }, (payload) => {
-    callbacks.onScoresUpdated?.(payload.payload as any);
-  });
-
-  // Subscribe to PostgreSQL changes - MUST be before subscribe()
-  // Listen to INSERT on game_players table
-  channel.on(
-    "postgres_changes",
-    {
-      event: "INSERT",
-      schema: "public",
-      table: "game_players",
-      filter: `game_id=eq.${gameId}`,
-    },
-    (payload) => {
-      // Trigger player_joined callback if available
-      if (payload.new && callbacks.onPlayerJoined) {
-        callbacks.onPlayerJoined({
-          playerId: payload.new.id,
-          playerName: payload.new.player_name,
-        });
-      }
-    }
-  );
-
-  // Listen to UPDATE on games table
-  channel.on(
-    "postgres_changes",
-    {
-      event: "UPDATE",
-      schema: "public",
-      table: "games",
-      filter: `id=eq.${gameId}`,
-    },
-    (payload) => {
-      const oldRecord = payload.old;
-      const newRecord = payload.new;
-
-      // Track status changes
-      if (oldRecord?.status !== newRecord?.status) {
-        if (newRecord.status === "active" && callbacks.onGameStart) {
-          // Note: This is a fallback for PostgreSQL change tracking
-          // The actual game_start event with full payload is broadcast client-side
-          // This callback should not be used for game start - it's just for status tracking
-          // The proper game_start event comes from the broadcast event handler above
-        } else if (newRecord.status === "completed" && callbacks.onGameEnd) {
-          callbacks.onGameEnd({
-            completedAt: new Date().toISOString(),
-          });
-        }
-      }
-
-      // Track current_question_index changes (question advancement)
-      if (oldRecord?.current_question_index !== newRecord?.current_question_index) {
-        // Note: questionData would need to be fetched separately or included in the update
-        // For now, we'll trigger the callback with minimal data
-        if (callbacks.onQuestionAdvance) {
-          // Note: questionData will be fetched by client via Server Action
-          // This event just notifies that question index changed
-          callbacks.onQuestionAdvance({
-            questionIndex: newRecord.current_question_index || 0,
-            questionNumber: (newRecord.current_question_index || 0) + 1,
-            questionId: "",
-            questionText: "",
-            options: [],
-            correctAnswer: "",
-            timerDuration: 15,
-            startedAt: new Date().toISOString(),
-            totalQuestions: newRecord.question_count || 0,
-          });
-        }
-      }
-    }
-  );
-
-  // NOW subscribe - this must be the last call
-  // Supabase handles reconnection automatically - we just map status to our UI
-  channel.subscribe((status) => {
-    // Map Supabase Realtime status to our ConnectionStatus type
-    let connectionStatus: ConnectionStatus;
+  // Get or create channel for this game
+  let registry = channels.get(gameId);
+  
+  if (!registry) {
+    // Create new channel
+    const client = getRealtimeClient();
+    const channel = client.channel(`game:${gameId}`);
     
-    if (status === "SUBSCRIBED") {
-      connectionStatus = "connected";
-      wasConnected = true;
-      errorToastShown = false;
-      callbacks.onStatusChange?.(connectionStatus);
-    } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-      // Supabase automatically handles reconnection - we just show status
-      if (wasConnected) {
-        connectionStatus = "reconnecting";
-        if (!errorToastShown) {
-          toast.error("Connection lost. Reconnecting...");
-          errorToastShown = true;
+    // Create registry first so callbacks can reference it
+    const newRegistry = {
+      channel,
+      callbacks: new Set<GameChannelCallbacks>(),
+      unsubscribe: () => {},
+    };
+    
+    channels.set(gameId, newRegistry);
+    
+    // Register ALL event listeners ONCE per channel
+    channel.on("broadcast", { event: "player_joined" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onPlayerJoined?.(payload.payload as PlayerJoinedPayload));
+    });
+    
+    channel.on("broadcast", { event: "player_removed" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onPlayerRemoved?.(payload.payload as PlayerRemovedPayload));
+    });
+    
+    channel.on("broadcast", { event: "player_renamed" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onPlayerRenamed?.(payload.payload as PlayerRenamedPayload));
+    });
+    
+    channel.on("broadcast", { event: "game_start" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onGameStart?.(payload.payload as GameStartPayload));
+    });
+    
+    channel.on("broadcast", { event: "question_advance" }, (payload) => {
+      console.log(`[Realtime] 📨 RECEIVED: question_advance`, payload.payload);
+      const callbackCount = newRegistry.callbacks.size;
+      console.log(`[Realtime] 📋 Found ${callbackCount} registered callbacks`);
+      let callbackIndex = 0;
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => {
+        callbackIndex++;
+        console.log(`[Realtime] 🔔 Calling onQuestionAdvance callback ${callbackIndex}/${callbackCount}`);
+        if (cb.onQuestionAdvance) {
+          cb.onQuestionAdvance(payload.payload as QuestionAdvancePayload);
+        } else {
+          console.log(`[Realtime] ⚠️ Callback ${callbackIndex} has no onQuestionAdvance handler`);
         }
-      } else {
-        // Initial connection failed
-        connectionStatus = "failed";
-        if (!errorToastShown) {
-          callbacks.onError?.(new Error(`Failed to connect to Realtime channel: ${status}`));
-          errorToastShown = true;
-        }
-      }
-      callbacks.onStatusChange?.(connectionStatus);
-    } else if (status === "CLOSED") {
-      connectionStatus = "disconnected";
-      wasConnected = false;
-      errorToastShown = false;
-      callbacks.onStatusChange?.(connectionStatus);
-    } else {
-      // For other statuses (JOINED, LEFT, etc.), don't change status
-      // JOINED is an intermediate state before SUBSCRIBED - wait for SUBSCRIBED
-      return;
-    }
-  });
-
+      });
+    });
+    
+    channel.on("broadcast", { event: "game_end" }, (payload) => {
+      console.log(`[Realtime] 📨 RECEIVED: game_end`, payload.payload);
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => {
+        console.log(`[Realtime] 🔔 Calling onGameEnd callback`);
+        cb.onGameEnd?.(payload.payload as GameEndPayload);
+      });
+    });
+    
+    channel.on("broadcast", { event: "timer_expired" }, (payload) => {
+      console.log(`[Realtime] 📨 RECEIVED: timer_expired`, payload.payload);
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => {
+        console.log(`[Realtime] 🔔 Calling onTimerExpired callback`);
+        cb.onTimerExpired?.(payload.payload as TimerExpiredPayload);
+      });
+    });
+    
+    channel.on("broadcast", { event: "game_pause" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onGamePause?.(payload.payload as GamePausePayload));
+    });
+    
+    channel.on("broadcast", { event: "game_resume" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onGameResume?.(payload.payload as GameResumePayload));
+    });
+    
+    channel.on("broadcast", { event: "scores_updated" }, (payload) => {
+      console.log(`[Realtime] 📨 RECEIVED: scores_updated`, payload.payload);
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => {
+        console.log(`[Realtime] 🔔 Calling onScoresUpdated callback`);
+        cb.onScoresUpdated?.(payload.payload as ScoresUpdatedPayload);
+      });
+    });
+    
+    channel.on("broadcast", { event: "answer_reveal" }, (payload) => {
+      console.log(`[Realtime] 📨 RECEIVED: answer_reveal`, payload.payload);
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => {
+        console.log(`[Realtime] 🔔 Calling onAnswerReveal callback`);
+        cb.onAnswerReveal?.(payload.payload as AnswerRevealPayload);
+      });
+    });
+    
+    channel.on("broadcast", { event: "leaderboard_ready" }, (payload) => {
+      console.log(`[Realtime] 📨 RECEIVED: leaderboard_ready`, payload.payload);
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => {
+        console.log(`[Realtime] 🔔 Calling onLeaderboardReady callback`);
+        cb.onLeaderboardReady?.(payload.payload as LeaderboardReadyPayload);
+      });
+    });
+    
+    channel.on("broadcast", { event: "answer_submitted" }, (payload) => {
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onAnswerSubmitted?.(payload.payload as AnswerSubmittedPayload));
+    });
+    
+    // Subscribe to channel
+    channel.subscribe((status) => {
+      const connectionStatus: ConnectionStatus = 
+        status === "SUBSCRIBED" ? "connected" :
+        status === "CHANNEL_ERROR" || status === "TIMED_OUT" ? "reconnecting" :
+        status === "CLOSED" ? "disconnected" : "disconnected";
+      
+      newRegistry.callbacks.forEach((cb: GameChannelCallbacks) => cb.onStatusChange?.(connectionStatus));
+    });
+    
+    // Update unsubscribe function
+    newRegistry.unsubscribe = () => {
+      channel.unsubscribe();
+    };
+    registry = newRegistry;
+  }
+  
+  // Add this component's callbacks
+  registry.callbacks.add(callbacks);
+  
   // Return cleanup function
   return () => {
-    channel.unsubscribe();
+    const reg = channels.get(gameId);
+    if (reg) {
+      reg.callbacks.delete(callbacks);
+      
+      // If no more callbacks, cleanup channel
+      if (reg.callbacks.size === 0) {
+        reg.unsubscribe();
+        reg.channel.unsubscribe();
+        channels.delete(gameId);
+      }
+    }
   };
 }
 
 /**
- * Broadcasts an event to all subscribers of a game channel
- *
- * @param channel - The Realtime channel to broadcast on
- * @param event - The event name to broadcast
- * @param payload - The event payload
- * @returns Promise that resolves when broadcast is sent
+ * Get channel for broadcasting (must already be subscribed)
+ */
+export function getGameChannel(gameId: string): RealtimeChannel | null {
+  return channels.get(gameId)?.channel || null;
+}
+
+/**
+ * Broadcast an event to all subscribers
  */
 export async function broadcastGameEvent(
-  channel: RealtimeChannel,
+  gameId: string,
   event: RealtimeEvent,
   payload: RealtimeEventPayload
 ): Promise<void> {
+  const channel = getGameChannel(gameId);
+  if (!channel) {
+    console.warn(`[Realtime] ⚠️ Cannot broadcast ${event} - channel not found for game ${gameId}`);
+    return;
+  }
+  
+  console.log(`[Realtime] 📤 BROADCASTING: ${event}`, payload);
   await channel.send({
     type: "broadcast",
     event,
     payload,
   });
+  console.log(`[Realtime] ✅ Broadcast complete: ${event}`);
 }
-
-/**
- * Gets the connection status from a channel
- *
- * @param channel - The Realtime channel
- * @returns The current connection status
- */
-export function getConnectionStatus(channel: RealtimeChannel): ConnectionStatus {
-  // Note: Supabase Realtime doesn't expose connection status directly
-  // This is a helper that can be used with status callbacks
-  // The actual status should be tracked via onStatusChange callback
-  return "disconnected";
-}
-

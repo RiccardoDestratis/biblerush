@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/lib/store/game-store";
 import { MobileTimer } from "@/components/game/mobile-timer";
 import { submitAnswer } from "@/lib/actions/answers";
-import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
-import type { QuestionAdvancePayload, GameEndPayload } from "@/lib/types/realtime";
+import { subscribeToGame } from "@/lib/supabase/realtime";
+import type { QuestionAdvancePayload, GameEndPayload, GamePausePayload, GameResumePayload } from "@/lib/types/realtime";
 import { toast } from "sonner";
 
 interface QuestionDisplayPlayerProps {
@@ -31,11 +31,15 @@ export function QuestionDisplayPlayer({
     totalQuestions,
     timerDuration,
     startedAt,
+    isPaused,
+    pausedAt,
+    pauseDuration,
     advanceQuestion: advanceQuestionStore,
     setGameStatus,
+    setPaused,
+    setResumed,
   } = useGameStore();
   
-  const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
 
   // State for answer selection (string format: 'A', 'B', 'C', 'D')
@@ -104,6 +108,11 @@ export function QuestionDisplayPlayer({
               
               if (retryResult.error === "Answer already submitted") {
                 toast.error("Answer already submitted");
+              } else if (retryResult.error === "Game is not active") {
+                // Timer expired or game ended - show better message
+                setLockedAnswer(selectedAnswer); // Show visual confirmation anyway
+                setShowMessage(true);
+                setMessageText("Time's up! The timer expired before your answer was submitted.");
               } else if (retryResult.error.includes("Game") || retryResult.error.includes("Question")) {
                 toast.error("Game data error. Please refresh.");
               } else {
@@ -126,8 +135,8 @@ export function QuestionDisplayPlayer({
   // Handle tap-to-lock pattern
   const handleAnswerTap = useCallback(
     (answer: "A" | "B" | "C" | "D") => {
-      // If already submitted, do nothing
-      if (submissionStatus === "submitted") return;
+      // If already submitted or paused, do nothing
+      if (submissionStatus === "submitted" || isPaused) return;
 
       // If this answer is already selected (orange state)
       if (selectedAnswer === answer && lockedAnswer === null) {
@@ -143,7 +152,17 @@ export function QuestionDisplayPlayer({
           navigator.vibrate(100);
         }
 
-        // Submit in background
+        // Submit in background - but check timer first
+        const now = Date.now();
+        const startTime = new Date(startedAt || Date.now()).getTime();
+        const elapsed = now - startTime;
+        const remainingTime = (timerDuration * 1000) - elapsed;
+        
+        // If less than 100ms remaining, show warning but still try to submit
+        if (remainingTime < 100) {
+          toast.warning("Submitting just before timer expires...");
+        }
+        
         handleSubmitAnswer(answer, responseTimeMs);
       } else if (selectedAnswer !== answer) {
         // Single-tap: Select this answer (orange state)
@@ -156,7 +175,7 @@ export function QuestionDisplayPlayer({
 
   // Handle timer expiration - auto-submit
   const handleTimerExpire = useCallback(() => {
-    if (hasAutoSubmitted) return;
+    if (hasAutoSubmitted || isPaused) return;
     setHasAutoSubmitted(true);
     setShowLowTimeWarning(false);
 
@@ -210,17 +229,12 @@ export function QuestionDisplayPlayer({
     }
   }, [currentQuestion, startedAt]);
 
-  // Create Realtime channel for listening to question_advance
+  // Subscribe to game events
   useEffect(() => {
-    if (!channelRef.current) {
-      channelRef.current = createGameChannel(gameId);
-      
-      // Subscribe to channel with event handlers
-      unsubscribeRef.current = subscribeToGameChannel(channelRef.current, gameId, {
+    if (!unsubscribeRef.current) {
+      unsubscribeRef.current = subscribeToGame(gameId, {
         onQuestionAdvance: (payload: QuestionAdvancePayload) => {
-          // Update game store with new question data
           advanceQuestionStore(payload);
-          // Reset answer selection state when question advances
           setSelectedAnswer(null);
           setLockedAnswer(null);
           setSubmissionStatus("idle");
@@ -230,29 +244,30 @@ export function QuestionDisplayPlayer({
           setShowMessage(false);
           setMessageText("");
           setHasAutoSubmitted(false);
-          toast.dismiss(); // Dismiss any previous toasts
+          toast.dismiss();
         },
         onGameEnd: (payload: GameEndPayload) => {
-          // Game ended - update status
           setGameStatus("ended");
           toast.success("Game completed!");
-          // TODO: Navigate to results screen (Story 3.7)
+        },
+        onGamePause: (payload: GamePausePayload) => {
+          setPaused(payload.pausedAt);
+          toast.info("Game paused");
+        },
+        onGameResume: (payload: GameResumePayload) => {
+          setResumed(payload.resumedAt);
+          toast.success("Game resumed");
         },
       });
     }
     
-    // Cleanup on unmount
     return () => {
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
         unsubscribeRef.current = null;
       }
-      if (channelRef.current) {
-        channelRef.current.unsubscribe();
-        channelRef.current = null;
-      }
     };
-  }, [gameId, advanceQuestionStore, setGameStatus]);
+  }, [gameId, advanceQuestionStore, setGameStatus, setPaused, setResumed]);
 
   // Reset state when question changes
   useEffect(() => {
@@ -292,6 +307,43 @@ export function QuestionDisplayPlayer({
       transition={{ duration: 0.3 }}
       className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex flex-col p-4"
     >
+      {/* Freezing overlay when paused */}
+      {isPaused && (
+        <motion.div
+          className="absolute inset-0 bg-white/30 backdrop-blur-sm z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white/95 rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4 mx-4"
+            animate={{
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <motion.div
+              className="text-6xl"
+              animate={{
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              ⏸
+            </motion.div>
+            <div className="text-2xl font-bold text-gray-800 text-center">Game Paused</div>
+            <div className="text-lg text-gray-600 text-center">Waiting for host to resume...</div>
+          </motion.div>
+        </motion.div>
+      )}
       {/* Question number at top */}
       <div className="text-center mb-4">
         <p className="text-sm text-gray-600 font-medium">
@@ -336,6 +388,9 @@ export function QuestionDisplayPlayer({
               onExpire={handleTimerExpire}
               onLowTime={handleLowTime}
               showWarning={showTimerEnlargement}
+              isPaused={isPaused}
+              pausedAt={pausedAt}
+              pauseDuration={pauseDuration}
             />
           </motion.div>
 
@@ -382,7 +437,7 @@ export function QuestionDisplayPlayer({
               <button
                 key={index}
                 onClick={() => handleAnswerTap(answerLabel)}
-                disabled={isSubmitted}
+                disabled={isSubmitted || isPaused}
                 className={`
                   w-full
                   ${buttonClass}

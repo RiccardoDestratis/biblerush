@@ -21,7 +21,10 @@ export type RealtimeEvent =
   | "timer_expired"
   | "game_pause"
   | "game_resume"
-  | "scores_updated";
+  | "scores_updated"
+  | "answer_reveal"
+  | "leaderboard_ready"
+  | "answer_submitted";
 
 /**
  * Payload for player_joined event
@@ -118,6 +121,36 @@ export interface ScoresUpdatedPayload {
 }
 
 /**
+ * Payload for answer_reveal event
+ */
+export interface AnswerRevealPayload {
+  gameId: string; // UUID of the game
+  questionId: string; // UUID of the question
+  correctAnswer: string; // Letter: 'A', 'B', 'C', or 'D'
+  answerContent: string; // Full text content of the correct answer
+  showSource: boolean; // Whether to show verse source (reference + content)
+  verseReference: string | null; // Scripture reference (e.g., "Matthew 2:1") or null
+  verseContent: string | null; // Full verse text content or null
+}
+
+/**
+ * Payload for leaderboard_ready event
+ */
+export interface LeaderboardReadyPayload {
+  gameId: string; // UUID of the game
+  questionId: string; // UUID of the question that was just revealed
+}
+
+/**
+ * Payload for answer_submitted event
+ */
+export interface AnswerSubmittedPayload {
+  gameId: string; // UUID of the game
+  questionId: string; // UUID of the question
+  playerId: string; // UUID of the player who submitted
+}
+
+/**
  * Union type for all event payloads
  */
 export type RealtimeEventPayload =
@@ -130,7 +163,10 @@ export type RealtimeEventPayload =
   | TimerExpiredPayload
   | GamePausePayload
   | GameResumePayload
-  | ScoresUpdatedPayload;
+  | ScoresUpdatedPayload
+  | AnswerRevealPayload
+  | LeaderboardReadyPayload
+  | AnswerSubmittedPayload;
 
 /**
  * Callback function type for realtime event handlers
@@ -153,6 +189,9 @@ export interface GameChannelCallbacks {
   onGamePause?: RealtimeEventHandler<GamePausePayload>;
   onGameResume?: RealtimeEventHandler<GameResumePayload>;
   onScoresUpdated?: RealtimeEventHandler<ScoresUpdatedPayload>;
+  onAnswerReveal?: RealtimeEventHandler<AnswerRevealPayload>;
+  onLeaderboardReady?: RealtimeEventHandler<LeaderboardReadyPayload>;
+  onAnswerSubmitted?: RealtimeEventHandler<AnswerSubmittedPayload>;
   onError?: (error: Error) => void;
   onStatusChange?: (status: ConnectionStatus) => void;
 }

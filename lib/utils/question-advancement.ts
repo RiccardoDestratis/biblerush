@@ -2,7 +2,7 @@
 
 import { advanceQuestion } from "@/lib/actions/games";
 import { processQuestionScores } from "@/lib/actions/answers";
-import { createGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
+import { getGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
 import type { QuestionAdvancePayload, GameEndPayload } from "@/lib/types/realtime";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
@@ -16,9 +16,8 @@ import { createClient } from "@/lib/supabase/client";
  * @returns Success/error result
  */
 export async function advanceQuestionAndBroadcast(
-  gameId: string,
-  channel?: ReturnType<typeof createGameChannel>
-): Promise<{ success: true; gameEnded: boolean } | { success: false; error: string }> {
+  gameId: string
+): Promise<{ success: true; gameEnded: boolean; questionData?: QuestionAdvancePayload } | { success: false; error: string }> {
   try {
     // Before advancing, process scores for the current question
     // Get current question ID from game state
@@ -56,35 +55,44 @@ export async function advanceQuestionAndBroadcast(
             // Log error but don't block advancement - scores can be recalculated if needed
             console.error("Error processing scores:", scoreResult.error);
             // Continue with advancement even if scoring fails
+            // Note: Scores will be recalculated when leaderboard is displayed
           }
         }
       }
     }
 
     // Call Server Action to advance question
+    console.log(`[QuestionAdvance] 📞 Calling server action: advanceQuestion(${gameId})`);
     const result = await advanceQuestion(gameId);
 
     if (!result.success) {
+      console.error(`[QuestionAdvance] ❌ Server action failed:`, result.error);
       return {
         success: false,
         error: result.error,
       };
     }
 
-    // If game ended, broadcast game_end event
+    // If game ended, broadcast game_end event AND update store locally (local echo)
     if (result.gameEnded) {
-      const channelToUse = channel || createGameChannel(gameId);
-      if (!channel) {
-        // Subscribe to channel if we created it
-        channelToUse.subscribe();
-      }
-
+      console.log(`[QuestionAdvance] 🏁 Game ended, updating store and broadcasting game_end`);
       const payload: GameEndPayload = {
         completedAt: result.completedAt,
       };
-
-      await broadcastGameEvent(channelToUse, "game_end", payload);
-
+      
+      // CRITICAL: Update store immediately (local echo) - same pattern as question_advance
+      // This ensures final results show immediately on the broadcaster
+      const { useGameStore } = await import("@/lib/store/game-store");
+      const store = useGameStore.getState();
+      console.log(`[QuestionAdvance] 📝 Updating store immediately (local echo): gameStatus = "ended", revealState = "results"`);
+      store.setGameStatus("ended");
+      store.setRevealState("results");
+      console.log(`[QuestionAdvance] ✅ Store updated, FinalResultsProjector should render now`);
+      
+      // Broadcast event (other clients will update via onGameEnd handler)
+      await broadcastGameEvent(gameId, "game_end", payload);
+      console.log(`[QuestionAdvance] ✅ game_end event broadcast complete`);
+      
       return {
         success: true,
         gameEnded: true,
@@ -92,19 +100,14 @@ export async function advanceQuestionAndBroadcast(
     }
 
     // Game continues - broadcast question_advance event
-    const channelToUse = channel || createGameChannel(gameId);
-    if (!channel) {
-      // Subscribe to channel if we created it
-      channelToUse.subscribe();
-    }
-
+    console.log(`[QuestionAdvance] ➡️ Advancing to question ${result.questionData.questionNumber}, broadcasting question_advance`);
     const payload: QuestionAdvancePayload = result.questionData;
-
-    await broadcastGameEvent(channelToUse, "question_advance", payload);
+    await broadcastGameEvent(gameId, "question_advance", payload);
 
     return {
       success: true,
       gameEnded: false,
+      questionData: payload
     };
   } catch (error) {
     console.error("Error advancing question:", error);

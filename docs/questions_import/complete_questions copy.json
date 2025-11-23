@@ -1,0 +1,899 @@
+{
+  "question_sets": [
+    {
+      "set_name": {
+        "en": "Bible Basics: Your First Steps",
+        "de": "Bibel-Grundlagen: Ihre ersten Schritte",
+        "it": "Fondamenti Biblici: I tuoi primi passi"
+      },
+      "set_description": {
+        "en": "Essential facts about the Bible itself for absolute beginners",
+        "de": "Wesentliche Fakten über die Bibel selbst für absolute Anfänger",
+        "it": "Fatti essenziali sulla Bibbia stessa per principianti assoluti"
+      },
+      "difficulty": "beginner",
+      "questions": [
+        {
+          "question": {
+            "en": "How many books are in the Bible?",
+            "de": "Wie viele Bücher hat die Bibel?",
+            "it": "Quanti libri ci sono nella Bibbia?"
+          },
+          "option_a": {
+            "en": "39",
+            "de": "39",
+            "it": "39"
+          },
+          "option_b": {
+            "en": "66",
+            "de": "66",
+            "it": "66"
+          },
+          "option_c": {
+            "en": "27",
+            "de": "27",
+            "it": "27"
+          },
+          "option_d": {
+            "en": "100",
+            "de": "100",
+            "it": "100"
+          },
+          "right_answer": {
+            "en": "66",
+            "de": "66",
+            "it": "66"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Protestant Bible contains 66 books: 39 in the Old Testament and 27 in the New Testament.",
+            "de": "Die protestantische Bibel enthält 66 Bücher: 39 im Alten Testament und 27 im Neuen Testament.",
+            "it": "La Bibbia protestante contiene 66 libri: 39 nell'Antico Testamento e 27 nel Nuovo Testamento."
+          },
+          "image_prompt": "Historical scene, ancient library or scriptorium in Middle East circa 1st century, collection of scrolls and early codices representing biblical books arranged on wooden shelves, 66 distinct manuscript bundles visible, warm candlelight, scholars carefully preserving sacred texts, atmosphere of reverence for scripture, historically accurate ancient book storage",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What are the two main parts of the Bible?",
+            "de": "Was sind die zwei Hauptteile der Bibel?",
+            "it": "Quali sono le due parti principali della Bibbia?"
+          },
+          "option_a": {
+            "en": "Genesis and Revelation",
+            "de": "Genesis und Offenbarung",
+            "it": "Genesi e Apocalisse"
+          },
+          "option_b": {
+            "en": "Old Testament and New Testament",
+            "de": "Altes Testament und Neues Testament",
+            "it": "Antico Testamento e Nuovo Testamento"
+          },
+          "option_c": {
+            "en": "Law and Prophets",
+            "de": "Gesetz und Propheten",
+            "it": "Legge e Profeti"
+          },
+          "option_d": {
+            "en": "Gospels and Letters",
+            "de": "Evangelien und Briefe",
+            "it": "Vangeli e Lettere"
+          },
+          "right_answer": {
+            "en": "Old Testament and New Testament",
+            "de": "Altes Testament und Neues Testament",
+            "it": "Antico Testamento e Nuovo Testamento"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Bible is divided into the Old Testament (before Christ) and the New Testament (the life of Christ and the early church).",
+            "de": "Die Bibel ist unterteilt in das Alte Testament (vor Christus) und das Neue Testament (das Leben Christi und die frühe Kirche).",
+            "it": "La Bibbia è divisa nell'Antico Testamento (prima di Cristo) e nel Nuovo Testamento (la vita di Cristo e la chiesa primitiva)."
+          },
+          "image_prompt": "Symbolic biblical scene, ancient stone tablet or scroll split into two distinct sections representing Old and New Testament, left side showing Hebrew text and imagery of tablets of law and prophets, right side showing Greek text and imagery of cross and dove, warm golden light dividing and illuminating both sections, reverent atmosphere",
+          "image_style": "Photorealistic, symbolic biblical concept, warm divine lighting, cinematic composition, reverent tone suitable for all ages, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What is the shortest verse in the Bible?",
+            "de": "Was ist der kürzeste Vers in der Bibel?",
+            "it": "Qual è il versetto più breve della Bibbia?"
+          },
+          "option_a": {
+            "en": "God is love",
+            "de": "Gott ist Liebe",
+            "it": "Dio è amore"
+          },
+          "option_b": {
+            "en": "Jesus wept",
+            "de": "Jesus weinte",
+            "it": "Gesù pianse"
+          },
+          "option_c": {
+            "en": "Rejoice always",
+            "de": "Freut euch allezeit",
+            "it": "Rallegratevi sempre"
+          },
+          "option_d": {
+            "en": "I am",
+            "de": "Ich bin",
+            "it": "Io sono"
+          },
+          "right_answer": {
+            "en": "Jesus wept",
+            "de": "Jesus weinte",
+            "it": "Gesù pianse"
+          },
+          "verse_reference": {
+            "en": "John 11:35",
+            "de": "Johannes 11:35",
+            "it": "Giovanni 11:35"
+          },
+          "verse_content": {
+            "en": "Jesus wept.",
+            "de": "Und Jesus weinte.",
+            "it": "Gesù pianse."
+          },
+          "image_prompt": "Biblical times, garden scene near Bethany circa 30 AD Middle East, Jesus with compassionate expression and tears on face, standing near tomb entrance, mourners in background, olive trees, afternoon sunlight, moment of deep emotion and humanity, Jesus showing compassion for Lazarus, first century Judea",
+          "image_style": "Photorealistic, historically accurate biblical scene, soft natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What symbol did God place in the sky after the flood?",
+            "de": "Welches Symbol setzte Gott nach der Sintflut in den Himmel?",
+            "it": "Quale simbolo mise Dio nel cielo dopo il diluvio?"
+          },
+          "option_a": {
+            "en": "A star",
+            "de": "Einen Stern",
+            "it": "Una stella"
+          },
+          "option_b": {
+            "en": "A rainbow",
+            "de": "Einen Regenbogen",
+            "it": "Un arcobaleno"
+          },
+          "option_c": {
+            "en": "A cloud",
+            "de": "Eine Wolke",
+            "it": "Una nuvola"
+          },
+          "option_d": {
+            "en": "The sun",
+            "de": "Die Sonne",
+            "it": "Il sole"
+          },
+          "right_answer": {
+            "en": "A rainbow",
+            "de": "Einen Regenbogen",
+            "it": "Un arcobaleno"
+          },
+          "verse_reference": {
+            "en": "Genesis 9:13",
+            "de": "1. Mose 9:13",
+            "it": "Genesi 9:13"
+          },
+          "verse_content": {
+            "en": "I have set my rainbow in the clouds, and it will be the sign of the covenant between me and the earth.",
+            "de": "Meinen Bogen habe ich in die Wolken gesetzt; der soll das Zeichen sein des Bundes zwischen mir und der Erde.",
+            "it": "Io pongo il mio arco nelle nuvole ed esso sarà il segno del patto fra me e la terra."
+          },
+          "image_prompt": "Biblical times, landscape after the great flood circa 2400 BC Middle East, brilliant rainbow arching across clearing sky, Noah and family standing near ark looking up at rainbow with wonder and gratitude, receding floodwaters, olive tree with dove, sign of God's covenant and promise, atmosphere of hope and new beginning, ancient Near East",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic lighting with rainbow, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "How many books are in the Old Testament?",
+            "de": "Wie viele Bücher hat das Alte Testament?",
+            "it": "Quanti libri ci sono nell'Antico Testamento?"
+          },
+          "option_a": {
+            "en": "27",
+            "de": "27",
+            "it": "27"
+          },
+          "option_b": {
+            "en": "39",
+            "de": "39",
+            "it": "39"
+          },
+          "option_c": {
+            "en": "66",
+            "de": "66",
+            "it": "66"
+          },
+          "option_d": {
+            "en": "50",
+            "de": "50",
+            "it": "50"
+          },
+          "right_answer": {
+            "en": "39",
+            "de": "39",
+            "it": "39"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Old Testament contains 39 books from Genesis to Malachi.",
+            "de": "Das Alte Testament enthält 39 Bücher von Genesis bis Maleachi.",
+            "it": "L'Antico Testamento contiene 39 libri dalla Genesi a Malachia."
+          },
+          "image_prompt": "Historical scene, ancient Jewish synagogue or temple library circa 400 BC Middle East, Hebrew scrolls of Old Testament books arranged on shelves, Torah scrolls prominent, scribe carefully copying text, warm lamplight, atmosphere of preserving sacred scripture, historically accurate ancient Hebrew manuscript storage",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "How many books are in the New Testament?",
+            "de": "Wie viele Bücher hat das Neue Testament?",
+            "it": "Quanti libri ci sono nel Nuovo Testamento?"
+          },
+          "option_a": {
+            "en": "27",
+            "de": "27",
+            "it": "27"
+          },
+          "option_b": {
+            "en": "39",
+            "de": "39",
+            "it": "39"
+          },
+          "option_c": {
+            "en": "12",
+            "de": "12",
+            "it": "12"
+          },
+          "option_d": {
+            "en": "4",
+            "de": "4",
+            "it": "4"
+          },
+          "right_answer": {
+            "en": "27",
+            "de": "27",
+            "it": "27"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The New Testament contains 27 books from Matthew to Revelation.",
+            "de": "Das Neue Testament enthält 27 Bücher von Matthäus bis Offenbarung.",
+            "it": "Il Nuovo Testamento contiene 27 libri da Matteo all'Apocalisse."
+          },
+          "image_prompt": "Biblical times, early Christian house church circa 90 AD Middle East, collection of Greek papyrus scrolls and early codices of New Testament books, four Gospels and epistles visible, believers gathering to read scripture, warm candlelight, atmosphere of early church preserving apostolic writings, first century Christian community",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm candlelight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What is the first book of the Bible?",
+            "de": "Was ist das erste Buch der Bibel?",
+            "it": "Qual è il primo libro della Bibbia?"
+          },
+          "option_a": {
+            "en": "Exodus",
+            "de": "Exodus",
+            "it": "Esodo"
+          },
+          "option_b": {
+            "en": "Genesis",
+            "de": "Genesis",
+            "it": "Genesi"
+          },
+          "option_c": {
+            "en": "Matthew",
+            "de": "Matthäus",
+            "it": "Matteo"
+          },
+          "option_d": {
+            "en": "Psalms",
+            "de": "Psalmen",
+            "it": "Salmi"
+          },
+          "right_answer": {
+            "en": "Genesis",
+            "de": "Genesis",
+            "it": "Genesi"
+          },
+          "verse_reference": {
+            "en": "Genesis 1:1",
+            "de": "1. Mose 1:1",
+            "it": "Genesi 1:1"
+          },
+          "verse_content": {
+            "en": "In the beginning God created the heavens and the earth.",
+            "de": "Am Anfang schuf Gott Himmel und Erde.",
+            "it": "Nel principio Dio creò i cieli e la terra."
+          },
+          "image_prompt": "Symbolic biblical scene, ancient Hebrew scroll unfurled showing opening words of Genesis, creation imagery emerging from darkness into light, stars and earth forming, hand of God reaching into void, cosmic beginning atmosphere, Hebrew text visible, reverent depiction of creation moment",
+          "image_style": "Photorealistic, symbolic biblical concept, dramatic lighting from darkness to light, cinematic composition, reverent tone suitable for all ages, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What is the last book of the Bible?",
+            "de": "Was ist das letzte Buch der Bibel?",
+            "it": "Qual è l'ultimo libro della Bibbia?"
+          },
+          "option_a": {
+            "en": "Revelation",
+            "de": "Offenbarung",
+            "it": "Apocalisse"
+          },
+          "option_b": {
+            "en": "Jude",
+            "de": "Judas",
+            "it": "Giuda"
+          },
+          "option_c": {
+            "en": "Malachi",
+            "de": "Maleachi",
+            "it": "Malachia"
+          },
+          "option_d": {
+            "en": "Acts",
+            "de": "Apostelgeschichte",
+            "it": "Atti"
+          },
+          "right_answer": {
+            "en": "Revelation",
+            "de": "Offenbarung",
+            "it": "Apocalisse"
+          },
+          "verse_reference": {
+            "en": "Revelation 1:1",
+            "de": "Offenbarung 1:1",
+            "it": "Apocalisse 1:1"
+          },
+          "verse_content": {
+            "en": "The Revelation of Jesus Christ, which God gave him to show to his servants the things which must happen soon.",
+            "de": "Dies ist die Offenbarung Jesu Christi, die ihm Gott gegeben hat, seinen Knechten zu zeigen, was in Kürze geschehen soll.",
+            "it": "La rivelazione di Gesù Cristo, che Dio gli diede per mostrare ai suoi servi le cose che devono avvenire tra breve."
+          },
+          "image_prompt": "Biblical times, island of Patmos circa 95 AD Mediterranean, apostle John elderly with white beard writing on scroll, vision of heavenly throne room and New Jerusalem appearing in sky above, angel present, dramatic apocalyptic imagery, ancient Greek text visible, prophetic atmosphere, first century",
+          "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "How many Gospels are there?",
+            "de": "Wie viele Evangelien gibt es?",
+            "it": "Quanti Vangeli ci sono?"
+          },
+          "option_a": {
+            "en": "2",
+            "de": "2",
+            "it": "2"
+          },
+          "option_b": {
+            "en": "4",
+            "de": "4",
+            "it": "4"
+          },
+          "option_c": {
+            "en": "7",
+            "de": "7",
+            "it": "7"
+          },
+          "option_d": {
+            "en": "12",
+            "de": "12",
+            "it": "12"
+          },
+          "right_answer": {
+            "en": "4",
+            "de": "4",
+            "it": "4"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The four Gospels are Matthew, Mark, Luke, and John.",
+            "de": "Die vier Evangelien sind Matthäus, Markus, Lukas und Johannes.",
+            "it": "I quattro Vangeli sono Matteo, Marco, Luca e Giovanni."
+          },
+          "image_prompt": "Biblical times, early Christian scriptorium circa 100 AD Middle East, four distinct scrolls representing the four Gospels laid out on table, each with symbolic imagery - lion, ox, man, eagle - scribes carefully copying texts, warm lamplight, sacred atmosphere of preserving Jesus's life accounts, first century",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What are the first five books of the Bible called?",
+            "de": "Wie heißen die ersten fünf Bücher der Bibel?",
+            "it": "Come si chiamano i primi cinque libri della Bibbia?"
+          },
+          "option_a": {
+            "en": "The Gospels",
+            "de": "Die Evangelien",
+            "it": "I Vangeli"
+          },
+          "option_b": {
+            "en": "The Pentateuch",
+            "de": "Der Pentateuch",
+            "it": "Il Pentateuco"
+          },
+          "option_c": {
+            "en": "The Psalms",
+            "de": "Die Psalmen",
+            "it": "I Salmi"
+          },
+          "option_d": {
+            "en": "The Prophets",
+            "de": "Die Propheten",
+            "it": "I Profeti"
+          },
+          "right_answer": {
+            "en": "The Pentateuch",
+            "de": "Der Pentateuch",
+            "it": "Il Pentateuco"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Pentateuch or Torah includes Genesis, Exodus, Leviticus, Numbers, and Deuteronomy.",
+            "de": "Der Pentateuch oder die Thora umfasst Genesis, Exodus, Levitikus, Numeri und Deuteronomium.",
+            "it": "Il Pentateuco o Torah include Genesi, Esodo, Levitico, Numeri e Deuteronomio."
+          },
+          "image_prompt": "Biblical times, ancient Jewish temple or synagogue circa 500 BC Middle East, five large Torah scrolls displayed on sacred table, each representing one book of Moses, priest in traditional garments standing reverently, tablets of law visible in background, warm golden lamplight, atmosphere of sacred Torah study, ancient Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm golden lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "In which language was most of the Old Testament originally written?",
+            "de": "In welcher Sprache wurde der Großteil des Alten Testaments ursprünglich geschrieben?",
+            "it": "In quale lingua fu scritto originariamente la maggior parte dell'Antico Testamento?"
+          },
+          "option_a": {
+            "en": "Greek",
+            "de": "Griechisch",
+            "it": "Greco"
+          },
+          "option_b": {
+            "en": "Hebrew",
+            "de": "Hebräisch",
+            "it": "Ebraico"
+          },
+          "option_c": {
+            "en": "Latin",
+            "de": "Latein",
+            "it": "Latino"
+          },
+          "option_d": {
+            "en": "Aramaic",
+            "de": "Aramäisch",
+            "it": "Aramaico"
+          },
+          "right_answer": {
+            "en": "Hebrew",
+            "de": "Hebräisch",
+            "it": "Ebraico"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Old Testament was written primarily in Hebrew, with some portions in Aramaic.",
+            "de": "Das Alte Testament wurde hauptsächlich in Hebräisch geschrieben, mit einigen Teilen in Aramäisch.",
+            "it": "L'Antico Testamento fu scritto principalmente in ebraico, con alcune parti in aramaico."
+          },
+          "image_prompt": "Biblical times, ancient scribe's workspace circa 600 BC Jerusalem, Hebrew manuscript with ancient Hebrew script visible, scribe with quill writing on parchment, scrolls with Hebrew text in background, ancient Hebrew letters clearly visible, warm oil lamp lighting, atmosphere of preserving sacred Hebrew scriptures, ancient Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm lamplight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "In which language was the New Testament originally written?",
+            "de": "In welcher Sprache wurde das Neue Testament ursprünglich geschrieben?",
+            "it": "In quale lingua fu scritto originariamente il Nuovo Testamento?"
+          },
+          "option_a": {
+            "en": "Hebrew",
+            "de": "Hebräisch",
+            "it": "Ebraico"
+          },
+          "option_b": {
+            "en": "Greek",
+            "de": "Griechisch",
+            "it": "Greco"
+          },
+          "option_c": {
+            "en": "Latin",
+            "de": "Latein",
+            "it": "Latino"
+          },
+          "option_d": {
+            "en": "Aramaic",
+            "de": "Aramäisch",
+            "it": "Aramaico"
+          },
+          "right_answer": {
+            "en": "Greek",
+            "de": "Griechisch",
+            "it": "Greco"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The New Testament was written in Koine Greek, the common language of the first-century Mediterranean world.",
+            "de": "Das Neue Testament wurde in Koine-Griechisch geschrieben, der gemeinsamen Sprache der mediterranen Welt des ersten Jahrhunderts.",
+            "it": "Il Nuovo Testamento fu scritto in greco koinè, la lingua comune del mondo mediterraneo del primo secolo."
+          },
+          "image_prompt": "Biblical times, early Christian scribe circa 80 AD Ephesus or Rome, writing on papyrus scroll with ancient Greek text visible, Gospel manuscripts and epistles in Greek script, quill and ink, warm lamplight, atmosphere of early church preserving apostolic writings in Greek, first century Mediterranean world",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What is the longest book in the Bible?",
+            "de": "Was ist das längste Buch in der Bibel?",
+            "it": "Qual è il libro più lungo della Bibbia?"
+          },
+          "option_a": {
+            "en": "Genesis",
+            "de": "Genesis",
+            "it": "Genesi"
+          },
+          "option_b": {
+            "en": "Psalms",
+            "de": "Psalmen",
+            "it": "Salmi"
+          },
+          "option_c": {
+            "en": "Isaiah",
+            "de": "Jesaja",
+            "it": "Isaia"
+          },
+          "option_d": {
+            "en": "Jeremiah",
+            "de": "Jeremia",
+            "it": "Geremia"
+          },
+          "right_answer": {
+            "en": "Psalms",
+            "de": "Psalmen",
+            "it": "Salmi"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "Psalms is the longest book in the Bible with 150 chapters.",
+            "de": "Die Psalmen sind das längste Buch in der Bibel mit 150 Kapiteln.",
+            "it": "I Salmi sono il libro più lungo della Bibbia con 150 capitoli."
+          },
+          "image_prompt": "Biblical times, ancient temple of Jerusalem circa 500 BC, collection of 150 psalm scrolls arranged in ornate storage, musicians with harps and lyres, King David's songbook visible, Hebrew poetry text, warm golden temple lighting, atmosphere of worship and sacred music, ancient Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm golden lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Which book tells the story of creation?",
+            "de": "Welches Buch erzählt die Geschichte der Schöpfung?",
+            "it": "Quale libro racconta la storia della creazione?"
+          },
+          "option_a": {
+            "en": "Exodus",
+            "de": "Exodus",
+            "it": "Esodo"
+          },
+          "option_b": {
+            "en": "Genesis",
+            "de": "Genesis",
+            "it": "Genesi"
+          },
+          "option_c": {
+            "en": "Revelation",
+            "de": "Offenbarung",
+            "it": "Apocalisse"
+          },
+          "option_d": {
+            "en": "Job",
+            "de": "Hiob",
+            "it": "Giobbe"
+          },
+          "right_answer": {
+            "en": "Genesis",
+            "de": "Genesis",
+            "it": "Genesi"
+          },
+          "verse_reference": {
+            "en": "Genesis 1-2",
+            "de": "1. Mose 1-2",
+            "it": "Genesi 1-2"
+          },
+          "verse_content": {
+            "en": "In the beginning God created the heavens and the earth.",
+            "de": "Am Anfang schuf Gott Himmel und Erde.",
+            "it": "Nel principio Dio creò i cieli e la terra."
+          },
+          "image_prompt": "Symbolic biblical scene, seven days of creation displayed as artistic panels, light separating from darkness, firmament forming, land and seas dividing, sun moon and stars appearing, vegetation growing, birds and sea creatures emerging, land animals and finally humans created, hand of God present, cosmic beginning atmosphere, reverent depiction of Genesis creation account",
+          "image_style": "Photorealistic, symbolic biblical concept, dramatic cosmic lighting, cinematic composition, reverent tone suitable for all ages, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What does 'Bible' mean?",
+            "de": "Was bedeutet 'Bibel'?",
+            "it": "Cosa significa 'Bibbia'?"
+          },
+          "option_a": {
+            "en": "Holy Book",
+            "de": "Heiliges Buch",
+            "it": "Libro Sacro"
+          },
+          "option_b": {
+            "en": "Books",
+            "de": "Bücher",
+            "it": "Libri"
+          },
+          "option_c": {
+            "en": "God's Word",
+            "de": "Gottes Wort",
+            "it": "Parola di Dio"
+          },
+          "option_d": {
+            "en": "Sacred Scroll",
+            "de": "Heilige Schriftrolle",
+            "it": "Rotolo Sacro"
+          },
+          "right_answer": {
+            "en": "Books",
+            "de": "Bücher",
+            "it": "Libri"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The word 'Bible' comes from the Greek 'biblia' which means 'books'.",
+            "de": "Das Wort 'Bibel' kommt vom griechischen 'biblia', was 'Bücher' bedeutet.",
+            "it": "La parola 'Bibbia' viene dal greco 'biblia' che significa 'libri'."
+          },
+          "image_prompt": "Historical scene, ancient library in Alexandria or Athens circa 200 BC, Greek scholar holding multiple scrolls and codices, Greek text 'BIBLIA' prominently displayed on tablet, collection of various books and manuscripts, classical Greek architecture, warm scholarly atmosphere, ancient Mediterranean world",
+          "image_style": "Photorealistic, historically accurate ancient scene, warm natural lighting, cinematic composition, educational tone suitable for all ages, cultural authenticity of ancient Greek period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "How many authors wrote the Bible?",
+            "de": "Wie viele Autoren schrieben die Bibel?",
+            "it": "Quanti autori scrissero la Bibbia?"
+          },
+          "option_a": {
+            "en": "1",
+            "de": "1",
+            "it": "1"
+          },
+          "option_b": {
+            "en": "About 40",
+            "de": "Etwa 40",
+            "it": "Circa 40"
+          },
+          "option_c": {
+            "en": "12",
+            "de": "12",
+            "it": "12"
+          },
+          "option_d": {
+            "en": "100",
+            "de": "100",
+            "it": "100"
+          },
+          "right_answer": {
+            "en": "About 40",
+            "de": "Etwa 40",
+            "it": "Circa 40"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Bible was written by about 40 different authors over approximately 1,500 years.",
+            "de": "Die Bibel wurde von etwa 40 verschiedenen Autoren über einen Zeitraum von etwa 1.500 Jahren geschrieben.",
+            "it": "La Bibbia fu scritta da circa 40 autori diversi in un periodo di circa 1.500 anni."
+          },
+          "image_prompt": "Historical collage scene, multiple biblical authors from different eras - Moses with tablets, David with harp, prophets writing scrolls, apostles with quills, diverse time periods from 1400 BC to 100 AD, shepherds kings prophets fishermen, all writing scripture inspired by divine light from above, timeline spanning 1500 years, atmosphere showing unity of diverse authors",
+          "image_style": "Photorealistic, historically accurate biblical compilation, warm divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity spanning biblical periods, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Over how many years was the Bible written?",
+            "de": "Über wie viele Jahre wurde die Bibel geschrieben?",
+            "it": "In quanti anni fu scritta la Bibbia?"
+          },
+          "option_a": {
+            "en": "100 years",
+            "de": "100 Jahre",
+            "it": "100 anni"
+          },
+          "option_b": {
+            "en": "About 1,500 years",
+            "de": "Etwa 1.500 Jahre",
+            "it": "Circa 1.500 anni"
+          },
+          "option_c": {
+            "en": "500 years",
+            "de": "500 Jahre",
+            "it": "500 anni"
+          },
+          "option_d": {
+            "en": "50 years",
+            "de": "50 Jahre",
+            "it": "50 anni"
+          },
+          "right_answer": {
+            "en": "About 1,500 years",
+            "de": "Etwa 1.500 Jahre",
+            "it": "Circa 1.500 anni"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "The Bible was written over a span of approximately 1,500 years, from about 1400 BC to 100 AD.",
+            "de": "Die Bibel wurde über einen Zeitraum von etwa 1.500 Jahren geschrieben, von etwa 1400 v. Chr. bis 100 n. Chr.",
+            "it": "La Bibbia fu scritta nell'arco di circa 1.500 anni, dal 1400 a.C. circa al 100 d.C."
+          },
+          "image_prompt": "Historical timeline visualization, long scroll or timeline showing 1500 year span from Moses era 1400 BC through to apostolic era 100 AD, key moments marked - exodus, kingdom era, exile, Jesus ministry, early church, various authors and locations marked along timeline, ancient to Roman period architecture evolving, educational historical display",
+          "image_style": "Photorealistic, historical educational visualization, clear timeline layout, cinematic composition, informative tone suitable for all ages, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What is the middle book of the Bible?",
+            "de": "Was ist das mittlere Buch der Bibel?",
+            "it": "Qual è il libro centrale della Bibbia?"
+          },
+          "option_a": {
+            "en": "Psalms",
+            "de": "Psalmen",
+            "it": "Salmi"
+          },
+          "option_b": {
+            "en": "Proverbs",
+            "de": "Sprüche",
+            "it": "Proverbi"
+          },
+          "option_c": {
+            "en": "Micah",
+            "de": "Micha",
+            "it": "Michea"
+          },
+          "option_d": {
+            "en": "Isaiah",
+            "de": "Jesaja",
+            "it": "Isaia"
+          },
+          "right_answer": {
+            "en": "Micah",
+            "de": "Micha",
+            "it": "Michea"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "Micah and Nahum are considered the middle books of the Bible (books 33 and 34 of 66).",
+            "de": "Micha und Nahum gelten als die mittleren Bücher der Bibel (Bücher 33 und 34 von 66).",
+            "it": "Michea e Nahum sono considerati i libri centrali della Bibbia (libri 33 e 34 su 66)."
+          },
+          "image_prompt": "Symbolic biblical scene, 66 books of Bible arranged as stacked volumes or scrolls with books 33 and 34 (Micah and Nahum) highlighted in center with golden light, books balanced on either side showing Old and New Testament division, library or study setting, warm scholarly atmosphere, educational visualization of Bible structure",
+          "image_style": "Photorealistic, symbolic educational concept, warm balanced lighting, cinematic composition, informative tone suitable for all ages, 8K quality"
+        },
+        {
+          "question": {
+            "en": "Which book of the Bible has only one chapter?",
+            "de": "Welches Buch der Bibel hat nur ein Kapitel?",
+            "it": "Quale libro della Bibbia ha solo un capitolo?"
+          },
+          "option_a": {
+            "en": "Jude",
+            "de": "Judas",
+            "it": "Giuda"
+          },
+          "option_b": {
+            "en": "Ruth",
+            "de": "Rut",
+            "it": "Rut"
+          },
+          "option_c": {
+            "en": "Esther",
+            "de": "Ester",
+            "it": "Ester"
+          },
+          "option_d": {
+            "en": "James",
+            "de": "Jakobus",
+            "it": "Giacomo"
+          },
+          "right_answer": {
+            "en": "Jude",
+            "de": "Judas",
+            "it": "Giuda"
+          },
+          "verse_reference": {
+            "en": "General Bible knowledge",
+            "de": "Allgemeines Bibelwissen",
+            "it": "Conoscenza biblica generale"
+          },
+          "verse_content": {
+            "en": "Several books have only one chapter: Obadiah, Philemon, 2 John, 3 John, and Jude.",
+            "de": "Mehrere Bücher haben nur ein Kapitel: Obadja, Philemon, 2. Johannes, 3. Johannes und Judas.",
+            "it": "Diversi libri hanno solo un capitolo: Abdia, Filemone, 2 Giovanni, 3 Giovanni e Giuda."
+          },
+          "image_prompt": "Biblical times, early Christian house church circa 90 AD, short epistles of Philemon, 2 John, 3 John, and Jude displayed as brief papyrus scrolls on table, notably shorter than other letters visible in background, warm candlelight, intimate setting showing brevity of these single-chapter books, first century Christian community",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm candlelight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+        },
+        {
+          "question": {
+            "en": "What is the longest chapter in the Bible?",
+            "de": "Was ist das längste Kapitel in der Bibel?",
+            "it": "Qual è il capitolo più lungo della Bibbia?"
+          },
+          "option_a": {
+            "en": "Psalm 23",
+            "de": "Psalm 23",
+            "it": "Salmo 23"
+          },
+          "option_b": {
+            "en": "Psalm 119",
+            "de": "Psalm 119",
+            "it": "Salmo 119"
+          },
+          "option_c": {
+            "en": "Genesis 1",
+            "de": "Genesis 1",
+            "it": "Genesi 1"
+          },
+          "option_d": {
+            "en": "Matthew 5",
+            "de": "Matthäus 5",
+            "it": "Matteo 5"
+          },
+          "right_answer": {
+            "en": "Psalm 119",
+            "de": "Psalm 119",
+            "it": "Salmo 119"
+          },
+          "verse_reference": {
+            "en": "Psalm 119",
+            "de": "Psalm 119",
+            "it": "Salmo 119"
+          },
+          "verse_content": {
+            "en": "Psalm 119 is the longest chapter in the Bible with 176 verses, an acrostic poem praising God's law.",
+            "de": "Psalm 119 ist das längste Kapitel in der Bibel mit 176 Versen, ein akrostisches Gedicht, das Gottes Gesetz preist.",
+            "it": "Il Salmo 119 è il capitolo più lungo della Bibbia con 176 versetti, un poema acrostico che loda la legge di Dio."
+          },
+          "image_prompt": "Biblical times, ancient temple or study circa 500 BC Jerusalem, very long scroll of Psalm 119 unfurled showing extensive Hebrew text in acrostic pattern following Hebrew alphabet, 22 sections visible corresponding to 22 Hebrew letters, scholar studying the lengthy psalm about God's law, warm lamplight, atmosphere of meditation on Torah, ancient Israel",
+          "image_style": "Photorealistic, historically accurate biblical scene, warm golden lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+        }
+      ]
+    }
+  ]
+}

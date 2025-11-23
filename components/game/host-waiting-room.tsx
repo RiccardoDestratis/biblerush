@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { cancelGame } from "@/lib/actions/games";
 import { getPlayerCount, getPlayers, removePlayer, renamePlayer } from "@/lib/actions/players";
 import { PlayerList } from "@/components/game/player-list";
-import { createGameChannel, subscribeToGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
+import { subscribeToGame, getGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
 import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload, GameStartPayload } from "@/lib/types/realtime";
 import { startGame } from "@/lib/actions/games";
 import { getQuestions } from "@/lib/actions/questions";
 import { useGameStore } from "@/lib/store/game-store";
 import { toast } from "sonner";
 import { Loader2, X, MoreVertical, Trash2, Edit2 } from "lucide-react";
+import { ShareButton } from "@/components/game/share-button";
 
 interface HostWaitingRoomProps {
   gameId: string;
@@ -39,7 +40,8 @@ export function HostWaitingRoom({
   const [menuPosition, setMenuPosition] = useState<{ top: number; right: number } | null>(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
   const [isGameStarting, setIsGameStarting] = useState(false);
-  const channelRef = useRef<ReturnType<typeof createGameChannel> | null>(null);
+  const [isChannelReady, setIsChannelReady] = useState(false);
+  const channelRef = useRef<ReturnType<typeof getGameChannel> | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const processedPlayerIdsRef = useRef<Set<string>>(new Set());
   const menuRef = useRef<HTMLDivElement>(null);
@@ -99,115 +101,69 @@ export function HostWaitingRoom({
     fetchPlayers();
   }, [roomCode, gameId, fetchPlayers]);
 
-  // Set up real-time subscription for player joins
+  // Set up real-time subscription
   useEffect(() => {
-    // Create game channel
-    const channel = createGameChannel(gameId);
-    channelRef.current = channel;
+    if (!unsubscribeRef.current) {
+      // Reset processed IDs when game changes
+      processedPlayerIdsRef.current = new Set();
 
-    // Reset processed IDs when game changes
-    processedPlayerIdsRef.current = new Set();
+      // Handle player joined event
+      const handlePlayerJoined = (payload: PlayerJoinedPayload) => {
+        if (processedPlayerIdsRef.current.has(payload.playerId)) return;
+        processedPlayerIdsRef.current.add(payload.playerId);
+        setPlayers((prevPlayers) => {
+          if (prevPlayers.some((p) => p.id === payload.playerId)) return prevPlayers;
+          return [...prevPlayers, { id: payload.playerId, player_name: payload.playerName }];
+        });
+        setPlayerCount((prev) => prev + 1);
+      };
 
-    // Handle player joined event (optimistic update)
-    const handlePlayerJoined = (payload: PlayerJoinedPayload) => {
-      // Check if we've already processed this player (avoid duplicates from broadcast + DB event)
-      if (processedPlayerIdsRef.current.has(payload.playerId)) {
-        return; // Already processed, skip
-      }
+      const handlePlayerRemoved = (payload: PlayerRemovedPayload) => {
+        setPlayers((prevPlayers) => prevPlayers.filter((p) => p.id !== payload.playerId));
+        setPlayerCount((prev) => Math.max(0, prev - 1));
+        if (selectedPlayerId === payload.playerId) setSelectedPlayerId(null);
+      };
 
-      // Mark as processed
-      processedPlayerIdsRef.current.add(payload.playerId);
-
-      // Optimistic update: Add player immediately
-      setPlayers((prevPlayers) => {
-        // Double-check for duplicates (safety check)
-        const exists = prevPlayers.some((p) => p.id === payload.playerId);
-        if (exists) {
-          return prevPlayers;
+      const handlePlayerRenamed = (payload: PlayerRenamedPayload) => {
+        setPlayers((prevPlayers) =>
+          prevPlayers.map((p) => (p.id === payload.playerId ? { ...p, player_name: payload.newName } : p))
+        );
+        if (renamingPlayerId === payload.playerId) {
+          setRenamingPlayerId(null);
+          setRenameValue("");
         }
-        
-        // Add new player
-        return [
-          ...prevPlayers,
-          {
-            id: payload.playerId,
-            player_name: payload.playerName,
-          },
-        ];
+      };
+
+      const handleGameStart = (payload: GameStartPayload) => {
+        setIsGameStarting(true);
+        startGameStore(payload, payload.totalQuestions);
+        setGameStatus("active");
+        toast.success("Game started!");
+      };
+
+      // Subscribe to game events
+      unsubscribeRef.current = subscribeToGame(gameId, {
+        onPlayerJoined: handlePlayerJoined,
+        onPlayerRemoved: handlePlayerRemoved,
+        onPlayerRenamed: handlePlayerRenamed,
+        onGameStart: handleGameStart,
+        onStatusChange: (status) => {
+          setIsChannelReady(status === "connected");
+        },
       });
-      
-      // Update count
-      setPlayerCount((prev) => prev + 1);
-    };
 
-    // Handle player removed event
-    const handlePlayerRemoved = (payload: PlayerRemovedPayload) => {
-      setPlayers((prevPlayers) => prevPlayers.filter((p) => p.id !== payload.playerId));
-      setPlayerCount((prev) => Math.max(0, prev - 1));
-      if (selectedPlayerId === payload.playerId) {
-        setSelectedPlayerId(null);
-      }
-    };
+      // Store channel reference for broadcasting
+      channelRef.current = getGameChannel(gameId);
+    }
 
-    // Handle player renamed event
-    const handlePlayerRenamed = (payload: PlayerRenamedPayload) => {
-      setPlayers((prevPlayers) =>
-        prevPlayers.map((p) =>
-          p.id === payload.playerId ? { ...p, player_name: payload.newName } : p
-        )
-      );
-      if (renamingPlayerId === payload.playerId) {
-        setRenamingPlayerId(null);
-        setRenameValue("");
-      }
-    };
-
-    // Handle game_start event
-    const handleGameStart = (payload: GameStartPayload) => {
-      setIsGameStarting(true);
-      
-      // Update Zustand store with question data
-      // totalQuestions is now included in the payload from the Server Action
-      startGameStore(payload, payload.totalQuestions);
-      setGameStatus("active");
-      
-      // Transition to question display (for now, just show a message)
-      // In Story 2.4, this will transition to actual question display
-      toast.success("Game started!");
-      
-      // TODO: Navigate to question display view (Story 2.4)
-      // For now, we'll just show a loading state
-    };
-
-    // Subscribe to game channel
-    const unsubscribe = subscribeToGameChannel(channel, gameId, {
-      onPlayerJoined: handlePlayerJoined,
-      onPlayerRemoved: handlePlayerRemoved,
-      onPlayerRenamed: handlePlayerRenamed,
-      onGameStart: handleGameStart,
-      onStatusChange: (status) => {
-        if (status === "connected") {
-          console.log("Realtime connected for game:", gameId);
-        } else if (status === "reconnecting") {
-          console.log("Realtime reconnecting...");
-        } else if (status === "failed") {
-          console.error("Realtime connection failed");
-        }
-      },
-      onError: (error) => {
-        console.error("Realtime error:", error);
-      },
-    });
-
-    unsubscribeRef.current = unsubscribe;
-
-    // Cleanup on unmount
     return () => {
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
+        unsubscribeRef.current = null;
+        channelRef.current = null;
       }
     };
-  }, [gameId]);
+  }, [gameId, startGameStore, setGameStatus, selectedPlayerId, renamingPlayerId]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -323,11 +279,18 @@ export function HostWaitingRoom({
       setIsGameStarting(true);
       toast.loading("Starting game...", { id: "game-start" });
 
-      // Broadcast game_start event to all subscribers
-      const channel = channelRef.current;
-      if (channel) {
-        await broadcastGameEvent(channel, "game_start", result.questionData);
+      // Wait for channel to be ready before broadcasting
+      if (!isChannelReady) {
+        // Wait up to 3 seconds for channel to be ready
+        let waited = 0;
+        while (!isChannelReady && waited < 3000) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          waited += 100;
+        }
       }
+
+      // Broadcast game_start event
+      await broadcastGameEvent(gameId, "game_start", result.questionData);
 
       // Update Zustand store
       // totalQuestions is now included in the payload from the Server Action
@@ -356,7 +319,6 @@ export function HostWaitingRoom({
       toast.dismiss("game-start");
       toast.success("Game started!");
 
-      // TODO: Navigate to question display view (Story 2.4)
       // For now, we'll just show a loading state
     } catch (error) {
       console.error("Error starting game:", error);
@@ -445,9 +407,20 @@ export function HostWaitingRoom({
 
           {/* Room Code */}
           <div className="space-y-4">
-            <p className="text-5xl md:text-6xl font-bold text-foreground">
-              Room Code: <span className="text-primary">{roomCode}</span>
-            </p>
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-5xl md:text-6xl font-bold text-foreground">
+                Room Code: <span className="text-primary">{roomCode}</span>
+              </p>
+              {!isLoadingNetworkUrl && (
+                <ShareButton
+                  url={joinUrl}
+                  roomCode={roomCode}
+                  variant="outline"
+                  size="lg"
+                  className="min-w-[200px]"
+                />
+              )}
+            </div>
 
             {/* Instructions */}
             <div className="space-y-2">

@@ -1207,7 +1207,7 @@ This epic delivers the competitive gameplay completion:
 
 ## Epic 4: Content Infrastructure & AI Visual System
 
-**Epic Goal:** Build content management system, integrate DALL-E 3 for AI image generation, and deliver ONE fully curated question set (20 questions + images) as proof of concept. This validates the content pipeline works before bulk creation of remaining 4 sets.
+**Epic Goal:** Build content management system, integrate NanoBanana (free tier) for AI image generation, and deliver ONE fully curated question set (20 questions + images) as proof of concept. This validates the content pipeline works before bulk creation of remaining 4 sets.
 
 **User Value:** After this epic, games include stunning AI-generated Biblical imagery that creates memorable "wow" moments. The content infrastructure enables rapid creation of remaining question sets.
 
@@ -1260,7 +1260,7 @@ So that I can efficiently create and manage curated Bible question content.
 
 ---
 
-### Story 4.2: AI Image Generation Pipeline with DALL-E 3
+### Story 4.2: AI Image Generation Pipeline with NanoBanana
 
 As a developer,
 I want an automated pipeline to generate AI Biblical imagery for each question,
@@ -1274,22 +1274,31 @@ So that every correct answer has a stunning visual that creates memorable learni
 - Accepts question set ID as parameter
 - Fetches all questions for that set from database
 - For each question:
-  - Generates DALL-E 3 prompt based on correct answer and scripture reference
-  - Calls OpenAI DALL-E 3 API with prompt
+  - Generates NanoBanana prompt based on correct answer and scripture reference
+  - Calls NanoBanana API (Gemini-compatible) with prompt + style + aspect ratio
   - Downloads generated image
   - Optimizes image: Compress to <300KB, convert to WebP with JPEG fallback (NFR4)
   - Uploads to Supabase Storage in `question-images/` bucket
-  - Updates `questions.image_url` with Supabase Storage URL
+  - Updates `questions.image_location` with Supabase Storage URL
+  - Updates `questions.image_aspect_ratio` with used aspect ratio
   - Logs progress (e.g., "Generated 5/20 images")
 
-**And** DALL-E 3 prompts follow format:
+**And** NanoBanana prompts follow format:
 - "A photorealistic Biblical scene showing [answer subject]. Warm lighting, reverent tone, suitable for all ages. No text, no modern elements."
 - Example: "A photorealistic Biblical scene showing the birth of Jesus in a stable in Bethlehem. Warm lighting, reverent tone, suitable for all ages. No text, no modern elements."
+- Style field can include: "Photorealistic, historically accurate biblical scene, warm candlelight, cinematic composition, reverent tone suitable for all ages"
+
+**And** API request format:
+- Endpoint: `POST https://api.nanobananai.com/v1beta/models/gemini-2.5-flash-image:generateContent`
+- API key: Query parameter `key` or Authorization header
+- Request body follows Gemini API format with `generationConfig.imageConfig.aspectRatio`
+- Supported aspect ratios: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `3:2`, `2:3`, `5:4`, `4:5`, `21:9`
+- Default aspect ratio: `16:9` for projector compatibility
 
 **And** image optimization:
 - Target size: <300KB per image (NFR4)
 - Format: WebP with JPEG fallback (CR5)
-- Dimensions: 1920x1080 for projector, auto-scaled for mobile
+- Dimensions: 1920x1080 for projector (16:9), auto-scaled for mobile
 - Compression: Balance quality and bandwidth for church WiFi (5-20 Mbps, NFR4)
 
 **And** error handling:
@@ -1297,13 +1306,15 @@ So that every correct answer has a stunning visual that creates memorable learni
 - If retry fails, logs error and continues with next question
 - Placeholder image URL stored if generation fails (fallback in Story 4.3)
 
-**And** cost tracking: Logs total API cost (target: <$50 for 100 images, NFR9)
+**And** cost tracking: Logs total API cost (NanoBanana is free tier available)
 **And** script executable via: `pnpm run generate:images gospels`
 
 **Prerequisites:** Stories 1.2, 4.1
 
 **Technical Notes:**
-- OpenAI API: DALL-E 3, ~$0.04 per image (Architecture "AI Image Delivery")
+- NanoBanana API: Free tier available, Gemini-compatible interface
+- API endpoint: `api.nanobananai.com/v1beta/models/gemini-2.5-flash-image:generateContent`
+- API key stored in environment variable: `NANOBANANA_API_KEY`
 - Supabase Storage: Public bucket for CDN delivery (Architecture "Storage")
 - Image prompts: Follow UX Design "Photography/Imagery" specifications (warm lighting, reverent tone)
 - Batch processing: Generate all 20 images for "Gospels" set in one run
@@ -1464,7 +1475,7 @@ So that all questions are theologically accurate and appropriate for all ages.
 
 This epic delivers the content infrastructure:
 - ✅ Question set data model with scripture references (FR20)
-- ✅ AI image generation pipeline with DALL-E 3
+- ✅ AI image generation pipeline with NanoBanana (free tier)
 - ✅ Supabase Storage integration with CDN delivery
 - ✅ Image pre-loading for fast reveals
 - ✅ Enhanced answer reveals with AI imagery (FR11)
@@ -2111,14 +2122,15 @@ So that I can easily maintain and expand the question library without direct dat
 - Correct Answer (radio: A/B/C/D)
 - Scripture Reference (text input)
 - Verse Content (textarea, optional)
-- Image Content Prompt (textarea for DALL-E prompt)
-- Image Style (textarea for DALL-E style)
+- Image Content Prompt (textarea for NanoBanana prompt)
+- Image Style (textarea for NanoBanana style)
+- Tier Required (dropdown: free/pro/church - locks question set to subscription tier)
 - Upload Custom Image (file upload, optional - overrides AI generation)
 - Difficulty (dropdown: beginner/intermediate/advanced, optional)
 
 **When** I submit the form:
 **Then** question is created in database
-**And** if image prompt provided: AI image is generated via DALL-E 3 and uploaded to Supabase Storage
+**And** if image prompt provided: AI image is generated via NanoBanana API and uploaded to Supabase Storage
 **And** if custom image uploaded: Image is uploaded to Supabase Storage
 **And** success toast: "Question created successfully"
 
@@ -2155,13 +2167,14 @@ set_name,set_description,difficulty,question,option_a,option_b,option_c,option_d
   - Current image preview (if exists)
   - Image Content Prompt (editable textarea)
   - Image Style (editable textarea)
+  - Aspect Ratio selector (1:1, 16:9, 9:16, 4:3, 3:4, etc.)
   - "Upload Custom Image" option (file picker)
-  - "Generate with DALL-E" button
+  - "Generate with NanoBanana" button
   - "Upload Custom" button
   - "Cancel" button
 
-**When** I click "Generate with DALL-E":
-**Then** DALL-E 3 API is called with prompt + style
+**When** I click "Generate with NanoBanana":
+**Then** NanoBanana API is called with prompt + style + aspect ratio
 **And** new image is generated and uploaded to Supabase Storage
 **And** `questions.image_url` is updated
 **And** success toast: "Image regenerated successfully"
@@ -2191,8 +2204,9 @@ ALTER TABLE question_sets ADD COLUMN is_published BOOLEAN DEFAULT true;
 
 -- Add to questions table:
 ALTER TABLE questions ADD COLUMN verse_content TEXT; -- Full verse text
-ALTER TABLE questions ADD COLUMN image_content_prompt TEXT; -- DALL-E prompt
-ALTER TABLE questions ADD COLUMN image_style TEXT; -- DALL-E style
+ALTER TABLE questions ADD COLUMN image_content_prompt TEXT; -- NanoBanana prompt
+ALTER TABLE questions ADD COLUMN image_style TEXT; -- NanoBanana style
+ALTER TABLE questions ADD COLUMN image_aspect_ratio TEXT; -- Aspect ratio: '1:1', '16:9', '9:16', etc.
 ALTER TABLE questions ADD COLUMN is_custom_image BOOLEAN DEFAULT false; -- True if uploaded, false if AI-generated
 
 -- Add to users table (if not exists):
@@ -2205,14 +2219,16 @@ ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT false;
 - CSV upload: Validated server-side, max file size 10MB
 - Image upload: Validated format and size server-side
 
-**Prerequisites:** Stories 5.2 (Auth), 4.2 (AI Image Generation)
+**Prerequisites:** Stories 5.2 (Auth), 4.2 (AI Image Generation - now using NanoBanana)
 
 **Technical Notes:**
 - Admin dashboard uses shadcn/ui components (DataTable, Form, FileUpload)
 - CSV parsing: Use `papaparse` or similar library
 - Image upload: Supabase Storage with public bucket
-- DALL-E integration: Reuse logic from Story 4.2
+- NanoBanana integration: Uses Gemini-compatible API (`api.nanobananai.com/v1beta/models/gemini-2.5-flash-image:generateContent`)
+- API key stored in environment variable: `NANOBANANA_API_KEY`
 - Admin check: Middleware or Server Action validates `is_admin` or `tier = 'church'`
+- Tier management: UI allows setting `tier_required` on question sets (free/pro/church)
 - Follow UX Design patterns for admin interfaces (clean, functional, not game-styled)
 
 **CSV Format Specification:**
@@ -2306,7 +2322,7 @@ This epic breakdown decomposes the Bible Memory Quiz Game PRD into 34 implementa
 
 **Epic 4: Content Infrastructure & AI Visual System (5 stories)**
 - Builds content management system
-- Integrates DALL-E 3 for AI image generation
+- Integrates NanoBanana (free tier) for AI image generation
 - Delivers ONE complete question set (20 questions + images) as proof of concept
 
 **Epic 5: Content Library Completion & Launch Readiness (11 stories)**

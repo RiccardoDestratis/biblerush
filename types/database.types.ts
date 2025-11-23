@@ -160,6 +160,7 @@ export type Database = {
       }
       question_sets: {
         Row: {
+          card_background_url: string | null
           created_at: string | null
           description: string | null
           description_de: string | null
@@ -171,10 +172,12 @@ export type Database = {
           name_de: string | null
           name_en: string
           name_it: string | null
+          order: number
           question_count: number | null
           tier_required: string | null
         }
         Insert: {
+          card_background_url?: string | null
           created_at?: string | null
           description?: string | null
           description_de?: string | null
@@ -186,10 +189,12 @@ export type Database = {
           name_de?: string | null
           name_en: string
           name_it?: string | null
+          order?: number
           question_count?: number | null
           tier_required?: string | null
         }
         Update: {
+          card_background_url?: string | null
           created_at?: string | null
           description?: string | null
           description_de?: string | null
@@ -201,6 +206,7 @@ export type Database = {
           name_de?: string | null
           name_en?: string
           name_it?: string | null
+          order?: number
           question_count?: number | null
           tier_required?: string | null
         }
@@ -242,6 +248,7 @@ export type Database = {
           verse_reference_en: string | null
           verse_reference_it: string | null
           video_location: string | null
+          show_source: boolean | null
         }
         Insert: {
           correct_answer: string
@@ -278,6 +285,7 @@ export type Database = {
           verse_reference_en?: string | null
           verse_reference_it?: string | null
           video_location?: string | null
+          show_source?: boolean | null
         }
         Update: {
           correct_answer?: string
@@ -314,6 +322,7 @@ export type Database = {
           verse_reference_en?: string | null
           verse_reference_it?: string | null
           video_location?: string | null
+          show_source?: boolean | null
         }
         Relationships: [
           {

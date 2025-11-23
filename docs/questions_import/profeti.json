@@ -1,0 +1,899 @@
+{
+    "question_sets": [
+      {
+        "set_name": {
+          "en": "Prophets & Promises: Voices of God",
+          "de": "Propheten & Verheißungen: Stimmen Gottes",
+          "it": "Profeti & Promesse: Voci di Dio"
+        },
+        "set_description": {
+          "en": "Major and minor prophets, messianic prophecies, and God's covenant promises",
+          "de": "Große und kleine Propheten, messianische Prophezeiungen und Gottes Bundesverheißungen",
+          "it": "Profeti maggiori e minori, profezie messianiche e promesse del patto di Dio"
+        },
+        "difficulty": "intermediate",
+        "questions": [
+          {
+            "question": {
+              "en": "Which prophet foretold that a virgin would conceive and bear a son called Immanuel?",
+              "de": "Welcher Prophet sagte voraus, dass eine Jungfrau empfangen und einen Sohn namens Immanuel gebären würde?",
+              "it": "Quale profeta predisse che una vergine avrebbe concepito e partorito un figlio chiamato Emmanuele?"
+            },
+            "option_a": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_b": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "option_c": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_d": {
+              "en": "Daniel",
+              "de": "Daniel",
+              "it": "Daniele"
+            },
+            "right_answer": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "verse_reference": {
+              "en": "Isaiah 7:14",
+              "de": "Jesaja 7:14",
+              "it": "Isaia 7:14"
+            },
+            "verse_content": {
+              "en": "Therefore the Lord himself will give you a sign. Behold, the virgin will conceive, and bear a son, and shall call his name Immanuel.",
+              "de": "Darum wird euch der Herr selbst ein Zeichen geben: Siehe, die Jungfrau wird schwanger werden und einen Sohn gebären und wird ihm den Namen Immanuel geben.",
+              "it": "Pertanto il Signore stesso vi darà un segno. Ecco: la vergine concepirà e partorirà un figlio, che chiamerà Emmanuele."
+            },
+            "image_prompt": "Biblical times, prophet Isaiah in Jerusalem circa 730 BC, standing before King Ahaz in royal court, Isaiah gesturing prophetically toward vision of future virgin mother with infant in divine light, Hebrew scroll in hand, atmosphere of prophetic revelation, temple columns visible, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet foretold that the Messiah would be born in Bethlehem?",
+              "de": "Welcher Prophet sagte voraus, dass der Messias in Bethlehem geboren werden würde?",
+              "it": "Quale profeta predisse che il Messia sarebbe nato a Betlemme?"
+            },
+            "option_a": {
+              "en": "Micah",
+              "de": "Micha",
+              "it": "Michea"
+            },
+            "option_b": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "option_c": {
+              "en": "Joel",
+              "de": "Joel",
+              "it": "Gioele"
+            },
+            "option_d": {
+              "en": "Amos",
+              "de": "Amos",
+              "it": "Amos"
+            },
+            "right_answer": {
+              "en": "Micah",
+              "de": "Micha",
+              "it": "Michea"
+            },
+            "verse_reference": {
+              "en": "Micah 5:2",
+              "de": "Micha 5:2",
+              "it": "Michea 5:2"
+            },
+            "verse_content": {
+              "en": "But you, Bethlehem Ephrathah, being small among the clans of Judah, out of you one will come out to me that is to be ruler in Israel.",
+              "de": "Und du, Bethlehem Efrata, die du klein bist unter den Städten in Juda, aus dir soll mir der kommen, der in Israel Herr sei.",
+              "it": "Ma tu, Betlemme, Efrata, anche se sei piccola fra i clan di Giuda, da te uscirà per me colui che sarà dominatore in Israele."
+            },
+            "image_prompt": "Biblical times, prophet Micah in Judean countryside circa 700 BC, pointing toward small town of Bethlehem in distance with prophetic gesture, shepherd's staff in hand, rolling hills and ancient town visible on horizon, divine light illuminating Bethlehem, atmosphere of messianic prophecy, ancient Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm golden lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet wrote about the suffering servant who was 'pierced for our transgressions'?",
+              "de": "Welcher Prophet schrieb über den leidenden Knecht, der 'um unserer Sünden willen durchbohrt' wurde?",
+              "it": "Quale profeta scrisse del servo sofferente che fu 'trafitto per le nostre trasgressioni'?"
+            },
+            "option_a": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "option_b": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_c": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_d": {
+              "en": "Daniel",
+              "de": "Daniel",
+              "it": "Daniele"
+            },
+            "right_answer": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "verse_reference": {
+              "en": "Isaiah 53:5",
+              "de": "Jesaja 53:5",
+              "it": "Isaia 53:5"
+            },
+            "verse_content": {
+              "en": "But he was pierced for our transgressions. He was crushed for our iniquities. The punishment that brought our peace was on him; and by his wounds we are healed.",
+              "de": "Aber er ist um unserer Missetat willen verwundet und um unserer Sünde willen zerschlagen. Die Strafe liegt auf ihm, auf dass wir Frieden hätten, und durch seine Wunden sind wir geheilt.",
+              "it": "Ma egli è stato trafitto a causa delle nostre trasgressioni, schiacciato a causa delle nostre iniquità; il castigo, per cui abbiamo pace, è caduto su di lui e mediante le sue lividure noi siamo stati guariti."
+            },
+            "image_prompt": "Biblical times, prophet Isaiah writing scroll circa 700 BC Jerusalem, vision of suffering servant figure in divine light above, wounds visible on servant's hands and side, Isaiah writing with solemn reverence, temple setting, prophetic atmosphere of messianic suffering and redemption, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet promised that God would make a 'new covenant' with His people?",
+              "de": "Welcher Prophet versprach, dass Gott einen 'neuen Bund' mit seinem Volk schließen würde?",
+              "it": "Quale profeta promise che Dio avrebbe fatto un 'nuovo patto' con il suo popolo?"
+            },
+            "option_a": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_b": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_c": {
+              "en": "Daniel",
+              "de": "Daniel",
+              "it": "Daniele"
+            },
+            "option_d": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "right_answer": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "verse_reference": {
+              "en": "Jeremiah 31:31",
+              "de": "Jeremia 31:31",
+              "it": "Geremia 31:31"
+            },
+            "verse_content": {
+              "en": "Behold, the days come, says Yahweh, that I will make a new covenant with the house of Israel, and with the house of Judah.",
+              "de": "Siehe, es kommt die Zeit, spricht der HERR, da will ich mit dem Hause Israel und mit dem Hause Juda einen neuen Bund schließen.",
+              "it": "Ecco, i giorni vengono, dice il SIGNORE, in cui io farò un nuovo patto con la casa d'Israele e con la casa di Giuda."
+            },
+            "image_prompt": "Biblical times, prophet Jeremiah in Jerusalem circa 600 BC during Babylonian siege, holding scroll with new covenant prophecy, vision of future spiritual renewal in light above, broken tablets of old covenant below transforming into hearts of flesh, atmosphere of hope amid judgment, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic contrasting lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet was swallowed by a great fish for three days?",
+              "de": "Welcher Prophet wurde drei Tage lang von einem großen Fisch verschlungen?",
+              "it": "Quale profeta fu inghiottito da un grande pesce per tre giorni?"
+            },
+            "option_a": {
+              "en": "Elijah",
+              "de": "Elia",
+              "it": "Elia"
+            },
+            "option_b": {
+              "en": "Jonah",
+              "de": "Jona",
+              "it": "Giona"
+            },
+            "option_c": {
+              "en": "Elisha",
+              "de": "Elisa",
+              "it": "Eliseo"
+            },
+            "option_d": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "right_answer": {
+              "en": "Jonah",
+              "de": "Jona",
+              "it": "Giona"
+            },
+            "verse_reference": {
+              "en": "Jonah 1:17",
+              "de": "Jona 2:1",
+              "it": "Giona 1:17"
+            },
+            "verse_content": {
+              "en": "Yahweh prepared a great fish to swallow up Jonah, and Jonah was in the belly of the fish three days and three nights.",
+              "de": "Aber der HERR verschaffte einen großen Fisch, Jona zu verschlingen. Und Jona war im Leibe des Fisches drei Tage und drei Nächte.",
+              "it": "Il SIGNORE fece venire un grande pesce per inghiottire Giona; e Giona rimase nel ventre del pesce tre giorni e tre notti."
+            },
+            "image_prompt": "Biblical times, Mediterranean Sea circa 760 BC, massive fish with open mouth emerging from stormy waves, prophet Jonah being swallowed, ship in background with sailors watching, dramatic storm clouds, divine intervention visible in light rays, underwater scene showing Jonah inside fish belly, ancient maritime scene",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic stormy lighting, cinematic composition, reverent tone suitable for all ages, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet was thrown into a den of lions but was protected by God?",
+              "de": "Welcher Prophet wurde in eine Löwengrube geworfen, aber von Gott beschützt?",
+              "it": "Quale profeta fu gettato in una fossa dei leoni ma fu protetto da Dio?"
+            },
+            "option_a": {
+              "en": "Daniel",
+              "de": "Daniel",
+              "it": "Daniele"
+            },
+            "option_b": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_c": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_d": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "right_answer": {
+              "en": "Daniel",
+              "de": "Daniel",
+              "it": "Daniele"
+            },
+            "verse_reference": {
+              "en": "Daniel 6:16",
+              "de": "Daniel 6:17",
+              "it": "Daniele 6:16"
+            },
+            "verse_content": {
+              "en": "Then the king commanded, and they brought Daniel, and cast him into the den of lions. The king said to Daniel, 'May your God, whom you serve continually, deliver you.'",
+              "de": "Da befahl der König, Daniel herzubringen. Und sie warfen ihn in die Löwengrube. Der König aber sprach zu Daniel: Dein Gott, dem du ohne Unterlass dienst, der helfe dir!",
+              "it": "Allora il re ordinò che Daniele fosse portato via e gettato nella fossa dei leoni. Il re parlò a Daniele e gli disse: 'Il tuo Dio, che tu servi con perseveranza, ti libererà.'"
+            },
+            "image_prompt": "Biblical times, Persian palace lion den circa 530 BC Babylon, elderly Daniel in white robe standing calmly among seven lions lying peacefully, angel with glowing presence closing lions' mouths, stone walls of underground den, torch light from opening above, King Darius peering down anxiously, atmosphere of miraculous divine protection, ancient Persia",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic torch and divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet called down fire from heaven on Mount Carmel?",
+              "de": "Welcher Prophet rief Feuer vom Himmel auf dem Berg Karmel herab?",
+              "it": "Quale profeta fece scendere fuoco dal cielo sul monte Carmelo?"
+            },
+            "option_a": {
+              "en": "Elijah",
+              "de": "Elia",
+              "it": "Elia"
+            },
+            "option_b": {
+              "en": "Elisha",
+              "de": "Elisa",
+              "it": "Eliseo"
+            },
+            "option_c": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "option_d": {
+              "en": "Samuel",
+              "de": "Samuel",
+              "it": "Samuele"
+            },
+            "right_answer": {
+              "en": "Elijah",
+              "de": "Elia",
+              "it": "Elia"
+            },
+            "verse_reference": {
+              "en": "1 Kings 18:38",
+              "de": "1. Könige 18:38",
+              "it": "1 Re 18:38"
+            },
+            "verse_content": {
+              "en": "Then Yahweh's fire fell, and consumed the burnt offering, the wood, the stones, and the dust, and licked up the water that was in the trench.",
+              "de": "Da fiel das Feuer des HERRN herab und fraß Brandopfer, Holz, Steine und Erde und leckte das Wasser auf im Graben.",
+              "it": "Allora cadde il fuoco del SIGNORE e consumò l'olocausto, la legna, le pietre, la terra, e prosciugò l'acqua che era nel fosso."
+            },
+            "image_prompt": "Biblical times, Mount Carmel circa 860 BC Israel, prophet Elijah with arms raised toward heaven, massive fire descending from sky onto altar consuming sacrifice wood stones and water, prophets of Baal watching in defeat, dramatic scene of divine power, altar drenched with water, atmosphere of God's supernatural intervention, ancient Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine fire lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet foretold that the Messiah would ride on a donkey into Jerusalem?",
+              "de": "Welcher Prophet sagte voraus, dass der Messias auf einem Esel nach Jerusalem einziehen würde?",
+              "it": "Quale profeta predisse che il Messia sarebbe entrato a Gerusalemme su un asino?"
+            },
+            "option_a": {
+              "en": "Zechariah",
+              "de": "Sacharja",
+              "it": "Zaccaria"
+            },
+            "option_b": {
+              "en": "Malachi",
+              "de": "Maleachi",
+              "it": "Malachia"
+            },
+            "option_c": {
+              "en": "Haggai",
+              "de": "Haggai",
+              "it": "Aggeo"
+            },
+            "option_d": {
+              "en": "Obadiah",
+              "de": "Obadja",
+              "it": "Abdia"
+            },
+            "right_answer": {
+              "en": "Zechariah",
+              "de": "Sacharja",
+              "it": "Zaccaria"
+            },
+            "verse_reference": {
+              "en": "Zechariah 9:9",
+              "de": "Sacharja 9:9",
+              "it": "Zaccaria 9:9"
+            },
+            "verse_content": {
+              "en": "Rejoice greatly, daughter of Zion! Shout, daughter of Jerusalem! Behold, your King comes to you! He is righteous, and having salvation; lowly, and riding on a donkey.",
+              "de": "Du, Tochter Zion, freue dich sehr, und du, Tochter Jerusalem, jauchze! Siehe, dein König kommt zu dir, ein Gerechter und ein Helfer, arm und reitet auf einem Esel.",
+              "it": "Esulta grandemente, o figlia di Sion, manda grida di gioia, o figlia di Gerusalemme! Ecco, il tuo re viene a te; egli è giusto e vittorioso, umile, in groppa a un asino."
+            },
+            "image_prompt": "Biblical times, prophet Zechariah in post-exilic Jerusalem circa 520 BC, vision of future humble king riding donkey into city gates, Zechariah writing prophecy on scroll, divine light illuminating the messianic vision, Jerusalem walls and palm branches visible, atmosphere of prophetic revelation about triumphant entry, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm prophetic lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet said God would pour out His Spirit on all flesh?",
+              "de": "Welcher Prophet sagte, dass Gott seinen Geist auf alles Fleisch ausgießen würde?",
+              "it": "Quale profeta disse che Dio avrebbe sparso il suo Spirito su ogni persona?"
+            },
+            "option_a": {
+              "en": "Joel",
+              "de": "Joel",
+              "it": "Gioele"
+            },
+            "option_b": {
+              "en": "Amos",
+              "de": "Amos",
+              "it": "Amos"
+            },
+            "option_c": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "option_d": {
+              "en": "Micah",
+              "de": "Micha",
+              "it": "Michea"
+            },
+            "right_answer": {
+              "en": "Joel",
+              "de": "Joel",
+              "it": "Gioele"
+            },
+            "verse_reference": {
+              "en": "Joel 2:28",
+              "de": "Joel 3:1",
+              "it": "Gioele 2:28"
+            },
+            "verse_content": {
+              "en": "It will happen afterward, that I will pour out my Spirit on all flesh; and your sons and your daughters will prophesy. Your old men will dream dreams. Your young men will see visions.",
+              "de": "Und nach diesem will ich meinen Geist ausgießen über alles Fleisch, und eure Söhne und Töchter sollen weissagen, eure Alten sollen Träume haben, und eure Jünglinge sollen Gesichte sehen.",
+              "it": "Dopo questo, io spanderò il mio Spirito su ogni persona: i vostri figli e le vostre figlie profetizzeranno, i vostri vecchi faranno dei sogni, i vostri giovani avranno delle visioni."
+            },
+            "image_prompt": "Biblical times, prophet Joel in Judah circa 800 BC, hands raised prophetically, vision of divine Spirit as dove and flames descending upon diverse crowd of people - young and old, men and women, all receiving spiritual gifts, atmosphere of Pentecostal promise and prophetic vision, ancient Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine lighting with dove and flames, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet had a vision of the valley of dry bones coming to life?",
+              "de": "Welcher Prophet hatte eine Vision vom Tal der Totengebeine, die lebendig wurden?",
+              "it": "Quale profeta ebbe la visione della valle delle ossa secche che tornarono in vita?"
+            },
+            "option_a": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_b": {
+              "en": "Daniel",
+              "de": "Daniel",
+              "it": "Daniele"
+            },
+            "option_c": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_d": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "right_answer": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "verse_reference": {
+              "en": "Ezekiel 37:3",
+              "de": "Hesekiel 37:3",
+              "it": "Ezechiele 37:3"
+            },
+            "verse_content": {
+              "en": "He said to me, 'Son of man, can these bones live?' I answered, 'Lord Yahweh, you know.'",
+              "de": "Und er sprach zu mir: Du Menschenkind, meinst du wohl, dass diese Gebeine wieder lebendig werden? Und ich sprach: Herr HERR, du weißt es.",
+              "it": "Egli mi disse: 'Figlio d'uomo, queste ossa potrebbero esse rivivere?' Io risposi: 'Signore, DIO, tu lo sai.'"
+            },
+            "image_prompt": "Biblical times, prophet Ezekiel in Babylonian exile circa 590 BC, standing in vast valley filled with scattered dry bones, divine wind blowing causing bones to join together and come alive with flesh and breath, atmosphere of miraculous resurrection and Israel's restoration hope, dramatic vision scene, ancient Mesopotamia",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine wind and lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "As a boy, which prophet heard God calling his name in the night?",
+              "de": "Welcher Prophet hörte als Junge Gott nachts seinen Namen rufen?",
+              "it": "Da ragazzo, quale profeta sentì Dio chiamare il suo nome di notte?"
+            },
+            "option_a": {
+              "en": "Samuel",
+              "de": "Samuel",
+              "it": "Samuele"
+            },
+            "option_b": {
+              "en": "David",
+              "de": "David",
+              "it": "Davide"
+            },
+            "option_c": {
+              "en": "Solomon",
+              "de": "Salomo",
+              "it": "Salomone"
+            },
+            "option_d": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "right_answer": {
+              "en": "Samuel",
+              "de": "Samuel",
+              "it": "Samuele"
+            },
+            "verse_reference": {
+              "en": "1 Samuel 3:10",
+              "de": "1. Samuel 3:10",
+              "it": "1 Samuele 3:10"
+            },
+            "verse_content": {
+              "en": "Yahweh came, and stood, and called as at other times, 'Samuel! Samuel!' Then Samuel said, 'Speak; for your servant hears.'",
+              "de": "Da kam der HERR und trat herzu und rief wie vorher: Samuel, Samuel! Und Samuel sprach: Rede, denn dein Knecht hört.",
+              "it": "Il SIGNORE venne, si fermò accanto a lui e chiamò come le altre volte: 'Samuele, Samuele!' E Samuele rispose: 'Parla, poiché il tuo servo ascolta.'"
+            },
+            "image_prompt": "Biblical times, tabernacle at Shiloh circa 1100 BC Israel, young boy Samuel lying on mat at night hearing voice calling his name, elderly priest Eli instructing him in background, oil lamp glowing, ark of covenant visible, atmosphere of divine calling and prophetic commissioning, peaceful night scene, ancient Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, soft night lamplight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet responded to God's call saying 'Here I am! Send me'?",
+              "de": "Welcher Prophet antwortete auf Gottes Ruf mit den Worten 'Hier bin ich, sende mich'?",
+              "it": "Quale profeta rispose alla chiamata di Dio dicendo 'Eccomi, manda me'?"
+            },
+            "option_a": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "option_b": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_c": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_d": {
+              "en": "Amos",
+              "de": "Amos",
+              "it": "Amos"
+            },
+            "right_answer": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "verse_reference": {
+              "en": "Isaiah 6:8",
+              "de": "Jesaja 6:8",
+              "it": "Isaia 6:8"
+            },
+            "verse_content": {
+              "en": "I heard the Lord's voice, saying, 'Whom shall I send, and who will go for us?' Then I said, 'Here I am. Send me!'",
+              "de": "Und ich hörte die Stimme des Herrn, wie er sprach: Wen soll ich senden? Wer will unser Bote sein? Ich aber sprach: Hier bin ich, sende mich!",
+              "it": "Poi udii la voce del Signore che diceva: 'Chi manderò? E chi andrà per noi?' Allora io risposi: 'Eccomi, manda me!'"
+            },
+            "image_prompt": "Biblical times, temple of Jerusalem circa 740 BC, prophet Isaiah having vision of God's throne room, six-winged seraphim angels flying, altar with burning coals, Isaiah with hand raised volunteering for prophetic mission, atmosphere of holy commissioning and divine glory, smoke filling temple, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine glory lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "God promised Moses He would raise up a prophet like whom?",
+              "de": "Gott versprach Mose, er würde einen Propheten auferwecken wie wen?",
+              "it": "Dio promise a Mosè che avrebbe suscitato un profeta come chi?"
+            },
+            "option_a": {
+              "en": "Like Abraham",
+              "de": "Wie Abraham",
+              "it": "Come Abramo"
+            },
+            "option_b": {
+              "en": "Like Moses",
+              "de": "Wie Mose",
+              "it": "Come Mosè"
+            },
+            "option_c": {
+              "en": "Like David",
+              "de": "Wie David",
+              "it": "Come Davide"
+            },
+            "option_d": {
+              "en": "Like Elijah",
+              "de": "Wie Elia",
+              "it": "Come Elia"
+            },
+            "right_answer": {
+              "en": "Like Moses",
+              "de": "Wie Mose",
+              "it": "Come Mosè"
+            },
+            "verse_reference": {
+              "en": "Deuteronomy 18:18",
+              "de": "5. Mose 18:18",
+              "it": "Deuteronomio 18:18"
+            },
+            "verse_content": {
+              "en": "I will raise up for them a prophet like you from among their brothers. I will put my words in his mouth, and he will tell them everything I command him.",
+              "de": "Ich will ihnen einen Propheten, wie du bist, erwecken aus ihren Brüdern und meine Worte in seinen Mund geben; der soll zu ihnen reden alles, was ich ihm gebieten werde.",
+              "it": "Io farò sorgere per loro un profeta come te in mezzo ai loro fratelli, e porrò le mie parole nella sua bocca ed egli dirà loro tutto quello che io gli comanderò."
+            },
+            "image_prompt": "Biblical times, Mount Sinai circa 1440 BC, Moses receiving divine promise, vision of future prophet figure in divine light resembling Moses with staff and tablets, Israelite camp below, atmosphere of messianic prophecy and succession of prophetic leadership, ancient wilderness of Sinai",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine mountain lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet foretold that a messenger would prepare the way for the Lord?",
+              "de": "Welcher Prophet sagte voraus, dass ein Bote den Weg für den Herrn bereiten würde?",
+              "it": "Quale profeta predisse che un messaggero avrebbe preparato la via per il Signore?"
+            },
+            "option_a": {
+              "en": "Malachi",
+              "de": "Maleachi",
+              "it": "Malachia"
+            },
+            "option_b": {
+              "en": "Haggai",
+              "de": "Haggai",
+              "it": "Aggeo"
+            },
+            "option_c": {
+              "en": "Zechariah",
+              "de": "Sacharja",
+              "it": "Zaccaria"
+            },
+            "option_d": {
+              "en": "Nahum",
+              "de": "Nahum",
+              "it": "Naum"
+            },
+            "right_answer": {
+              "en": "Malachi",
+              "de": "Maleachi",
+              "it": "Malachia"
+            },
+            "verse_reference": {
+              "en": "Malachi 3:1",
+              "de": "Maleachi 3:1",
+              "it": "Malachia 3:1"
+            },
+            "verse_content": {
+              "en": "Behold, I send my messenger, and he will prepare the way before me; and the Lord, whom you seek, will suddenly come to his temple.",
+              "de": "Siehe, ich will meinen Boten senden, der vor mir her den Weg bereiten soll. Und bald wird kommen zu seinem Tempel der Herr, den ihr sucht.",
+              "it": "Ecco, io vi mando il mio messaggero; egli preparerà la via davanti a me e subito il Signore, che voi cercate, entrerà nel suo tempio."
+            },
+            "image_prompt": "Biblical times, prophet Malachi in post-exilic Jerusalem circa 430 BC, vision of future messenger John the Baptist in wilderness preparing way, Malachi writing final words of Old Testament prophecy, temple visible in background, atmosphere of prophetic bridge between testaments, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm transitional lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "How many major prophets are there in the Old Testament?",
+              "de": "Wie viele große Propheten gibt es im Alten Testament?",
+              "it": "Quanti sono i profeti maggiori nell'Antico Testamento?"
+            },
+            "option_a": {
+              "en": "3",
+              "de": "3",
+              "it": "3"
+            },
+            "option_b": {
+              "en": "4",
+              "de": "4",
+              "it": "4"
+            },
+            "option_c": {
+              "en": "5",
+              "de": "5",
+              "it": "5"
+            },
+            "option_d": {
+              "en": "12",
+              "de": "12",
+              "it": "12"
+            },
+            "right_answer": {
+              "en": "5",
+              "de": "5",
+              "it": "5"
+            },
+            "verse_reference": {
+              "en": "General Bible knowledge",
+              "de": "Allgemeines Bibelwissen",
+              "it": "Conoscenza biblica generale"
+            },
+            "verse_content": {
+              "en": "The five major prophets are Isaiah, Jeremiah, Lamentations, Ezekiel, and Daniel.",
+              "de": "Die fünf großen Propheten sind Jesaja, Jeremia, Klagelieder, Hesekiel und Daniel.",
+              "it": "I cinque profeti maggiori sono Isaia, Geremia, Lamentazioni, Ezechiele e Daniele."
+            },
+            "image_prompt": "Biblical times, symbolic scene showing five major prophetic scrolls representing Isaiah Jeremiah Lamentations Ezekiel and Daniel, each scroll with distinctive imagery - throne vision, weeping prophet, valley of bones, lions den, suffering servant, arranged in temple library setting, atmosphere of prophetic authority, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm scholarly lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "How many minor prophets are there in the Old Testament?",
+              "de": "Wie viele kleine Propheten gibt es im Alten Testament?",
+              "it": "Quanti sono i profeti minori nell'Antico Testamento?"
+            },
+            "option_a": {
+              "en": "5",
+              "de": "5",
+              "it": "5"
+            },
+            "option_b": {
+              "en": "10",
+              "de": "10",
+              "it": "10"
+            },
+            "option_c": {
+              "en": "12",
+              "de": "12",
+              "it": "12"
+            },
+            "option_d": {
+              "en": "15",
+              "de": "15",
+              "it": "15"
+            },
+            "right_answer": {
+              "en": "12",
+              "de": "12",
+              "it": "12"
+            },
+            "verse_reference": {
+              "en": "General Bible knowledge",
+              "de": "Allgemeines Bibelwissen",
+              "it": "Conoscenza biblica generale"
+            },
+            "verse_content": {
+              "en": "The twelve minor prophets are Hosea, Joel, Amos, Obadiah, Jonah, Micah, Nahum, Habakkuk, Zephaniah, Haggai, Zechariah, and Malachi.",
+              "de": "Die zwölf kleinen Propheten sind Hosea, Joel, Amos, Obadja, Jona, Micha, Nahum, Habakuk, Zefanja, Haggai, Sacharja und Maleachi.",
+              "it": "I dodici profeti minori sono Osea, Gioele, Amos, Abdia, Giona, Michea, Naum, Abacuc, Sofonia, Aggeo, Zaccaria e Malachia."
+            },
+            "image_prompt": "Biblical times, symbolic scene showing twelve smaller prophetic scrolls arranged in ancient Hebrew library, representing the twelve minor prophets from Hosea to Malachi, each with distinctive prophetic imagery, temple setting with scribes studying, atmosphere of prophetic tradition, ancient Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm library lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet was told by God that he was sanctified from the womb?",
+              "de": "Welchem Propheten sagte Gott, dass er vom Mutterleib an geheiligt wurde?",
+              "it": "A quale profeta Dio disse che era stato santificato fin dal grembo materno?"
+            },
+            "option_a": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "option_b": {
+              "en": "Isaiah",
+              "de": "Jesaja",
+              "it": "Isaia"
+            },
+            "option_c": {
+              "en": "Ezekiel",
+              "de": "Hesekiel",
+              "it": "Ezechiele"
+            },
+            "option_d": {
+              "en": "Samuel",
+              "de": "Samuel",
+              "it": "Samuele"
+            },
+            "right_answer": {
+              "en": "Jeremiah",
+              "de": "Jeremia",
+              "it": "Geremia"
+            },
+            "verse_reference": {
+              "en": "Jeremiah 1:5",
+              "de": "Jeremia 1:5",
+              "it": "Geremia 1:5"
+            },
+            "verse_content": {
+              "en": "Before I formed you in the womb, I knew you. Before you were born, I sanctified you. I have appointed you a prophet to the nations.",
+              "de": "Ich kannte dich, ehe ich dich im Mutterleibe bereitete, und sonderte dich aus, ehe du von der Mutter geboren wurdest, und bestellte dich zum Propheten für die Völker.",
+              "it": "Prima che io ti avessi formato nel grembo di tua madre, io ti ho conosciuto; prima che tu uscissi dal suo grembo, io ti ho consacrato e ti ho costituito profeta delle nazioni."
+            },
+            "image_prompt": "Biblical times, young Jeremiah in Judah circa 627 BC receiving prophetic calling, divine light surrounding him, vision showing God's hand forming him before birth, Jeremiah looking up with expression of awe and calling, scrolls and prophetic symbols, atmosphere of predestined prophetic mission, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic divine calling lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet was commanded to marry an unfaithful woman to illustrate God's love for Israel?",
+              "de": "Welcher Prophet wurde befohlen, eine untreue Frau zu heiraten, um Gottes Liebe zu Israel zu veranschaulichen?",
+              "it": "A quale profeta fu comandato di sposare una donna infedele per illustrare l'amore di Dio per Israele?"
+            },
+            "option_a": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "option_b": {
+              "en": "Amos",
+              "de": "Amos",
+              "it": "Amos"
+            },
+            "option_c": {
+              "en": "Micah",
+              "de": "Micha",
+              "it": "Michea"
+            },
+            "option_d": {
+              "en": "Joel",
+              "de": "Joel",
+              "it": "Gioele"
+            },
+            "right_answer": {
+              "en": "Hosea",
+              "de": "Hosea",
+              "it": "Osea"
+            },
+            "verse_reference": {
+              "en": "Hosea 1:2",
+              "de": "Hosea 1:2",
+              "it": "Osea 1:2"
+            },
+            "verse_content": {
+              "en": "When Yahweh spoke at first by Hosea, Yahweh said to Hosea, 'Go, take for yourself a wife of prostitution and children of unfaithfulness; for the land commits great adultery, forsaking Yahweh.'",
+              "de": "Als der HERR anfing zu reden durch Hosea, sprach er zu ihm: Geh hin und nimm ein Hurenweib und Hurenkinder; denn das Land läuft vom HERRN der Hurerei nach.",
+              "it": "La prima volta che il SIGNORE parlò a Osea, gli disse: 'Va', prenditi in moglie una prostituta e abbi figli di prostituzione; poiché il paese si prostituisce, abbandonando il SIGNORE.'"
+            },
+            "image_prompt": "Biblical times, prophet Hosea in northern Israel circa 750 BC, with wife Gomer in scene showing both sorrow and redemptive love, symbolic representation of God's faithful love despite Israel's unfaithfulness, broken covenant imagery being restored, atmosphere of difficult obedience and profound prophetic symbolism, ancient Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, emotionally complex lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which book is the shortest prophetic book in the Old Testament?",
+              "de": "Welches ist das kürzeste prophetische Buch im Alten Testament?",
+              "it": "Qual è il libro profetico più breve dell'Antico Testamento?"
+            },
+            "option_a": {
+              "en": "Obadiah",
+              "de": "Obadja",
+              "it": "Abdia"
+            },
+            "option_b": {
+              "en": "Jonah",
+              "de": "Jona",
+              "it": "Giona"
+            },
+            "option_c": {
+              "en": "Nahum",
+              "de": "Nahum",
+              "it": "Naum"
+            },
+            "option_d": {
+              "en": "Haggai",
+              "de": "Haggai",
+              "it": "Aggeo"
+            },
+            "right_answer": {
+              "en": "Obadiah",
+              "de": "Obadja",
+              "it": "Abdia"
+            },
+            "verse_reference": {
+              "en": "General Bible knowledge",
+              "de": "Allgemeines Bibelwissen",
+              "it": "Conoscenza biblica generale"
+            },
+            "verse_content": {
+              "en": "Obadiah contains only one chapter with 21 verses, making it the shortest book in the Old Testament.",
+              "de": "Obadja enthält nur ein Kapitel mit 21 Versen und ist damit das kürzeste Buch im Alten Testament.",
+              "it": "Abdia contiene solo un capitolo con 21 versetti, rendendolo il libro più breve dell'Antico Testamento."
+            },
+            "image_prompt": "Biblical times, prophet Obadiah circa 840 BC, short scroll with prophecy against Edom, vision of Edom's mountain fortress being judged, Obadiah writing brief but powerful prophetic oracle, desert landscape of Edom visible, atmosphere of divine justice and prophetic brevity, ancient Middle East",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic desert lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophet questioned God saying 'Why do the wicked prosper?'",
+              "de": "Welcher Prophet stellte Gott die Frage: 'Warum geht es den Gottlosen gut?'",
+              "it": "Quale profeta interrogò Dio dicendo: 'Perché prosperano gli empi?'"
+            },
+            "option_a": {
+              "en": "Habakkuk",
+              "de": "Habakuk",
+              "it": "Abacuc"
+            },
+            "option_b": {
+              "en": "Nahum",
+              "de": "Nahum",
+              "it": "Naum"
+            },
+            "option_c": {
+              "en": "Zephaniah",
+              "de": "Zefanja",
+              "it": "Sofonia"
+            },
+            "option_d": {
+              "en": "Malachi",
+              "de": "Maleachi",
+              "it": "Malachia"
+            },
+            "right_answer": {
+              "en": "Habakkuk",
+              "de": "Habakuk",
+              "it": "Abacuc"
+            },
+            "verse_reference": {
+              "en": "Habakkuk 1:13",
+              "de": "Habakuk 1:13",
+              "it": "Abacuc 1:13"
+            },
+            "verse_content": {
+              "en": "You who have purer eyes than to see evil, and who cannot look on perversity, why do you tolerate those who deal treacherously, and keep silent when the wicked swallows up the man who is more righteous than he?",
+              "de": "Deine Augen sind zu rein, als dass du Böses ansehen könntest, und Übeltaten kannst du nicht mit ansehen. Warum siehst du denn den Frevlern zu und schweigst, wenn der Gottlose den verschlingt, der gerechter ist als er?",
+              "it": "Tu che hai gli occhi troppo puri per sopportare la vista del male e non puoi tollerare lo spettacolo dell'iniquità, perché sopporti i perfidi e taci quando il malvagio divora colui che è più giusto di lui?"
+            },
+            "image_prompt": "Biblical times, prophet Habakkuk in Judah circa 610 BC, questioning posture with hands raised toward heaven, watching tower symbolizing his faithful waiting for God's answer, vision of divine justice scales, atmosphere of honest wrestling with theodicy and faith, ancient Judea under threat",
+            "image_style": "Photorealistic, historically accurate biblical scene, contemplative dramatic lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          }
+        ]
+      }
+    ]
+  }

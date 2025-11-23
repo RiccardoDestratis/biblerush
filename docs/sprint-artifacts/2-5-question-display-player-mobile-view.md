@@ -1,6 +1,6 @@
 # Story 2.5: Question Display - Player Mobile View
 
-Status: in-progress
+Status: done
 
 ## Story
 

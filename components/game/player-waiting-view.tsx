@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createGameChannel, subscribeToGameChannel } from "@/lib/supabase/realtime";
+import { subscribeToGame } from "@/lib/supabase/realtime";
 import type { PlayerJoinedPayload, PlayerRemovedPayload, PlayerRenamedPayload, GameStartPayload } from "@/lib/types/realtime";
 import { useGameStore } from "@/lib/store/game-store";
 import { getPlayerCount, getPlayers, removePlayer, renamePlayer } from "@/lib/actions/players";
@@ -10,6 +10,7 @@ import { PlayerList } from "@/components/game/player-list";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Edit2 } from "lucide-react";
+import { ShareButton } from "@/components/game/share-button";
 
 interface PlayerWaitingViewProps {
   gameId: string;
@@ -35,6 +36,9 @@ export function PlayerWaitingView({
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState("");
   const [isGameStarting, setIsGameStarting] = useState(false);
+  const [isChannelReady, setIsChannelReady] = useState(false);
+  const [joinUrl, setJoinUrl] = useState<string>("");
+  const [isLoadingJoinUrl, setIsLoadingJoinUrl] = useState(true);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const processedPlayerIdsRef = useRef<Set<string>>(new Set());
   const removalTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -157,13 +161,40 @@ export function PlayerWaitingView({
     }
   }, [gameId, playerId, gameStatus, COOKIE_KEY, RESTORATION_WINDOW_MS]);
 
-  // Set up real-time subscription for player count updates
+  // Fetch join URL (network URL in dev, production URL in production)
+  useEffect(() => {
+    const fetchJoinUrl = async () => {
+      try {
+        const response = await fetch("/api/network-url");
+        const data = await response.json();
+        
+        if (data.networkUrl) {
+          setJoinUrl(`${data.networkUrl}/join?code=${roomCode}`);
+        } else {
+          // Fallback to current origin
+          const currentOrigin = window.location.origin;
+          setJoinUrl(`${currentOrigin}/join?code=${roomCode}`);
+        }
+      } catch (error) {
+        console.error("Error fetching network URL:", error);
+        // Fallback to current origin
+        const currentOrigin = window.location.origin;
+        setJoinUrl(`${currentOrigin}/join?code=${roomCode}`);
+      } finally {
+        setIsLoadingJoinUrl(false);
+      }
+    };
+
+    fetchJoinUrl();
+  }, [roomCode]);
+
+  // Fetch initial players from database immediately when component mounts
+  // This ensures players see themselves and others even if they missed the player_joined event
   useEffect(() => {
     if (gameStatus !== "waiting") {
-      return; // Only subscribe when game is waiting
+      return;
     }
 
-    // Fetch initial players
     const fetchInitialPlayers = async () => {
       try {
         const countResult = await getPlayerCount(gameId);
@@ -186,123 +217,72 @@ export function PlayerWaitingView({
     };
 
     fetchInitialPlayers();
+  }, [gameId, gameStatus]);
 
-    // Create game channel for real-time updates
-    const channel = createGameChannel(gameId);
+  // Set up real-time subscription for player count updates
+  useEffect(() => {
+    if (gameStatus !== "waiting") {
+      return; // Only subscribe when game is waiting
+    }
 
-    // Reset processed IDs when game changes
-    processedPlayerIdsRef.current = new Set();
+    if (!unsubscribeRef.current) {
+      processedPlayerIdsRef.current = new Set();
 
-    // Handle player joined event (update count and players list)
-    const handlePlayerJoined = (payload: PlayerJoinedPayload) => {
-      // Check if we've already processed this player (avoid duplicates from broadcast + DB event)
-      if (processedPlayerIdsRef.current.has(payload.playerId)) {
-        return; // Already processed, skip
-      }
-
-      // Mark as processed
-      processedPlayerIdsRef.current.add(payload.playerId);
-
-      // Add player to list
-      setPlayers((prevPlayers) => {
-        // Double-check for duplicates (safety check)
-        const exists = prevPlayers.some((p) => p.id === payload.playerId);
-        if (exists) {
-          return prevPlayers;
-        }
-        
-        // Add new player
-        return [
-          ...prevPlayers,
-          {
-            id: payload.playerId,
-            player_name: payload.playerName,
-          },
-        ];
+      unsubscribeRef.current = subscribeToGame(gameId, {
+        onPlayerJoined: (payload: PlayerJoinedPayload) => {
+          if (processedPlayerIdsRef.current.has(payload.playerId)) return;
+          processedPlayerIdsRef.current.add(payload.playerId);
+          setPlayers((prevPlayers) => {
+            if (prevPlayers.some((p) => p.id === payload.playerId)) return prevPlayers;
+            const newPlayers = [...prevPlayers, { id: payload.playerId, player_name: payload.playerName }];
+            // Sync count with players list length
+            setPlayerCount(newPlayers.length);
+            return newPlayers;
+          });
+        },
+        onPlayerRemoved: (payload: PlayerRemovedPayload) => {
+          setPlayers((prevPlayers) => {
+            const newPlayers = prevPlayers.filter((p) => p.id !== payload.playerId);
+            // Sync count with players list length
+            setPlayerCount(newPlayers.length);
+            return newPlayers;
+          });
+          if (payload.playerId === playerId) {
+            window.location.href = `/join?code=${roomCode}`;
+          }
+        },
+        onPlayerRenamed: (payload: PlayerRenamedPayload) => {
+          setPlayers((prevPlayers) =>
+            prevPlayers.map((p) => (p.id === payload.playerId ? { ...p, player_name: payload.newName } : p))
+          );
+          if (payload.playerId === playerId) {
+            setPlayerName(payload.newName);
+            setIsRenaming(false);
+            setRenameValue("");
+            router.replace(`/game/${gameId}/play?playerId=${playerId}&playerName=${encodeURIComponent(payload.newName)}`, { scroll: false });
+            toast.info(`You have been renamed to "${payload.newName}"`, { duration: 4000 });
+          }
+        },
+        onGameStart: (payload: GameStartPayload) => {
+          setIsGameStarting(true);
+          startGameStore(payload, payload.totalQuestions);
+          setGameStatus("active");
+          toast.loading("Starting game...", { id: "game-start" });
+        },
+        onStatusChange: (status) => {
+          setIsChannelReady(status === "connected");
+        },
       });
-
-      // Increment player count when a new player joins
-      setPlayerCount((prev) => prev + 1);
-    };
-
-    // Handle player removed event
-    const handlePlayerRemoved = (payload: PlayerRemovedPayload) => {
-      // Remove player from list
-      setPlayers((prevPlayers) => prevPlayers.filter((p) => p.id !== payload.playerId));
-      
-      // Decrement player count
-      setPlayerCount((prev) => Math.max(0, prev - 1));
-      
-      // If this is the current player, they were removed by host
-      if (payload.playerId === playerId) {
-        // Redirect to join page
-        window.location.href = `/join?code=${roomCode}`;
-      }
-    };
-
-    // Handle player renamed event
-    const handlePlayerRenamed = (payload: PlayerRenamedPayload) => {
-      // Update player in list
-      setPlayers((prevPlayers) =>
-        prevPlayers.map((p) =>
-          p.id === payload.playerId ? { ...p, player_name: payload.newName } : p
-        )
-      );
-
-      // If this is the current player, update their name and show notification
-      if (payload.playerId === playerId) {
-        setPlayerName(payload.newName);
-        setIsRenaming(false);
-        setRenameValue("");
-        // Update URL to include playerId for persistence after rename
-        router.replace(`/game/${gameId}/play?playerId=${playerId}&playerName=${encodeURIComponent(payload.newName)}`, { scroll: false });
-        toast.info(`You have been renamed to "${payload.newName}"`, {
-          duration: 4000,
-        });
-      }
-    };
-
-    // Handle game_start event
-    const handleGameStart = (payload: GameStartPayload) => {
-      setIsGameStarting(true);
-      
-      // Update Zustand store with question data
-      // totalQuestions is now included in the payload from the Server Action
-      startGameStore(payload, payload.totalQuestions);
-      setGameStatus("active");
-      
-      // Show loading state
-      toast.loading("Starting game...", { id: "game-start" });
-      
-      // TODO: Navigate to question display view (Story 2.5)
-      // For now, we'll just show a loading state
-    };
-
-    // Subscribe to game channel
-    const unsubscribe = subscribeToGameChannel(channel, gameId, {
-      onPlayerJoined: handlePlayerJoined,
-      onPlayerRemoved: handlePlayerRemoved,
-      onPlayerRenamed: handlePlayerRenamed,
-      onGameStart: handleGameStart,
-      onStatusChange: (status) => {
-        if (status === "connected") {
-          console.log("Realtime connected for player view:", gameId);
-        }
-      },
-      onError: (error) => {
-        console.error("Realtime error in player view:", error);
-      },
-    });
-
-    unsubscribeRef.current = unsubscribe;
+    }
 
     // Cleanup on unmount
     return () => {
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
     };
-  }, [gameId, gameStatus]);
+  }, [gameId]); // Don't include gameStatus - we want to keep subscription even after game starts
 
   const handleStartRename = () => {
     setIsRenaming(true);
@@ -351,9 +331,19 @@ export function PlayerWaitingView({
     return (
       <div className="min-h-screen flex flex-col p-4 bg-muted/30">
         {/* Room Code at Top */}
-        <div className="text-center mb-6">
-          <p className="text-xs text-muted-foreground mb-1">Room Code</p>
-          <p className="text-2xl font-bold text-primary font-mono">{roomCode}</p>
+        <div className="text-center mb-6 space-y-3">
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Room Code</p>
+            <p className="text-2xl font-bold text-primary font-mono">{roomCode}</p>
+          </div>
+          {!isLoadingJoinUrl && (
+            <ShareButton
+              url={joinUrl}
+              roomCode={roomCode}
+              variant="outline"
+              size="sm"
+            />
+          )}
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-start pt-4">

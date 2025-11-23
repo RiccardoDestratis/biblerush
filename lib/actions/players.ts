@@ -164,7 +164,7 @@ export async function joinGame(
       // Use setTimeout to ensure broadcast is sent before unsubscribing
       setTimeout(() => {
         channel.unsubscribe();
-      }, 200);
+      }, 500); // Increased timeout to ensure broadcast is sent
     } catch (broadcastError) {
       // Log error but don't fail the join - player is already in database
       // PostgreSQL change listener will still fire and update clients automatically

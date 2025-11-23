@@ -152,6 +152,45 @@ export async function submitAnswer(
       };
     }
 
+    // Broadcast answer_submitted event
+    try {
+      const serviceClient = createServiceClient();
+      const channel = serviceClient.channel(`game:${gameId}`);
+
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Channel subscription timeout"));
+        }, 3000);
+
+        channel.subscribe((status: string) => {
+          if (status === "SUBSCRIBED") {
+            clearTimeout(timeout);
+            resolve();
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            clearTimeout(timeout);
+            reject(new Error(`Failed to subscribe to channel: ${status}`));
+          }
+        });
+      });
+
+      await channel.send({
+        type: "broadcast",
+        event: "answer_submitted",
+        payload: {
+          gameId,
+          questionId,
+          playerId,
+        },
+      });
+
+      setTimeout(() => {
+        channel.unsubscribe();
+      }, 500);
+    } catch (broadcastError) {
+      console.error("Error broadcasting answer_submitted event:", broadcastError);
+      // Don't fail the request if broadcast fails
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Unexpected error in submitAnswer:", error);
@@ -389,6 +428,13 @@ export async function processQuestionScores(
 /**
  * Helper function to broadcast scores_updated event via Realtime
  * Uses service role client to broadcast from server
+ * 
+ * NOTE: This creates a temporary channel for broadcasting because Server Actions
+ * are stateless and can't maintain persistent channels. The client-side channels
+ * (in question-display-projector.tsx and player-game-view.tsx) stay subscribed
+ * for the entire game and receive these broadcasts.
+ * 
+ * Pattern: Subscribe → Broadcast → Unsubscribe (necessary for server-side)
  */
 async function broadcastScoresUpdated(
   gameId: string,
@@ -399,10 +445,11 @@ async function broadcastScoresUpdated(
     const channel = serviceClient.channel(`game:${gameId}`);
 
     // Subscribe to the channel first (required before broadcasting)
+    // This is a temporary subscription just for this broadcast
     await new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error("Channel subscription timeout"));
-      }, 3000);
+      }, 5000);
 
       channel.subscribe((status: string) => {
         if (status === "SUBSCRIBED") {
@@ -419,7 +466,7 @@ async function broadcastScoresUpdated(
       gameId,
       questionId,
     };
-
+    
     // Broadcast the event
     await channel.send({
       type: "broadcast",
@@ -427,16 +474,137 @@ async function broadcastScoresUpdated(
       payload,
     });
 
-    // Clean up the channel after broadcasting
-    // Use setTimeout to ensure broadcast is sent before unsubscribing
+    // Clean up the temporary channel after broadcasting
+    // Delay slightly to ensure broadcast is sent before unsubscribing
     setTimeout(() => {
       channel.unsubscribe();
-    }, 200);
+    }, 500);
   } catch (broadcastError) {
     // Log error but don't fail the scoring - scores are already updated in database
-    // PostgreSQL change listener will still fire and update clients automatically
-    console.error("Error broadcasting scores_updated event:", broadcastError);
-    // This is non-fatal - the scores are already calculated and stored
+    // The client-side channels will still receive updates via PostgreSQL change listeners
+    // if broadcast fails, but broadcast is preferred for real-time updates
+    console.error("[Server] Error broadcasting scores_updated event:", broadcastError);
+  }
+}
+
+/**
+ * Server Action: Get player's answer result for a question
+ * Returns is_correct, points_earned, and current total_score
+ * Used by Story 3.3 (Player Answer Feedback)
+ * 
+ * @param gameId - UUID of the game
+ * @param playerId - UUID of the player
+ * @param questionId - UUID of the question
+ * @returns Success with answer result or error response
+ */
+export async function getPlayerAnswerResult(
+  gameId: string,
+  playerId: string,
+  questionId: string
+): Promise<
+  | {
+      success: true;
+      isCorrect: boolean;
+      pointsEarned: number;
+      totalScore: number;
+      selectedAnswer: "A" | "B" | "C" | "D" | null;
+      responseTimeMs: number;
+    }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createClient();
+
+    // Validate inputs
+    if (!gameId || !playerId || !questionId) {
+      return {
+        success: false,
+        error: "Game ID, Player ID, and Question ID are required",
+      };
+    }
+
+    // Validate UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(gameId) || !uuidRegex.test(playerId) || !uuidRegex.test(questionId)) {
+      return {
+        success: false,
+        error: "Invalid UUID format",
+      };
+    }
+
+    // Fetch player answer
+    const { data: answer, error: answerError } = await supabase
+      .from("player_answers")
+      .select("is_correct, points_earned, selected_answer, response_time_ms")
+      .eq("game_id", gameId)
+      .eq("player_id", playerId)
+      .eq("question_id", questionId)
+      .maybeSingle();
+
+    if (answerError && answerError.code !== "PGRST116") {
+      return {
+        success: false,
+        error: "Failed to fetch player answer",
+      };
+    }
+
+    // If no answer found, return default values (no submission)
+    if (!answer) {
+      // Still fetch total score
+      const { data: player, error: playerError } = await supabase
+        .from("game_players")
+        .select("total_score")
+        .eq("id", playerId)
+        .eq("game_id", gameId)
+        .single();
+
+      if (playerError || !player) {
+        return {
+          success: false,
+          error: "Player not found",
+        };
+      }
+
+      return {
+        success: true,
+        isCorrect: false,
+        pointsEarned: 0,
+        totalScore: player.total_score || 0,
+        selectedAnswer: null,
+        responseTimeMs: 0,
+      };
+    }
+
+    // Fetch current total score
+    const { data: player, error: playerError } = await supabase
+      .from("game_players")
+      .select("total_score")
+      .eq("id", playerId)
+      .eq("game_id", gameId)
+      .single();
+
+    if (playerError || !player) {
+      return {
+        success: false,
+        error: "Player not found",
+      };
+    }
+
+    return {
+      success: true,
+      isCorrect: answer.is_correct || false,
+      pointsEarned: answer.points_earned || 0,
+      totalScore: player.total_score || 0,
+      selectedAnswer: answer.selected_answer as "A" | "B" | "C" | "D" | null,
+      responseTimeMs: answer.response_time_ms || 0,
+    };
+  } catch (error) {
+    console.error("Unexpected error in getPlayerAnswerResult:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
   }
 }
 

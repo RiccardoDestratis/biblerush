@@ -154,7 +154,7 @@ test.describe('Question Display - Player Mobile View with Tap-to-Lock (Story 2.5
     await alicePage.waitForTimeout(1000);
     
     // Verify green/locked state - button should have green background
-    const aliceButtonStyle = await aliceFirstButton.evaluate((el) => {
+    const aliceButtonStyle = await aliceFirstButton.evaluate((el: HTMLElement) => {
       return window.getComputedStyle(el).backgroundColor;
     });
     // Green should be in the background color (rgb values for green-500)

@@ -1,0 +1,254 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Answer Reveal on Projector</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-2-answer-reveal-projector.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>host user</asA>
+    <iWant>to see which answer was correct after each question</iWant>
+    <soThat>players learn the right answer before seeing the leaderboard</soThat>
+    <tasks>
+      - Create `AnswerRevealProjector` component in `components/game/answer-reveal-projector.tsx`
+      - Update Realtime types for `answer_reveal` event
+      - Create Server Action `broadcastAnswerReveal` to fetch correct answer and scripture reference
+      - Update game store with reveal state management
+      - Integrate with scoring calculation (Story 3.1) - trigger after `scores_updated` event
+      - Add 5-second countdown and automatic transition to leaderboard (Story 3.4)
+      - Implement fade-in animation and styling
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    **Given** a question timer has expired
+    **When** answer reveal state is triggered (after scoring calculation from Story 3.1)
+    **Then** host view transitions to "Answer Reveal" state:
+    - Display for 5 seconds (static duration, per FR11)
+    - Layout: Original question text (32px), correct answer highlighted with checkmark (80px) and green background (#22C55E)
+    - Text: "Correct Answer: [Letter] - [Answer Text]" (48px font)
+    - Scripture reference below if exists (24px, gray-600)
+    - Correct answer box highlighted in green, incorrect boxes grayed out (opacity: 0.4)
+    - Answer boxes maintain 2x2 grid layout from Story 2.4
+
+    **And** transition animation: Fade in reveal (300ms) after timer reaches zero
+    **And** reveal state synchronized to all devices via Realtime `answer_reveal` broadcast:
+    - Host broadcasts event with `correctAnswer` (letter) when entering reveal state
+    - Event payload: `{ gameId, questionId, correctAnswer, scriptureReference }`
+    - Players listen and display same reveal on mobile (Story 3.3)
+
+    **And** after 5 seconds, automatic transition to leaderboard (Story 3.4)
+    **And** visual styling: Success green (#22C55E) for correct answer, warm grays for incorrect
+    **And** accessibility: High contrast, checkmark icon large enough to see from distance (80px)
+    **And** integration with scoring: Answer reveal triggered after `processQuestionScores()` completes (Story 3.1)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.2: Answer Reveal on Projector">
+        Story acceptance criteria, technical notes, and prerequisites. Follow UX Design "Answer Reveal (Projector)" specifications. 5-second display matches FR11. Scripture reference display (FR20) - Epic 4 adds full image reveal. Synchronization: Broadcast ensures all devices see reveal simultaneously. Prerequisites: Stories 2.4, 3.1.
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="FR11: AI-Generated Image Reveal">
+        After each question timer expires, the system shall display an AI-generated Biblical image related to the correct answer on the projector for 5 seconds with the correct answer overlaid. (Note: Epic 4 adds AI images; Story 3.2 implements basic reveal without images.)
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Answer Reveal (Projector)">
+        Answer reveal layout specifications: Original question text (smaller), correct answer highlighted with checkmark and green background, scripture reference display, answer boxes in 2x2 grid with correct answer highlighted, incorrect answers grayed out. 5-second duration. High contrast for projector visibility.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Real-Time Game State Synchronization">
+        Pattern: Supabase Realtime channels (`game:${gameId}`). Events: `answer_reveal`, `leaderboard_ready`. Implementation: `lib/supabase/realtime.ts`, `hooks/useRealtime.ts`. Use Supabase Realtime channel per game: `supabase.channel('game:${gameId}')`. Use broadcast events for custom game events like `answer_reveal`.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="State Management">
+        Server state: Server Components + Server Actions. Client state: React Context for game state. Realtime state: Supabase Realtime subscriptions. UI state: useState for local component state. Use Zustand store for game state (reveal state, correct answer, scripture reference) per Architecture.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-4-question-display-projector-view.md" title="Story 2.4">
+        Question display projector view component exists. Answer boxes in 2x2 grid layout. Component location: `components/game/question-display-projector.tsx`. Layout: 1920x1080 optimized, answer boxes with colored borders (purple, orange, teal, green). Reuse answer box layout for reveal display.
+      </doc>
+      <doc path="docs/sprint-artifacts/3-1-scoring-calculation-engine.md" title="Story 3.1">
+        Scoring calculation engine broadcasts `scores_updated` event after processing. Answer reveal must be triggered AFTER `scores_updated` event is received. Integration: Wait for scoring to complete before showing reveal. Server Action: `processQuestionScores()` in `lib/actions/answers.ts`.
+      </doc>
+      <doc path="docs/sprint-artifacts/3-1-scoring-calculation-engine.context.xml" title="Story 3.1 Context">
+        Scoring calculation broadcasts `scores_updated` event via Realtime. Event payload: `{ gameId: string, questionId: string }`. Listen for this event to trigger answer reveal after scoring completes.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-7-question-advancement-synchronization.md" title="Story 2.7">
+        Question advancement mechanism. Timer reaches 0, but question advancement happens after leaderboard (Story 3.4). For Story 3.2, timer reaching 0 triggers reveal (after scoring), not immediate advancement.
+      </doc>
+    </docs>
+    <code>
+      <file path="components/game/answer-reveal-projector.tsx" kind="component">
+        Target file for answer reveal component. Create here: Full-screen layout (1920x1080), display original question text (32px, top), correct answer with green highlight and checkmark icon (80px), "Correct Answer: [Letter] - [Answer Text]" text (48px), scripture reference if exists (24px), answer boxes in 2x2 grid with correct answer highlighted (#22C55E) and incorrect grayed out (opacity: 0.4). Fade-in animation (300ms) using Framer Motion. 5-second countdown indicator (optional). High contrast styling for projector visibility.
+      </file>
+      <file path="components/game/question-display-projector.tsx" kind="component">
+        Existing question display component from Story 2.4. Need to integrate answer reveal: Add `revealState` state management, listen for `scores_updated` event from Story 3.1, trigger answer reveal after scoring completes, transition from question display to reveal (fade out/in, 300ms), after 5 seconds transition to leaderboard. Conditional render: Show question display OR answer reveal OR leaderboard based on state.
+      </file>
+      <file path="lib/actions/games.ts" kind="server-action">
+        Contains Server Actions for game operations. Pattern to follow: "use server" directive, createClient from lib/supabase/server, error handling with success/error return types. Add `broadcastAnswerReveal(gameId, questionId)` function here (or in `lib/actions/questions.ts`). Fetch correct answer from `questions` table using `.select()` with `.eq('id', questionId)`. Return `correctAnswer` (letter: 'A', 'B', 'C', or 'D') and `scriptureReference` (string | null). Client will broadcast via Realtime (server returns data, client broadcasts).
+      </file>
+      <file path="lib/types/realtime.ts" kind="type">
+        Contains TypeScript types for Realtime events. Add `answer_reveal` to `RealtimeEvent` type. Add `AnswerRevealPayload` interface: `{ gameId: string; questionId: string; correctAnswer: string; scriptureReference: string | null; }`. Update `RealtimeEventPayload` union type to include `AnswerRevealPayload`. Update `GameChannelCallbacks` interface to include `onAnswerReveal?: (payload: AnswerRevealPayload) => void`.
+      </file>
+      <file path="lib/supabase/realtime.ts" kind="utility">
+        Contains Realtime helper functions: `createGameChannel`, `subscribeToGameChannel`, `broadcastGameEvent`. Add `onAnswerReveal` callback to `GameChannelCallbacks` interface. Handle `answer_reveal` event in `subscribeToGameChannel`. Use `broadcastGameEvent` to send `answer_reveal` event. Channel naming: `game:${gameId}`.
+      </file>
+      <file path="lib/store/game-store.ts" kind="store">
+        Zustand store for game state management. Add `revealState` state: `'question' | 'reveal' | 'leaderboard' | 'results'`. Add `correctAnswer` state: `string | null` (stores correct answer letter: 'A', 'B', 'C', or 'D'). Add `scriptureReference` state: `string | null`. Add `setRevealState` action. Add `setCorrectAnswer` action (stores correct answer and scripture reference). Add action to handle `scores_updated` event (from Story 3.1) - trigger reveal after scoring. Add action to handle `answer_reveal` event (for sync across devices).
+      </file>
+      <file path="lib/supabase/server.ts" kind="utility">
+        Contains `createClient()` function for server-side Supabase client. Use this in Server Action to access database for fetching correct answer and scripture reference from `questions` table.
+      </file>
+      <file path="components/game/circular-timer.tsx" kind="component">
+        Circular timer component from Story 2.4. When timer reaches 0, do NOT automatically transition to reveal. Wait for `scores_updated` event from Story 3.1 first, then trigger answer reveal after scoring completes. Timer should show "Time's up!" or similar when reaching 0.
+      </file>
+      <file path="components/ui/button.tsx" kind="component">
+        shadcn/ui Button component. Use for any buttons in reveal display if needed (though reveal is automatic transition).
+      </file>
+      <file path="lib/actions/answers.ts" kind="server-action">
+        Contains `processQuestionScores()` Server Action from Story 3.1. This broadcasts `scores_updated` event after scoring completes. Answer reveal must wait for this event before triggering.
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="^15.1.0">Next.js 15 App Router framework</package>
+        <package name="react" version="^19.0.0">React 19</package>
+        <package name="react-dom" version="^19.0.0">React DOM 19</package>
+        <package name="@supabase/supabase-js" version="latest">Supabase client library (already installed)</package>
+        <package name="zustand" version="latest">State management library for game state. Already installed from previous stories.</package>
+        <package name="framer-motion" version="^10.x">Animation library for fade-in effects (already installed from Story 2.4)</package>
+        <package name="lucide-react" version="^0.554.0">Icon library for checkmark icon (already installed)</package>
+      </ecosystem>
+      <database>
+        <table name="questions">
+          <column name="id" type="UUID" primaryKey="true">Question identifier</column>
+          <column name="correct_answer" type="CHAR(1)">Correct answer: 'A', 'B', 'C', or 'D'</column>
+          <column name="scripture_reference" type="TEXT">Scripture reference citation (e.g., "Matthew 2:1") - may be NULL</column>
+          <column name="question_text" type="TEXT">Question text (for display in reveal)</column>
+          <column name="option_a" type="TEXT">Answer option A</column>
+          <column name="option_b" type="TEXT">Answer option B</column>
+          <column name="option_c" type="TEXT">Answer option C</column>
+          <column name="option_d" type="TEXT">Answer option D</column>
+        </table>
+        <table name="games">
+          <column name="id" type="UUID" primaryKey="true">Game identifier</column>
+          <column name="status" type="TEXT">Game status: 'waiting', 'active', 'completed'</column>
+          <column name="current_question_index" type="INTEGER">Current question index (0-based)</column>
+        </table>
+      </database>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      Answer reveal must be triggered AFTER scoring calculation (Story 3.1) completes. Wait for `scores_updated` event before showing reveal.
+    </constraint>
+    <constraint>
+      Display duration: Exactly 5 seconds (static, per FR11). After 5 seconds, automatically transition to leaderboard (Story 3.4).
+    </constraint>
+    <constraint>
+      Transition animation: Fade in reveal (300ms) using Framer Motion. Smooth transition prevents jarring display changes.
+    </constraint>
+    <constraint>
+      Synchronization: Broadcast `answer_reveal` event via Realtime to ensure all devices see reveal simultaneously. Event payload: `{ gameId, questionId, correctAnswer, scriptureReference }`.
+    </constraint>
+    <constraint>
+      Visual styling: Success green (#22C55E, Tailwind `green-500`) for correct answer background and border. Warm grays (#6B7280, Tailwind `gray-500`) with 0.4 opacity for incorrect answers. High contrast for projector visibility.
+    </constraint>
+    <constraint>
+      Checkmark icon: Large enough to see from 20+ feet away (minimum 80px size). White color on green background. Use Lucide React `CheckCircle2` icon.
+    </constraint>
+    <constraint>
+      Layout: Reuse 2x2 grid layout from Story 2.4 question display. Correct answer box highlighted in green, incorrect boxes grayed out. Original question text displayed at top (32px, smaller than question display).
+    </constraint>
+    <constraint>
+      Scripture reference: Display if available (may be NULL). Format: "Matthew 2:1" in 24px font, gray-600 color, positioned below correct answer text.
+    </constraint>
+    <constraint>
+      Server Action: `broadcastAnswerReveal(gameId, questionId)` fetches correct answer and scripture reference from `questions` table. Returns data for client to broadcast via Realtime (server doesn't broadcast directly).
+    </constraint>
+    <constraint>
+      Game store: Add `revealState` ('question' | 'reveal' | 'leaderboard' | 'results'), `correctAnswer` (string | null), `scriptureReference` (string | null). Update state when `answer_reveal` event received for synchronization.
+    </constraint>
+    <constraint>
+      Error handling: If correct answer not found, show error state. If Realtime broadcast fails, continue with local reveal (other devices may not sync). If timer expired before reveal, automatically trigger reveal.
+    </constraint>
+    <constraint>
+      Accessibility: High contrast ratios meet WCAG AA standards. Text readable from projector distance (minimum 32px font). Screen reader support: Announce "Correct answer is [Letter] - [Answer Text]".
+    </constraint>
+    <constraint>
+      Integration: Trigger reveal from question display component when `scores_updated` event received (from Story 3.1). After 5 seconds, broadcast `leaderboard_ready` event to trigger Story 3.4.
+    </constraint>
+    <constraint>
+      Always use pnpm as package manager (never npm or yarn) per user rules.
+    </constraint>
+    <constraint>
+      Use Server Actions pattern from `lib/actions/games.ts`: "use server" directive, createClient, error handling with success/error return types.
+    </constraint>
+    <constraint>
+      Use Realtime pattern from `lib/supabase/realtime.ts`: `broadcastGameEvent` to send `answer_reveal` event. Channel naming: `game:${gameId}`.
+    </constraint>
+    <constraint>
+      Follow UX Design "Answer Reveal (Projector)" specifications for layout, typography, colors, and timing.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="AnswerRevealProjector component" kind="component">
+      <signature>AnswerRevealProjector({ gameId: string; questionId: string; correctAnswer: string; scriptureReference: string | null; questionText: string; options: { a: string; b: string; c: string; d: string; }; })</signature>
+      <path>components/game/answer-reveal-projector.tsx</path>
+      <description>Answer reveal display component for projector view. Shows original question text, correct answer with green highlight and checkmark, scripture reference if available, all answer boxes in 2x2 grid with correct highlighted and incorrect grayed out. Fade-in animation (300ms). 5-second countdown indicator. Full-screen layout (1920x1080 optimized).</description>
+    </interface>
+    <interface name="broadcastAnswerReveal Server Action" kind="function">
+      <signature>broadcastAnswerReveal(gameId: string, questionId: string): Promise&lt;{success: true, correctAnswer: string, scriptureReference: string | null} | {success: false, error: string}&gt;</signature>
+      <path>lib/actions/games.ts</path>
+      <description>Server Action to fetch correct answer and scripture reference from questions table. Returns data for client to broadcast via Realtime. Used to get correct answer letter ('A', 'B', 'C', or 'D') and scripture reference (string | null) for answer reveal.</description>
+    </interface>
+    <interface name="AnswerRevealPayload" kind="type">
+      <signature>type AnswerRevealPayload = { gameId: string; questionId: string; correctAnswer: string; scriptureReference: string | null; }</signature>
+      <path>lib/types/realtime.ts</path>
+      <description>TypeScript type for answer_reveal event payload. Broadcast when answer reveal state is triggered. Contains correct answer letter and scripture reference for display.</description>
+    </interface>
+    <interface name="broadcastGameEvent answer_reveal" kind="function">
+      <signature>broadcastGameEvent(channel: RealtimeChannel, event: 'answer_reveal', payload: AnswerRevealPayload): Promise&lt;void&gt;</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Broadcast answer_reveal event to all subscribers of game channel. Use in client component after fetching correct answer from Server Action. Broadcasts reveal state to synchronize across all devices.</description>
+    </interface>
+    <interface name="subscribeToGameChannel onAnswerReveal callback" kind="function">
+      <signature>onAnswerReveal?: (payload: AnswerRevealPayload) =&gt; void</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Callback function for answer_reveal event. Called when answer_reveal broadcast is received. Use in host and player views to update reveal state. Updates game store with correct answer and scripture reference.</description>
+    </interface>
+    <interface name="game store revealState" kind="store">
+      <signature>useGameStore(): { revealState: 'question' | 'reveal' | 'leaderboard' | 'results'; correctAnswer: string | null; scriptureReference: string | null; setRevealState: (state: 'question' | 'reveal' | 'leaderboard' | 'results') =&gt; void; setCorrectAnswer: (answer: string, scripture: string | null) =&gt; void; }</signature>
+      <path>lib/store/game-store.ts</path>
+      <description>Zustand store for reveal state management. Stores current reveal state, correct answer letter, and scripture reference. Accessible from both host and player views. Updates when answer_reveal event received.</description>
+    </interface>
+    <interface name="subscribeToGameChannel onScoresUpdated callback" kind="function">
+      <signature>onScoresUpdated?: (payload: ScoresUpdatedPayload) =&gt; void</signature>
+      <path>lib/supabase/realtime.ts</path>
+      <description>Callback function for scores_updated event from Story 3.1. Called when scoring calculation completes. Use in host question display component to trigger answer reveal after scoring completes.</description>
+    </interface>
+    <interface name="Supabase createClient" kind="function">
+      <signature>createClient(): Promise&lt;SupabaseClient&gt;</signature>
+      <path>lib/supabase/server.ts</path>
+      <description>Server-side Supabase client for database operations. Use in Server Action to fetch correct answer and scripture reference from questions table.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing: Create game, start game, submit answers, wait for timer to expire, verify scoring completes (Story 3.1), verify answer reveal appears after scores_updated event, verify correct answer highlighted in green, verify incorrect answers grayed out, verify scripture reference displays if available, verify fade-in animation (300ms), verify 5-second reveal duration, verify automatic transition to leaderboard after 5 seconds, verify answer_reveal event broadcast and reception on multiple devices, verify synchronization across all devices. Test error scenarios: Missing correct answer, network failures, Realtime broadcast failures. No automated tests required for this story (integration testing recommended).
+    </standards>
+    <locations>
+      Test component: `components/game/answer-reveal-projector.tsx` - Answer reveal display
+      Test host view: `app/game/[gameId]/host/page.tsx` or `components/game/question-display-projector.tsx` - Reveal state transition
+      Test Server Action: `lib/actions/games.ts` - `broadcastAnswerReveal` function
+      Test Realtime: Use browser dev tools to monitor `answer_reveal` event broadcasts
+      Test synchronization: Open multiple browser tabs/devices, verify reveal appears simultaneously
+    </locations>
+    <ideas>
+      Test answer reveal flow: Create game, start game, submit answers, wait for timer to expire, verify scoring completes (check `scores_updated` event), verify answer reveal triggers after scoring, verify correct answer highlighted in green (#22C55E), verify checkmark icon displays (80px, white), verify "Correct Answer: [Letter] - [Answer Text]" text displays (48px, bold), verify scripture reference displays if available (24px, gray-600), verify incorrect answer boxes grayed out (opacity: 0.4), verify fade-in animation (300ms), verify 5-second countdown, verify automatic transition to leaderboard after 5 seconds. Test synchronization: Open host view and 2 player views, verify answer_reveal event broadcast, verify all devices show reveal simultaneously (within 500ms). Test error handling: Try reveal with missing question (should show error), try reveal with network failure (should continue with local reveal), verify error states display correctly. Test styling: Verify high contrast, verify text readable from projector distance, verify responsive fallback on smaller screens.
+    </ideas>
+  </tests>
+</story-context>

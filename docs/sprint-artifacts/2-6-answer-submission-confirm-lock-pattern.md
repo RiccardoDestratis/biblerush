@@ -1,6 +1,6 @@
 # Story 2.6: Answer Submission with Tap-to-Lock Pattern
 
-Status: in-progress
+Status: done
 
 ## Story
 

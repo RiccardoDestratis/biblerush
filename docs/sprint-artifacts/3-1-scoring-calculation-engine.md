@@ -1,6 +1,6 @@
 # Story 3.1: Scoring Calculation Engine
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 

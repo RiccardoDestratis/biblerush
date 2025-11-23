@@ -137,6 +137,9 @@ async function importQuestionSet(questionSet: QuestionSet, orderIndex: number = 
       question.option_d.en
     );
 
+    // Set show_source: false for "General Bible knowledge", true otherwise
+    const showSource = question.verse_reference.en !== 'General Bible knowledge';
+
     const { error: questionError } = await supabase
       .from('questions')
       .insert({
@@ -176,6 +179,8 @@ async function importQuestionSet(questionSet: QuestionSet, orderIndex: number = 
         verse_content_en: question.verse_content.en,
         verse_content_de: question.verse_content.de,
         verse_content_it: question.verse_content.it,
+        // Show source flag (false for "General Bible knowledge", true for actual verse references)
+        show_source: showSource,
         // Image metadata
         image_prompt: question.image_prompt,
         image_style: question.image_style,

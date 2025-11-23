@@ -9,6 +9,9 @@ interface MobileTimerProps {
   onExpire?: () => void; // Callback when timer reaches 0
   onLowTime?: (remaining: number) => void; // Callback when timer ≤ 5 seconds
   showWarning?: boolean; // Whether to show low-time warning animation
+  isPaused?: boolean; // Whether the timer is paused
+  pausedAt?: string | null; // ISO timestamp when pause occurred
+  pauseDuration?: number; // Total accumulated pause duration in seconds
 }
 
 /**
@@ -23,57 +26,90 @@ export function MobileTimer({
   onExpire,
   onLowTime,
   showWarning = false,
+  isPaused = false,
+  pausedAt = null,
+  pauseDuration = 0,
 }: MobileTimerProps) {
   const [remaining, setRemaining] = useState(duration);
   const [hasExpired, setHasExpired] = useState(false);
+  const [frozenRemaining, setFrozenRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     if (hasExpired) return;
 
-    // Calculate remaining time based on server timestamp
+    // Calculate remaining time based on server timestamp, accounting for pause duration
     const calculateRemaining = () => {
       const startTime = new Date(startedAt).getTime();
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000);
-      const remainingSeconds = Math.max(0, duration - elapsed);
+      // Subtract pause duration to account for time spent paused
+      const adjustedElapsed = elapsed - pauseDuration;
+      const remainingSeconds = Math.max(0, duration - adjustedElapsed);
       
       return remainingSeconds;
     };
 
-    // Initial calculation
-    setRemaining(calculateRemaining());
-
-    // Update every second
-    const interval = setInterval(() => {
-      const remainingSeconds = calculateRemaining();
-      setRemaining(remainingSeconds);
-
-      // Trigger low-time warning callback every second when ≤ 5 seconds
-      if (remainingSeconds <= 5 && remainingSeconds > 0) {
-        onLowTime?.(remainingSeconds);
+    // When paused, freeze the current remaining time
+    if (isPaused && pausedAt) {
+      if (frozenRemaining === null) {
+        // First time pausing - calculate and freeze
+        const remainingAtPause = calculateRemaining();
+        setFrozenRemaining(remainingAtPause);
       }
+      // Don't update timer while paused
+      return;
+    }
 
-      if (remainingSeconds === 0 && !hasExpired) {
-        setHasExpired(true);
-        onExpire?.();
-        clearInterval(interval);
-      }
-    }, 1000);
+    // When resuming, clear frozen state
+    if (!isPaused && frozenRemaining !== null) {
+      setFrozenRemaining(null);
+    }
 
-    return () => clearInterval(interval);
-  }, [duration, startedAt, onExpire, hasExpired, onLowTime]);
+    // Initial calculation (or when resuming)
+    const currentRemaining = frozenRemaining !== null ? frozenRemaining : calculateRemaining();
+    setRemaining(currentRemaining);
 
+    // Update every second (only when not paused)
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        const remainingSeconds = calculateRemaining();
+        setRemaining(remainingSeconds);
+
+        // Trigger low-time warning callback every second when ≤ 5 seconds
+        if (remainingSeconds <= 5 && remainingSeconds > 0) {
+          onLowTime?.(remainingSeconds);
+        }
+
+        if (remainingSeconds === 0 && !hasExpired) {
+          setHasExpired(true);
+          onExpire?.();
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [duration, startedAt, onExpire, hasExpired, onLowTime, isPaused, pausedAt, pauseDuration, frozenRemaining]);
+
+  // Use frozen remaining if paused, otherwise use current remaining
+  const displayRemaining = isPaused && frozenRemaining !== null ? frozenRemaining : remaining;
+  
   // Calculate progress percentage (0-100)
-  const progress = (remaining / duration) * 100;
+  const progress = (displayRemaining / duration) * 100;
   
   // Determine color based on remaining time
   let color: string;
-  if (remaining > 10) {
+  if (displayRemaining > 10) {
     color = "#22C55E"; // Green
-  } else if (remaining > 5) {
+  } else if (displayRemaining > 5) {
     color = "#EAB308"; // Yellow
   } else {
     color = "#EF4444"; // Red
+  }
+  
+  // When paused, use a slightly muted color
+  if (isPaused) {
+    color = "#94A3B8"; // Slate gray
   }
 
   // Compact circular timer for mobile (smaller radius)
@@ -82,10 +118,10 @@ export function MobileTimer({
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2" role="timer" aria-label={`${remaining} seconds remaining`}>
+    <div className="flex flex-col items-center justify-center gap-2" role="timer" aria-label={`${displayRemaining} seconds remaining${isPaused ? " (paused)" : ""}`}>
       {/* Compact circular progress with enlargement animation */}
       <motion.div
-        className="relative"
+        className={`relative ${isPaused ? "opacity-60" : ""}`}
         style={{ width: "40px", height: "40px" }}
         animate={{
           scale: showWarning ? 1.4 : 1,
@@ -122,7 +158,7 @@ export function MobileTimer({
             strokeLinecap="round"
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset }}
-            transition={{ duration: 0.3, ease: "linear" }}
+            transition={isPaused ? { duration: 0 } : { duration: 0.3, ease: "linear" }}
             style={{
               strokeDasharray: circumference,
             }}
@@ -132,14 +168,14 @@ export function MobileTimer({
       
       {/* Numeric countdown text */}
       <motion.span
-        key={remaining}
+        key={displayRemaining}
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.2 }}
-        className="text-lg font-semibold"
+        className={`text-lg font-semibold ${isPaused ? "opacity-60" : ""}`}
         style={{ color }}
       >
-        {remaining}s remaining
+        {displayRemaining}s remaining{isPaused ? " (paused)" : ""}
       </motion.span>
     </div>
   );

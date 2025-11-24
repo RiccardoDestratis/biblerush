@@ -174,6 +174,7 @@ export type Database = {
           name_it: string | null
           order: number
           question_count: number | null
+          status: string | null
           tier_required: string | null
         }
         Insert: {
@@ -191,6 +192,7 @@ export type Database = {
           name_it?: string | null
           order?: number
           question_count?: number | null
+          status?: string | null
           tier_required?: string | null
         }
         Update: {
@@ -208,6 +210,7 @@ export type Database = {
           name_it?: string | null
           order?: number
           question_count?: number | null
+          status?: string | null
           tier_required?: string | null
         }
         Relationships: []
@@ -241,6 +244,7 @@ export type Database = {
           right_answer_de: string | null
           right_answer_en: string
           right_answer_it: string | null
+          show_source: boolean | null
           verse_content_de: string | null
           verse_content_en: string | null
           verse_content_it: string | null
@@ -248,7 +252,6 @@ export type Database = {
           verse_reference_en: string | null
           verse_reference_it: string | null
           video_location: string | null
-          show_source: boolean | null
         }
         Insert: {
           correct_answer: string
@@ -278,6 +281,7 @@ export type Database = {
           right_answer_de?: string | null
           right_answer_en: string
           right_answer_it?: string | null
+          show_source?: boolean | null
           verse_content_de?: string | null
           verse_content_en?: string | null
           verse_content_it?: string | null
@@ -285,7 +289,6 @@ export type Database = {
           verse_reference_en?: string | null
           verse_reference_it?: string | null
           video_location?: string | null
-          show_source?: boolean | null
         }
         Update: {
           correct_answer?: string
@@ -315,6 +318,7 @@ export type Database = {
           right_answer_de?: string | null
           right_answer_en?: string
           right_answer_it?: string | null
+          show_source?: boolean | null
           verse_content_de?: string | null
           verse_content_en?: string | null
           verse_content_it?: string | null
@@ -322,7 +326,6 @@ export type Database = {
           verse_reference_en?: string | null
           verse_reference_it?: string | null
           video_location?: string | null
-          show_source?: boolean | null
         }
         Relationships: [
           {
@@ -394,8 +397,8 @@ export type Tables<
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"]
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
@@ -443,7 +446,8 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
+    | keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
@@ -458,8 +462,10 @@ export type TablesUpdate<
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U

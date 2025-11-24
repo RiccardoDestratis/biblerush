@@ -5,8 +5,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { QuestionSetCard } from "@/components/game/question-set-card";
+import { QuestionSetCarousel } from "@/components/create/question-set-carousel";
 import { createGame } from "@/lib/actions/games";
 import { getQuestionSets } from "@/lib/actions/question-sets";
+import { getUserTier } from "@/lib/auth/user";
+import type { UserTier } from "@/lib/auth/user";
+import { hasAccessToTier } from "@/lib/auth/tier-access";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,7 +20,7 @@ interface QuestionSetDisplay {
   title: string;
   description: string;
   questionCount: number;
-  tier: "free" | "pro" | "church";
+  tier: "free" | "pro" | "church" | "sub";
   isComingSoon: boolean;
   cardBackgroundUrl: string | null;
   status: string | null;
@@ -29,10 +33,16 @@ export default function CreateGamePage() {
   const [questionCount, setQuestionCount] = useState<number>(3); // Default to 3 for demo
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [userTier, setUserTier] = useState<UserTier | null>(null);
 
-  // Load question sets from database
+  // Load user tier and question sets from database
   useEffect(() => {
-    async function loadQuestionSets() {
+    async function loadData() {
+      // Load user tier first
+      const tier = await getUserTier();
+      setUserTier(tier);
+
+      // Then load question sets
       const result = await getQuestionSets();
       
       if (!result.success) {
@@ -47,7 +57,7 @@ export default function CreateGamePage() {
         title: set.name,
         description: set.description,
         questionCount: set.questionCount,
-        tier: set.tier as "free" | "pro" | "church",
+        tier: set.tier as "free" | "pro" | "church" | "sub",
         isComingSoon: set.status === "locked", // Check status field from database
         cardBackgroundUrl: set.cardBackgroundUrl,
         status: set.status,
@@ -55,9 +65,17 @@ export default function CreateGamePage() {
       
       setQuestionSets(displaySets);
       
-      // Auto-select the first available set
+      // Auto-select the first available set (only if unlocked)
       if (displaySets.length > 0) {
-        setSelectedQuestionSetId(displaySets[0].id);
+        const firstUnlocked = displaySets.find(
+          (set) => !set.isComingSoon && hasAccessToTier(tier, set.tier)
+        );
+        if (firstUnlocked) {
+          setSelectedQuestionSetId(firstUnlocked.id);
+        } else if (displaySets[0]) {
+          // Fallback to first set even if locked (user can see it's locked)
+          setSelectedQuestionSetId(displaySets[0].id);
+        }
       } else {
         toast.info("No question sets available. Please import some questions first.");
       }
@@ -65,7 +83,7 @@ export default function CreateGamePage() {
       setIsLoading(false);
     }
 
-    loadQuestionSets();
+    loadData();
   }, []);
 
   const handleCreateGame = async () => {
@@ -139,23 +157,76 @@ export default function CreateGamePage() {
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-stretch">
-            {questionSets.map((set, index) => (
-              <QuestionSetCard
-                key={set.id}
-                id={set.id}
-                title={set.title}
-                description={set.description}
-                questionCount={set.questionCount}
-                tier={set.tier}
-                isComingSoon={set.isComingSoon}
-                isSelected={selectedQuestionSetId === set.id}
-                onSelect={() => !set.isComingSoon && setSelectedQuestionSetId(set.id)}
-                cardBackgroundUrl={set.cardBackgroundUrl}
-                priority={index < 2} // Prioritize first 2 cards (above the fold)
-              />
-            ))}
-          </div>
+          <>
+            {(() => {
+              // Split sets into free and premium
+              const freeSets = questionSets.filter(
+                (set) => {
+                  if (set.tier === "free") return true;
+                  return userTier !== null && hasAccessToTier(userTier, set.tier);
+                }
+              );
+              
+              const premiumSets = questionSets.filter(
+                (set) => set.tier !== "free" && 
+                (userTier === null || !hasAccessToTier(userTier, set.tier))
+              );
+
+              // Helper to check if a set is locked
+              const checkIsLocked = (set: QuestionSetDisplay) => {
+                return !set.isComingSoon && 
+                  set.tier !== "free" && 
+                  userTier !== null && 
+                  !hasAccessToTier(userTier, set.tier);
+              };
+
+              // Combine all sets: free sets first, then premium sets
+              const allSets = [...freeSets, ...premiumSets];
+              const hasPremiumSets = premiumSets.length > 0;
+
+              // If we have premium sets, use carousel for all sets (free + premium together)
+              // Otherwise, use grid for free sets only
+              if (hasPremiumSets) {
+                return (
+                  <QuestionSetCarousel
+                    questionSets={allSets}
+                    selectedQuestionSetId={selectedQuestionSetId}
+                    onSelect={setSelectedQuestionSetId}
+                    isLocked={checkIsLocked}
+                  />
+                );
+              } else {
+                // Only free sets - use grid layout
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-stretch">
+                    {allSets.map((set, index) => {
+                      const isLocked = checkIsLocked(set);
+                      return (
+                        <QuestionSetCard
+                          key={set.id}
+                          id={set.id}
+                          title={set.title}
+                          description={set.description}
+                          questionCount={set.questionCount}
+                          tier={set.tier}
+                          isComingSoon={set.isComingSoon}
+                          isLocked={isLocked}
+                          isSelected={selectedQuestionSetId === set.id}
+                          onSelect={() => {
+                            if (!set.isComingSoon && !isLocked) {
+                              setSelectedQuestionSetId(set.id);
+                            }
+                          }}
+                          cardBackgroundUrl={set.cardBackgroundUrl}
+                          priority={index < 2}
+                        />
+                      );
+                    })}
+                  </div>
+                );
+              }
+            })()}
+          </>
         )}
       </div>
 

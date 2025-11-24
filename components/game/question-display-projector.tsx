@@ -10,9 +10,9 @@ import { FinalResultsProjector } from "@/components/game/final-results-projector
 import { subscribeToGame, getGameChannel, broadcastGameEvent } from "@/lib/supabase/realtime";
 import type { TimerExpiredPayload, QuestionAdvancePayload, GameEndPayload, GamePausePayload, GameResumePayload, ScoresUpdatedPayload, AnswerRevealPayload, LeaderboardReadyPayload, AnswerSubmittedPayload } from "@/lib/types/realtime";
 import { getPlayerCount } from "@/lib/actions/players";
-import { broadcastAnswerReveal } from "@/lib/actions/games";
+import { broadcastAnswerReveal, endGame } from "@/lib/actions/games";
 import { Button } from "@/components/ui/button";
-import { Pause, Play, SkipForward } from "lucide-react";
+import { Pause, Play, SkipForward, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { advanceQuestionAndBroadcast } from "@/lib/utils/question-advancement";
 
@@ -376,6 +376,22 @@ export function QuestionDisplayProjector({
       return;
     }
 
+    // Check if this is the final question - if so, don't try to advance (should have been handled in handleRevealComplete)
+    if (questionNumber === totalQuestions) {
+      console.log(`[Host] ⚠️ Final question - leaderboard complete called but game should already be ending`);
+      // Game should already be ended, but if not, end it now
+      const { advanceQuestionAndBroadcast } = await import("@/lib/utils/question-advancement");
+      const result = await advanceQuestionAndBroadcast(gameId);
+      if (result.success && result.gameEnded) {
+        console.log(`[Host] ✅ Game ended from leaderboard complete`);
+      } else if (!result.success && result.error?.includes("completed")) {
+        console.log(`[Host] ✅ Game already completed - updating store`);
+        setGameStatus("ended");
+        setRevealState("results");
+      }
+      return;
+    }
+
     // Advance question and broadcast event
     // Broadcast FIRST, wait a bit for players to receive it, then do local echo
     // This ensures players receive the event before host shows new question
@@ -384,6 +400,12 @@ export function QuestionDisplayProjector({
     
     if (!result.success) {
       console.error(`[Host] ❌ Failed to advance question:`, result.error);
+      // If game is already completed, that's okay - just update store
+      if (result.error?.includes("completed")) {
+        console.log(`[Host] ⚠️ Game already completed, updating store to show final results`);
+        setGameStatus("ended");
+        setRevealState("results");
+      }
       return;
     }
     
@@ -400,7 +422,7 @@ export function QuestionDisplayProjector({
     }
     
     console.log(`[Host] ✅ Advancement complete - store updated, event broadcast`);
-  }, [gameId, currentQuestion, advanceQuestionStore]);
+  }, [gameId, currentQuestion, advanceQuestionStore, questionNumber, totalQuestions]);
 
   // Story 3.2: Handle reveal complete (after 5 seconds, transition to leaderboard OR final results if last question)
   const handleRevealComplete = async () => {
@@ -421,8 +443,26 @@ export function QuestionDisplayProjector({
     // If this is the final question, skip leaderboard and go directly to final results
     if (questionNumber === totalQuestions) {
       console.log(`[Host] 🏁 Final question - skipping leaderboard, going directly to final results`);
-      // Call handleLeaderboardComplete which will advance and trigger game_end
-      await handleLeaderboardComplete();
+      // For final question, advanceQuestionAndBroadcast will mark game as completed
+      // This will trigger game_end event and update store to show final results
+      const { advanceQuestionAndBroadcast } = await import("@/lib/utils/question-advancement");
+      const result = await advanceQuestionAndBroadcast(gameId);
+      
+      if (!result.success) {
+        console.error(`[Host] ❌ Failed to end game:`, result.error);
+        // If it failed because game is already completed, that's okay - just update store
+        if (result.error?.includes("completed")) {
+          console.log(`[Host] ⚠️ Game already completed, updating store to show final results`);
+          setGameStatus("ended");
+          setRevealState("results");
+        }
+        return;
+      }
+      
+      // If game ended successfully, the store is already updated by advanceQuestionAndBroadcast
+      if (result.gameEnded) {
+        console.log(`[Host] ✅ Game ended successfully - final results should be showing now`);
+      }
       return;
     }
 
@@ -560,6 +600,45 @@ export function QuestionDisplayProjector({
     
     // Don't advance here - let the natural flow happen:
     // scores_updated event → onScoresUpdated handler → triggerAnswerReveal → reveal → leaderboard → advance
+  };
+
+  // Handle ending/aborting the game
+  const handleEndGame = async () => {
+    // Confirm with user before ending
+    if (!confirm("Are you sure you want to end this game? This action cannot be undone.")) {
+      return;
+    }
+
+    console.log(`[Host] 🏁 Ending game ${gameId}...`);
+    
+    // Call server action to end the game
+    const result = await endGame(gameId);
+    
+    if (!result.success) {
+      console.error(`[Host] ❌ Error ending game:`, result.error);
+      toast.error(result.error || "Failed to end game. Please try again.");
+      return;
+    }
+
+    console.log(`[Host] ✅ Game ended successfully at ${result.completedAt}`);
+    
+    // Broadcast game_end event to all players
+    if (channelRef.current) {
+      const payload: GameEndPayload = {
+        completedAt: result.completedAt,
+      };
+      
+      console.log(`[Host] 📢 Broadcasting game_end event`);
+      await broadcastGameEvent(gameId, "game_end", payload);
+    }
+
+    // Update local store
+    setGameStatus("ended");
+    setRevealState("results");
+    
+    toast.success("Game ended successfully");
+    
+    // The FinalResultsProjector will render automatically due to gameStatus === "ended"
   };
 
   // Story 3.6: Show final results when game ends
@@ -743,6 +822,35 @@ export function QuestionDisplayProjector({
           <div className="flex items-center gap-2 md:gap-3">
             <SkipForward className="h-6 w-6 md:h-8 md:w-8" fill="currentColor" />
             <span className="hidden sm:inline">SKIP</span>
+          </div>
+        </motion.button>
+
+        {/* End Game Button - Gamey Style */}
+        <motion.button
+          onClick={handleEndGame}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="
+            relative
+            px-6 md:px-8 py-4 md:py-5
+            text-lg md:text-2xl font-black
+            text-white
+            rounded-2xl md:rounded-3xl
+            shadow-2xl
+            border-4 border-white/30
+            bg-gradient-to-br from-red-600 via-rose-600 to-red-700
+            hover:from-red-700 hover:via-rose-700 hover:to-red-800
+            transition-all duration-200
+            transform
+            active:translate-y-1
+          "
+          style={{
+            boxShadow: "0 10px 25px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -2px 0 rgba(0,0,0,0.2)",
+          }}
+        >
+          <div className="flex items-center gap-2 md:gap-3">
+            <XCircle className="h-6 w-6 md:h-8 md:w-8" fill="currentColor" />
+            <span className="hidden sm:inline">END GAME</span>
           </div>
         </motion.button>
       </div>

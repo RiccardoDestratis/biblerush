@@ -8,7 +8,7 @@ export interface QuestionSet {
   description: string;
   questionCount: number;
   difficulty: string | null;
-  tier: string;
+  tier: "free" | "pro" | "church" | "sub";
   isPublished: boolean;
   cardBackgroundUrl: string | null;
   order: number | null;
@@ -27,7 +27,7 @@ export async function getQuestionSets(): Promise<
 
     const { data: questionSets, error } = await supabase
       .from("question_sets")
-      .select("id, name_en, description_en, question_count, difficulty, tier_required, is_published, card_background_url, order")
+      .select("id, name_en, description_en, question_count, difficulty, tier_required, is_published, card_background_url, order, status")
       .eq("is_published", true)
       .order("order", { ascending: true, nullsFirst: false });
 
@@ -53,11 +53,11 @@ export async function getQuestionSets(): Promise<
       description: set.description_en || "",
       questionCount: set.question_count || 0,
       difficulty: set.difficulty,
-      tier: set.tier_required || "free",
+      tier: (set.tier_required || "free") as "free" | "pro" | "church" | "sub",
       isPublished: set.is_published || false,
       cardBackgroundUrl: set.card_background_url || null,
       order: set.order ?? null,
-      status: null, // Status column removed from database schema
+      status: set.status || null,
     }));
 
     // Sort: items with order first (ascending), then items without order

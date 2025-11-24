@@ -231,3 +231,4 @@ git commit -m "feat: add difficulty selection + update tests"
 3. Run tests and see what happens: `pnpm test:e2e:ui`
 4. Tests will tell you what broke! 😊
 
+

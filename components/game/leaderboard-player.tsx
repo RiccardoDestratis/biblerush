@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { getLeaderboard } from "@/lib/actions/games";
 import { useGameStore } from "@/lib/store/game-store";
+import { getSpeedBonus } from "@/lib/game/scoring";
 
 interface LeaderboardPlayerProps {
   gameId: string;
   questionId: string;
+  playerId?: string; // Current player's ID (to highlight their row and show speed bonus)
+  pointsEarned?: number; // Optional: points earned this question (for message display)
 }
 
 interface RankedPlayer {
@@ -17,6 +20,8 @@ interface RankedPlayer {
   cumulativeResponseTimeMs: number;
   rank: number;
   previousRank?: number;
+  pointsEarnedThisQuestion?: number; // Points earned for current question
+  responseTimeMs?: number; // Response time for current question
 }
 
 /**
@@ -27,6 +32,8 @@ interface RankedPlayer {
 export function LeaderboardPlayer({
   gameId,
   questionId,
+  playerId,
+  pointsEarned,
 }: LeaderboardPlayerProps) {
   const { questionNumber, totalQuestions, previousRanks, setPreviousRanks } = useGameStore();
   const [players, setPlayers] = useState<RankedPlayer[]>([]);
@@ -37,17 +44,43 @@ export function LeaderboardPlayer({
   // Check if this is the final question
   const isLastQuestion = questionNumber === totalQuestions;
 
-  // Fetch leaderboard data
+  // Fetch leaderboard data and current question points
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const result = await getLeaderboard(gameId);
       if (result.success) {
-        // Add previous ranks for rank change calculation - matches projector
-        const playersWithPreviousRanks = result.players.map((player) => ({
-          ...player,
-          previousRank: previousRanks[player.playerId],
-        }));
-        setPlayers(playersWithPreviousRanks);
+        // Fetch points_earned for current question for each player (to show speed bonus)
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        
+        const playersWithQuestionData = await Promise.all(
+          result.players.map(async (player) => {
+            // Only fetch current question data if this is the current player
+            if (playerId && player.playerId === playerId) {
+              const { data: answer } = await supabase
+                .from("player_answers")
+                .select("points_earned, response_time_ms")
+                .eq("game_id", gameId)
+                .eq("player_id", player.playerId)
+                .eq("question_id", questionId)
+                .maybeSingle();
+              
+              return {
+                ...player,
+                previousRank: previousRanks[player.playerId],
+                pointsEarnedThisQuestion: answer?.points_earned ?? undefined,
+                responseTimeMs: answer?.response_time_ms ?? undefined,
+              };
+            }
+            
+            return {
+              ...player,
+              previousRank: previousRanks[player.playerId],
+            };
+          })
+        );
+        
+        setPlayers(playersWithQuestionData);
         setTotalCount(result.totalCount);
         setError(null);
 
@@ -63,7 +96,7 @@ export function LeaderboardPlayer({
     };
 
     fetchLeaderboard();
-  }, [gameId, questionId, previousRanks, setPreviousRanks]);
+  }, [gameId, questionId, playerId, previousRanks, setPreviousRanks]);
 
   // Countdown timer - matches projector timing
   useEffect(() => {
@@ -172,6 +205,20 @@ export function LeaderboardPlayer({
 
       {/* Main content - matches projector exactly */}
       <div className="flex flex-col items-center justify-center w-full px-4 md:px-8 space-y-4 md:space-y-6 pt-16 md:pt-0 pb-24 md:pb-32">
+        {/* Points earned message - show if pointsEarned is provided */}
+        {pointsEarned !== undefined && pointsEarned !== null && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.05, duration: 0.3 }}
+            className="text-center mb-4"
+          >
+            <div className="text-xl md:text-2xl font-bold text-green-600">
+              You earned {pointsEarned} point{pointsEarned !== 1 ? 's' : ''} this question!
+            </div>
+          </motion.div>
+        )}
+
         {/* Leaderboard heading - matches projector */}
         <motion.h1
           initial={{ y: -20, opacity: 0 }}
@@ -192,6 +239,18 @@ export function LeaderboardPlayer({
             const rankChange = getRankChange(player);
             const podiumStyle = getPodiumStyle(player.rank);
             const rankIcon = getRankIcon(player.rank);
+            const isCurrentPlayer = playerId && player.playerId === playerId;
+            
+            // Calculate speed bonus for current player if we have the data
+            // Only show speed bonus if there actually is one (> 0)
+            let speedBonusText = null;
+            if (isCurrentPlayer && player.pointsEarnedThisQuestion !== undefined && player.responseTimeMs !== undefined) {
+              const speedBonus = getSpeedBonus(player.responseTimeMs);
+              if (speedBonus > 0) {
+                speedBonusText = `⚡ +${speedBonus} speed bonus`;
+              }
+              // Don't show anything if speed bonus is 0
+            }
 
             return (
               <motion.div
@@ -202,9 +261,10 @@ export function LeaderboardPlayer({
                 className={`
                   ${podiumStyle}
                   rounded-xl md:rounded-2xl p-3 md:p-4
-                  flex items-center justify-between
+                  flex flex-col
                   shadow-lg
                   ${player.rank <= 3 ? "border-2 md:border-4 border-yellow-400" : "border-2 border-gray-300"}
+                  ${isCurrentPlayer ? "ring-2 ring-blue-400 ring-offset-2" : ""}
                   w-full
                   min-h-[60px] md:min-h-[80px]
                 `}
@@ -215,20 +275,28 @@ export function LeaderboardPlayer({
                     {rankIcon}
                   </div>
 
-                  {/* Player name */}
-                  <div className="text-lg md:text-3xl font-bold flex-1 truncate min-w-0">{player.playerName}</div>
+                  {/* Player name and speed bonus */}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-lg md:text-3xl font-bold truncate">{player.playerName}</div>
+                    {/* Show speed bonus info only for current player */}
+                    {isCurrentPlayer && speedBonusText && (
+                      <div className="text-xs md:text-sm text-teal-600 font-semibold mt-1">
+                        {speedBonusText}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Rank change indicator - hide on small screens - matches projector */}
                   <div className={`text-sm md:text-xl font-semibold ${rankChange.color} flex-shrink-0 whitespace-nowrap hidden md:block`}>
                     {rankChange.symbol} {rankChange.text}
                   </div>
-                </div>
 
-                {/* Score */}
-                <ScoreCounter
-                  previousScore={0}
-                  currentScore={player.totalScore}
-                />
+                  {/* Score */}
+                  <ScoreCounter
+                    previousScore={0}
+                    currentScore={player.totalScore}
+                  />
+                </div>
               </motion.div>
             );
           })}
@@ -259,7 +327,7 @@ export function LeaderboardPlayer({
 }
 
 /**
- * Score counter component with animated count-up - matches projector
+ * Score counter component - NO ANIMATION, just display value directly
  */
 function ScoreCounter({
   previousScore,
@@ -268,23 +336,11 @@ function ScoreCounter({
   previousScore: number;
   currentScore: number;
 }) {
-  const motionValue = useMotionValue(previousScore);
-  const springValue = useSpring(motionValue, {
-    stiffness: 50,
-    damping: 30,
-  });
-  const displayScore = useTransform(springValue, (value) =>
-    Math.floor(value)
-  );
-
-  useEffect(() => {
-    motionValue.set(currentScore);
-  }, [currentScore, motionValue]);
-
+  // No animation - just display the value directly
   return (
-    <motion.div className="text-2xl md:text-4xl font-bold flex-shrink-0 w-20 md:w-28 text-right">
-      {displayScore}
-    </motion.div>
+    <div className="text-2xl md:text-4xl font-bold flex-shrink-0 w-20 md:w-28 text-right">
+      {currentScore}
+    </div>
   );
 }
 

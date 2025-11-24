@@ -2,6 +2,27 @@
 
 ## Development Workflow
 
+### Next.js MCP Server Usage
+
+**Default Behavior:** Always try to use the Next.js MCP server tools (`nextjs_runtime`, `nextjs_docs`) first.
+
+**Workflow:**
+1. **Try MCP first:** Attempt to use Next.js MCP tools (they will automatically discover if a server is running)
+2. **If no server found:** After one attempt, if `discover_servers` returns no servers or MCP tools fail:
+   - Run the restart script: `./restart-dev.sh` or `bash restart-dev.sh`
+   - Wait for the server to start (check that it's running)
+   - Then retry MCP tools
+
+**If restart-dev.sh doesn't exist:**
+- Create it with the following functionality:
+  - Kill any Next.js dev server processes
+  - Kill any process on port 3000
+  - Clear `.next` cache
+  - Clear `node_modules/.cache`
+  - Start dev server with `pnpm dev`
+
+**Key Principle:** Try MCP first, fallback to restart script only if needed. The MCP server will automatically detect if no Next.js instance is running.
+
 ### Cache Clearing
 - **After bigger changes** (schema updates, major refactors, environment variable changes), always run `pnpm dev:clean` instead of `pnpm dev`
 - This clears the Next.js cache (.next) and node_modules/.cache before restarting the dev server
@@ -32,5 +53,3 @@
 - Follow TypeScript strict mode
 - Use ESLint and Prettier for code formatting
 - Maintain WCAG AA accessibility standards
-
-

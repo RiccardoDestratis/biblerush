@@ -239,3 +239,4 @@ test('game over flow', async ({ page }) => {
 - [ ] Add Playwright helpers for persistent games
 - [ ] Add test game cleanup automation
 
+

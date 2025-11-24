@@ -224,3 +224,4 @@ If you reach high traffic (>20,000 games/month):
 
 But for typical usage, you're well within Pro plan limits with plenty of headroom.
 
+

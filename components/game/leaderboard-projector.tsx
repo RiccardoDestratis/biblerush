@@ -44,7 +44,14 @@ export function LeaderboardProjector({
   const isAdvancingRef = useRef(false); // Prevent multiple advancement calls
   const [timerStartTime, setTimerStartTime] = useState(() => new Date().toISOString());
   const [isCountdownPaused, setIsCountdownPaused] = useState(false);
+  const isCountdownPausedRef = useRef(false); // Use ref to avoid dependency issues
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const onCompleteRef = useRef(onComplete); // Use ref to avoid dependency issues
+  
+  // Keep ref in sync with prop
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
   
   // Check if this is the final question
   const isLastQuestion = questionNumber === totalQuestions;
@@ -78,6 +85,7 @@ export function LeaderboardProjector({
   }, [gameId, questionId, previousRanks, setPreviousRanks]);
 
   // Handle leaderboard countdown completion - same pattern as reveal component
+  // Use ref to avoid dependency issues that cause infinite loops
   const handleCountdownComplete = useCallback(() => {
     if (isAdvancingRef.current) {
       return;
@@ -85,8 +93,8 @@ export function LeaderboardProjector({
     isAdvancingRef.current = true;
     setIsAdvancing(true);
     console.log(`[Leaderboard] Leaderboard countdown finished (10s), calling onComplete...`);
-    onComplete?.(); // Call parent's handler, just like reveal component does
-  }, [onComplete]);
+    onCompleteRef.current?.(); // Call parent's handler using ref
+  }, []); // Empty deps - use ref instead
 
   // Leaderboard countdown timer - advances question after 10 seconds
   useEffect(() => {
@@ -96,24 +104,27 @@ export function LeaderboardProjector({
     isAdvancingRef.current = false;
     setIsAdvancing(false);
     setIsCountdownPaused(false);
+    isCountdownPausedRef.current = false;
     
     if (countdownIntervalRef.current) {
       clearInterval(countdownIntervalRef.current);
     }
     
     const timer = setInterval(() => {
-      if (!isCountdownPaused) {
-        setCountdown((prev) => {
-          console.log(`[Leaderboard] ⏱️ Countdown: ${prev}`);
-          if (prev <= 1) {
-            console.log(`[Leaderboard] ⏱️ Countdown reached zero!`);
-            clearInterval(timer);
-            handleCountdownComplete(); // Call onComplete when leaderboard countdown reaches zero
-            return 0;
-          }
-          return prev - 1;
-        });
-      }
+      setCountdown((prev) => {
+        // Check pause state using ref to avoid dependency issues
+        if (isCountdownPausedRef.current) {
+          return prev; // Don't decrement if paused
+        }
+        console.log(`[Leaderboard] ⏱️ Countdown: ${prev}`);
+        if (prev <= 1) {
+          console.log(`[Leaderboard] ⏱️ Countdown reached zero!`);
+          clearInterval(timer);
+          handleCountdownComplete(); // Call onComplete when leaderboard countdown reaches zero
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
     
     countdownIntervalRef.current = timer;
@@ -124,7 +135,7 @@ export function LeaderboardProjector({
         clearInterval(countdownIntervalRef.current);
       }
     };
-  }, [questionId, handleCountdownComplete, isCountdownPaused]); // Reset timer when question changes
+  }, [questionId, handleCountdownComplete]); // Reset timer when question changes - removed isCountdownPaused to prevent infinite loops
 
   // Handle pause button click
   const handlePause = async () => {
@@ -137,6 +148,7 @@ export function LeaderboardProjector({
     // Update local state immediately
     setPaused(pausedAt);
     setIsCountdownPaused(true);
+    isCountdownPausedRef.current = true;
     
     // Broadcast to all devices
     await broadcastGameEvent(gameId, "game_pause", payload);
@@ -155,6 +167,7 @@ export function LeaderboardProjector({
     // Update local state immediately
     setResumed(resumedAt);
     setIsCountdownPaused(false);
+    isCountdownPausedRef.current = false;
     
     // Broadcast to all devices
     await broadcastGameEvent(gameId, "game_resume", payload);
@@ -169,8 +182,8 @@ export function LeaderboardProjector({
     isAdvancingRef.current = true;
     setIsAdvancing(true);
     console.log(`[Leaderboard] ⏭️ Skip button clicked, advancing to next question...`);
-    onComplete?.(); // Call parent's handler to advance question
-  }, [onComplete]);
+    onCompleteRef.current?.(); // Call parent's handler using ref
+  }, []); // Empty deps - use ref instead
 
   // Calculate rank change indicator
   const getRankChange = (player: RankedPlayer) => {

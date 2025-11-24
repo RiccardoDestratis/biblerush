@@ -1,0 +1,899 @@
+{
+    "question_sets": [
+      {
+        "set_name": {
+          "en": "Women of Courage: Biblical Heroines",
+          "de": "Frauen des Mutes: Biblische Heldinnen",
+          "it": "Donne di Coraggio: Eroine Bibliche"
+        },
+        "set_description": {
+          "en": "Discover the remarkable faith and courage of biblical women who changed history. From prophetess-judges to queens who saved nations, these heroines demonstrate that God uses brave, faithful women to accomplish His purposes in powerful ways.",
+          "de": "Entdecken Sie den bemerkenswerten Glauben und Mut biblischer Frauen, die Geschichte schrieben. Von Prophetinnen-Richterinnen bis zu Königinnen, die Nationen retteten, zeigen diese Heldinnen, dass Gott mutige, treue Frauen verwendet, um Seine Absichten auf kraftvolle Weise zu erfüllen.",
+          "it": "Scopri la fede straordinaria e il coraggio delle donne bibliche che hanno cambiato la storia. Da profetesse-giudici a regine che salvarono nazioni, queste eroine dimostrano che Dio usa donne coraggiose e fedeli per compiere i Suoi scopi in modi potenti."
+        },
+        "difficulty": "intermediate",
+        "questions": [
+          {
+            "question": {
+              "en": "Who was the only female judge of Israel mentioned in the Bible?",
+              "de": "Wer war die einzige weibliche Richterin Israels, die in der Bibel erwähnt wird?",
+              "it": "Chi era l'unica giudice donna d'Israele menzionata nella Bibbia?"
+            },
+            "option_a": {
+              "en": "Miriam",
+              "de": "Mirjam",
+              "it": "Miriam"
+            },
+            "option_b": {
+              "en": "Deborah",
+              "de": "Debora",
+              "it": "Debora"
+            },
+            "option_c": {
+              "en": "Esther",
+              "de": "Ester",
+              "it": "Ester"
+            },
+            "option_d": {
+              "en": "Ruth",
+              "de": "Ruth",
+              "it": "Rut"
+            },
+            "right_answer": {
+              "en": "Deborah",
+              "de": "Debora",
+              "it": "Debora"
+            },
+            "verse_reference": {
+              "en": "Judges 4:4",
+              "de": "Richter 4:4",
+              "it": "Giudici 4:4"
+            },
+            "verse_content": {
+              "en": "Now Deborah, a prophetess, the wife of Lappidoth, she judged Israel at that time.",
+              "de": "Zu der Zeit war Richterin in Israel die Prophetin Debora, die Frau Lappidots.",
+              "it": "In quel tempo era giudice d'Israele una profetessa, Debora, moglie di Lappidot."
+            },
+            "image_prompt": "Biblical times, beneath palm tree in hills of Ephraim circa 1200 BC ancient Israel, Deborah the prophetess-judge sitting in position of authority wearing robes of leadership, Israelites coming to her for wisdom and judgment, scrolls of law nearby, strong dignified woman with wise expression, people of various backgrounds seeking her counsel, atmosphere of respected female leadership in patriarchal society, Bronze Age Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, natural daylight filtering through palm fronds, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which Jewish queen risked her life to save her people from genocide?",
+              "de": "Welche jüdische Königin riskierte ihr Leben, um ihr Volk vor dem Völkermord zu retten?",
+              "it": "Quale regina ebrea rischiò la sua vita per salvare il suo popolo dal genocidio?"
+            },
+            "option_a": {
+              "en": "Esther",
+              "de": "Ester",
+              "it": "Ester"
+            },
+            "option_b": {
+              "en": "Bathsheba",
+              "de": "Batseba",
+              "it": "Betsabea"
+            },
+            "option_c": {
+              "en": "Jezebel",
+              "de": "Isebel",
+              "it": "Izebel"
+            },
+            "option_d": {
+              "en": "Vashti",
+              "de": "Wasti",
+              "it": "Vasti"
+            },
+            "right_answer": {
+              "en": "Esther",
+              "de": "Ester",
+              "it": "Ester"
+            },
+            "verse_reference": {
+              "en": "Esther 4:14",
+              "de": "Ester 4:14",
+              "it": "Ester 4:14"
+            },
+            "verse_content": {
+              "en": "For if you remain silent now, then relief and deliverance will come to the Jews from another place, but you and your father's house will perish. Who knows if you haven't come to the kingdom for such a time as this?",
+              "de": "Denn wenn du jetzt schweigst, so wird den Juden Hilfe und Rettung von einem andern Ort her kommen, du aber und deines Vaters Haus werdet umkommen. Und wer weiß, ob du nicht gerade um dieser Zeit willen zur Königswürde gekommen bist?",
+              "it": "Perché se tu rimani assolutamente silenziosa in questo momento, soccorso e liberazione sorgeranno per i Giudei da qualche altra parte; ma tu e la casa di tuo padre perirete. Chi sa se non sei diventata regina proprio per un tempo come questo?"
+            },
+            "image_prompt": "Biblical times, royal palace in Susa Persia circa 480 BC Middle East, Queen Esther in ornate Persian royal garments standing courageously before decision, golden crown on head, palace columns and Persian architecture, expression showing both fear and determination, scrolls depicting evil decree visible, moment of choosing between safety and saving her people, lavish Persian court setting, ancient Persia",
+            "image_style": "Photorealistic, historically accurate biblical scene, rich palace lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Persian period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What was Ruth's declaration of loyalty to Naomi?",
+              "de": "Was war Ruths Treuebekenntnis gegenüber Naomi?",
+              "it": "Quale fu la dichiarazione di lealtà di Rut a Naomi?"
+            },
+            "option_a": {
+              "en": "I will return to my people",
+              "de": "Ich werde zu meinem Volk zurückkehren",
+              "it": "Tornerò al mio popolo"
+            },
+            "option_b": {
+              "en": "Where you go I will go",
+              "de": "Wo du hingehst, da will ich auch hingehen",
+              "it": "Dove andrai tu, andrò io"
+            },
+            "option_c": {
+              "en": "Let me stay in Moab",
+              "de": "Lass mich in Moab bleiben",
+              "it": "Lasciami restare a Moab"
+            },
+            "option_d": {
+              "en": "I must find a husband",
+              "de": "Ich muss einen Mann finden",
+              "it": "Devo trovare un marito"
+            },
+            "right_answer": {
+              "en": "Where you go I will go",
+              "de": "Wo du hingehst, da will ich auch hingehen",
+              "it": "Dove andrai tu, andrò io"
+            },
+            "verse_reference": {
+              "en": "Ruth 1:16",
+              "de": "Ruth 1:16",
+              "it": "Rut 1:16"
+            },
+            "verse_content": {
+              "en": "Ruth said, 'Don't urge me to leave you, and to return from following after you, for where you go, I will go; and where you lodge, I will lodge; your people shall be my people, and your God my God.'",
+              "de": "Ruth aber antwortete: Rede mir nicht ein, ich solle dich verlassen und von dir umkehren. Wo du hingehst, da will ich auch hingehen; wo du bleibst, da bleibe ich auch. Dein Volk ist mein Volk, und dein Gott ist mein Gott.",
+              "it": "Ma Rut rispose: 'Non insistere perch'io ti lasci e me ne vada lontana da te; perché dove andrai tu, andrò io; e dove starai tu, io starò; il tuo popolo sarà il mio popolo, e il tuo Dio sarà il mio Dio.'"
+            },
+            "image_prompt": "Biblical times, dusty road from Moab to Bethlehem circa 1100 BC Middle East, young widow Ruth clasping hands of elderly Naomi in gesture of devotion, Ruth's face showing fierce loyalty and determination, Naomi trying to send her away but Ruth refusing, barren hills in background, two women alone on journey, powerful moment of covenant loyalty transcending culture and blood, ancient Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, golden hour lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+            },
+          {
+            "question": {
+              "en": "How did Mary respond when the angel told her she would give birth to Jesus?",
+              "de": "Wie reagierte Maria, als der Engel ihr sagte, dass sie Jesus gebären würde?",
+              "it": "Come rispose Maria quando l'angelo le disse che avrebbe dato alla luce Gesù?"
+            },
+            "option_a": {
+              "en": "She ran away in fear",
+              "de": "Sie lief vor Angst davon",
+              "it": "Scappò via per la paura"
+            },
+            "option_b": {
+              "en": "She said 'I am the Lord's servant'",
+              "de": "Sie sagte 'Ich bin die Magd des Herrn'",
+              "it": "Disse 'Sono la serva del Signore'"
+            },
+            "option_c": {
+              "en": "She refused the mission",
+              "de": "Sie lehnte die Mission ab",
+              "it": "Rifiutò la missione"
+            },
+            "option_d": {
+              "en": "She demanded proof first",
+              "de": "Sie verlangte zuerst einen Beweis",
+              "it": "Chiese prima una prova"
+            },
+            "right_answer": {
+              "en": "She said 'I am the Lord's servant'",
+              "de": "Sie sagte 'Ich bin die Magd des Herrn'",
+              "it": "Disse 'Sono la serva del Signore'"
+            },
+            "verse_reference": {
+              "en": "Luke 1:38",
+              "de": "Lukas 1:38",
+              "it": "Luca 1:38"
+            },
+            "verse_content": {
+              "en": "Mary said, 'Behold, the servant of the Lord; let it be done to me according to your word.' The angel departed from her.",
+              "de": "Maria aber sprach: Siehe, ich bin des Herrn Magd; mir geschehe, wie du gesagt hast. Und der Engel schied von ihr.",
+              "it": "Maria disse: 'Ecco, io sono la serva del Signore; mi sia fatto secondo la tua parola.' E l'angelo si allontanò da lei."
+            },
+            "image_prompt": "Biblical times, simple interior of Mary's home in Nazareth circa 5 BC Middle East, young teenage Mary kneeling in humility before radiant angel Gabriel, divine light illuminating scene, Mary's expression showing both awe and willing submission, simple furnishings of modest dwelling, angel in white with magnificent presence, moment of accepting divine calling despite personal cost, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, divine ethereal lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman hid Israelite spies and helped them escape?",
+              "de": "Welche Frau versteckte israelitische Spione und half ihnen bei der Flucht?",
+              "it": "Quale donna nascose le spie israelite e le aiutò a fuggire?"
+            },
+            "option_a": {
+              "en": "Rahab",
+              "de": "Rahab",
+              "it": "Raab"
+            },
+            "option_b": {
+              "en": "Delilah",
+              "de": "Delila",
+              "it": "Dalila"
+            },
+            "option_c": {
+              "en": "Tamar",
+              "de": "Tamar",
+              "it": "Tamar"
+            },
+            "option_d": {
+              "en": "Leah",
+              "de": "Lea",
+              "it": "Lea"
+            },
+            "right_answer": {
+              "en": "Rahab",
+              "de": "Rahab",
+              "it": "Raab"
+            },
+            "verse_reference": {
+              "en": "Joshua 2:4-6",
+              "de": "Josua 2:4-6",
+              "it": "Giosuè 2:4-6"
+            },
+            "verse_content": {
+              "en": "The woman took the two men and hid them. Then she said, 'Yes, the men came to me, but I didn't know where they came from... But she had brought them up to the roof, and hid them with the stalks of flax, which she had laid in order on the roof.'",
+              "de": "Aber die Frau hatte die beiden Männer genommen und sie versteckt und sprach: Es sind ja Männer zu mir hereingekommen, aber ich wusste nicht, woher sie waren... Sie aber hatte sie auf das Dach steigen lassen und unter Flachsstängeln versteckt, die sie auf dem Dach ausgebreitet hatte.",
+              "it": "Ma la donna prese quei due uomini, li nascose e disse: 'È vero, quegli uomini sono venuti da me, ma io non sapevo da dove venissero... Invece lei li aveva fatti salire sulla terrazza e li aveva nascosti fra gli steli di lino che aveva disteso sulla terrazza.'"
+            },
+            "image_prompt": "Biblical times, rooftop of house in Jericho circa 1400 BC ancient Canaan at night, Rahab courageously hiding two Israelite spies under stalks of flax on flat roof, Rahab's determined expression as she deceives king's soldiers below, city walls of Jericho visible in background, tense atmosphere of danger and faith, scarlet cord visible at window, Bronze Age Canaan",
+            "image_style": "Photorealistic, historically accurate biblical scene, moonlight and torch lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which sister of Moses was a prophetess who led worship?",
+              "de": "Welche Schwester von Mose war eine Prophetin, die den Gottesdienst leitete?",
+              "it": "Quale sorella di Mosè era una profetessa che guidava il culto?"
+            },
+            "option_a": {
+              "en": "Zipporah",
+              "de": "Zippora",
+              "it": "Sefora"
+            },
+            "option_b": {
+              "en": "Miriam",
+              "de": "Mirjam",
+              "it": "Miriam"
+            },
+            "option_c": {
+              "en": "Jochebed",
+              "de": "Jochebed",
+              "it": "Iochebed"
+            },
+            "option_d": {
+              "en": "Dinah",
+              "de": "Dina",
+              "it": "Dina"
+            },
+            "right_answer": {
+              "en": "Miriam",
+              "de": "Mirjam",
+              "it": "Miriam"
+            },
+            "verse_reference": {
+              "en": "Exodus 15:20",
+              "de": "2. Mose 15:20",
+              "it": "Esodo 15:20"
+            },
+            "verse_content": {
+              "en": "Miriam the prophetess, the sister of Aaron, took a tambourine in her hand; and all the women went out after her with tambourines and with dances.",
+              "de": "Da nahm Mirjam, die Prophetin, Aarons Schwester, eine Pauke in ihre Hand, und alle Frauen folgten ihr nach mit Pauken im Reigen.",
+              "it": "Allora Maria, la profetessa, sorella di Aaronne, prese in mano il timpano e tutte le donne le andarono dietro con timpani e danze."
+            },
+            "image_prompt": "Biblical times, shore of Red Sea after Exodus circa 1450 BC ancient Egypt, Miriam the prophetess dancing joyfully with tambourine raised high, leading multitude of Hebrew women in worship and celebration, Egyptian chariots drowned in sea behind them, women dancing with tambourines, expression of prophetic leadership and triumphant praise, dramatic seascape and cloudy sky, Bronze Age Middle East",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic natural lighting after storm, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which wise woman saved her city by persuading David not to attack it?",
+              "de": "Welche weise Frau rettete ihre Stadt, indem sie David überredete, sie nicht anzugreifen?",
+              "it": "Quale donna saggia salvò la sua città persuadendo Davide a non attaccarla?"
+            },
+            "option_a": {
+              "en": "Abigail",
+              "de": "Abigail",
+              "it": "Abigail"
+            },
+            "option_b": {
+              "en": "The woman of Tekoa",
+              "de": "Die Frau von Tekoa",
+              "it": "La donna di Tecoa"
+            },
+            "option_c": {
+              "en": "The wise woman of Abel",
+              "de": "Die weise Frau von Abel",
+              "it": "La donna saggia di Abel"
+            },
+            "option_d": {
+              "en": "Bathsheba",
+              "de": "Batseba",
+              "it": "Betsabea"
+            },
+            "right_answer": {
+              "en": "The wise woman of Abel",
+              "de": "Die weise Frau von Abel",
+              "it": "La donna saggia di Abel"
+            },
+            "verse_reference": {
+              "en": "2 Samuel 20:16-17",
+              "de": "2. Samuel 20:16-17",
+              "it": "2 Samuele 20:16-17"
+            },
+            "verse_content": {
+              "en": "Then a wise woman cried out of the city, 'Hear, hear! Please say to Joab, \"Come near here, that I may speak with you.\"' He came near to her; and the woman said, 'Are you Joab?' He answered, 'I am.' Then she said to him, 'Hear the words of your servant.'",
+              "de": "Da rief eine kluge Frau aus der Stadt: Hört, hört! Sagt doch zu Joab, dass er hierherkomme; ich will mit ihm reden. Und als er zu ihr kam, sprach die Frau: Bist du Joab? Er sprach: Ja. Sie sprach zu ihm: Höre die Worte deiner Magd!",
+              "it": "Allora una donna saggia gridò dalla città: 'Ascoltate, ascoltate! Vi prego, dite a Ioab di avvicinarsi, che gli voglio parlare.' Egli si avvicinò a lei e la donna gli disse: 'Sei tu Ioab?' Egli rispose: 'Sono io.' Lei gli disse: 'Ascolta le parole della tua serva.'"
+            },
+            "image_prompt": "Biblical times, city wall of Abel Beth Maacah circa 1000 BC ancient Israel, wise elderly woman standing on city wall calling down to Joab's army below, woman's authoritative yet diplomatic bearing, soldiers and siege equipment at base of wall, woman negotiating peace through wisdom, atmosphere of tense diplomacy preventing bloodshed, Iron Age Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic lighting with dust from army, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who was the mother-in-law whom Peter's wife served when Jesus healed her?",
+              "de": "Wer war die Schwiegermutter, der die Frau des Petrus diente, als Jesus sie heilte?",
+              "it": "Chi era la suocera che la moglie di Pietro serviva quando Gesù la guarì?"
+            },
+            "option_a": {
+              "en": "Peter's mother-in-law",
+              "de": "Die Schwiegermutter des Petrus",
+              "it": "La suocera di Pietro"
+            },
+            "option_b": {
+              "en": "Mary Magdalene",
+              "de": "Maria Magdalena",
+              "it": "Maria Maddalena"
+            },
+            "option_c": {
+              "en": "Martha",
+              "de": "Martha",
+              "it": "Marta"
+            },
+            "option_d": {
+              "en": "Elizabeth",
+              "de": "Elisabeth",
+              "it": "Elisabetta"
+            },
+            "right_answer": {
+              "en": "Peter's mother-in-law",
+              "de": "Die Schwiegermutter des Petrus",
+              "it": "La suocera di Pietro"
+            },
+            "verse_reference": {
+              "en": "Mark 1:30-31",
+              "de": "Markus 1:30-31",
+              "it": "Marco 1:30-31"
+            },
+            "verse_content": {
+              "en": "Now Simon's wife's mother lay sick with a fever, and immediately they told him about her. He came and took her by the hand, and raised her up. The fever left her, and she served them.",
+              "de": "Und die Schwiegermutter Simons lag darnieder und hatte das Fieber; und alsbald sagten sie ihm von ihr. Und er trat zu ihr, ergriff sie bei der Hand und richtete sie auf; und das Fieber verließ sie, und sie diente ihnen.",
+              "it": "La suocera di Simone era a letto con la febbre; ed essi subito gliene parlarono; egli, avvicinatosi, la prese per la mano e la fece alzare; la febbre la lasciò ed ella si mise a servirli."
+            },
+            "image_prompt": "Biblical times, interior of Peter's house in Capernaum circa 30 AD Middle East, elderly woman lying on mat with fever, Jesus reaching down to take her hand in gentle healing touch, Peter and others watching, woman rising immediately when healed, simple first-century home with stone walls, moment of compassionate healing and immediate service, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman anointed Jesus' feet with expensive perfume?",
+              "de": "Welche Frau salbte Jesu Füße mit teurem Parfüm?",
+              "it": "Quale donna unse i piedi di Gesù con profumo costoso?"
+            },
+            "option_a": {
+              "en": "Martha",
+              "de": "Martha",
+              "it": "Marta"
+            },
+            "option_b": {
+              "en": "Mary of Bethany",
+              "de": "Maria von Bethanien",
+              "it": "Maria di Betania"
+            },
+            "option_c": {
+              "en": "Salome",
+              "de": "Salome",
+              "it": "Salome"
+            },
+            "option_d": {
+              "en": "Joanna",
+              "de": "Johanna",
+              "it": "Giovanna"
+            },
+            "right_answer": {
+              "en": "Mary of Bethany",
+              "de": "Maria von Bethanien",
+              "it": "Maria di Betania"
+            },
+            "verse_reference": {
+              "en": "John 12:3",
+              "de": "Johannes 12:3",
+              "it": "Giovanni 12:3"
+            },
+            "verse_content": {
+              "en": "Mary, therefore, took a pound of ointment of pure nard, very precious, and anointed the feet of Jesus, and wiped his feet with her hair. The house was filled with the fragrance of the ointment.",
+              "de": "Da nahm Maria ein Pfund Salböl von unverfälschter, kostbarer Narde und salbte die Füße Jesu und trocknete mit ihrem Haar seine Füße; das Haus aber wurde erfüllt vom Duft des Öls.",
+              "it": "Allora Maria, presa una libbra d'olio profumato, di nardo puro, di gran valore, unse i piedi di Gesù e glieli asciugò con i suoi capelli; e la casa fu ripiena del profumo dell'olio."
+            },
+            "image_prompt": "Biblical times, dining room in home at Bethany circa 30 AD Middle East, Mary kneeling at Jesus' feet pouring expensive perfume from alabaster jar, Mary's hair falling forward as she wipes His feet with her hair, disciples watching with various expressions, fragrant perfume filling room, act of extravagant worship and devotion, intimate dinner setting, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm lamplight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who was the first person to see the risen Jesus?",
+              "de": "Wer war die erste Person, die den auferstandenen Jesus sah?",
+              "it": "Chi fu la prima persona a vedere Gesù risorto?"
+            },
+            "option_a": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "option_b": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "option_c": {
+              "en": "Mary Magdalene",
+              "de": "Maria Magdalena",
+              "it": "Maria Maddalena"
+            },
+            "option_d": {
+              "en": "Thomas",
+              "de": "Thomas",
+              "it": "Tommaso"
+            },
+            "right_answer": {
+              "en": "Mary Magdalene",
+              "de": "Maria Magdalena",
+              "it": "Maria Maddalena"
+            },
+            "verse_reference": {
+              "en": "John 20:14-16",
+              "de": "Johannes 20:14-16",
+              "it": "Giovanni 20:14-16"
+            },
+            "verse_content": {
+              "en": "When she had said this, she turned around and saw Jesus standing, but she didn't know that it was Jesus. Jesus said to her, 'Woman, why are you weeping? Who are you looking for?' She, supposing him to be the gardener, said to him, 'Sir, if you have carried him away, tell me where you have laid him, and I will take him away.' Jesus said to her, 'Mary.' She turned and said to him, 'Rabboni!' which is to say, 'Teacher!'",
+              "de": "Und als sie das sagte, wandte sie sich um und sieht Jesus stehen und weiß nicht, dass es Jesus ist. Spricht Jesus zu ihr: Frau, was weinst du? Wen suchst du? Sie meint, es sei der Gärtner, und spricht zu ihm: Herr, hast du ihn weggetragen, so sage mir, wo du ihn hingelegt hast; dann will ich ihn holen. Spricht Jesus zu ihr: Maria! Da wandte sie sich um und spricht zu ihm auf Hebräisch: Rabbuni!, das heißt: Meister!",
+              "it": "Detto questo, si voltò indietro e vide Gesù che stava lì; ma non sapeva che fosse Gesù. Gesù le disse: 'Donna, perché piangi? Chi cerchi?' Ella, pensando che fosse l'ortolano, gli disse: 'Signore, se tu l'hai portato via, dimmi dove l'hai posto, e io lo prenderò.' Gesù le disse: 'Maria!' Ella, voltatasi, gli disse in ebraico: 'Rabbunì!' che significa: 'Maestro!'"
+            },
+            "image_prompt": "Biblical times, garden tomb near Jerusalem early morning circa 30 AD Middle East at dawn, Mary Magdalene in mourning clothes turning in surprise as risen Jesus stands before her in white garments, golden sunrise light breaking through, empty tomb visible in background, moment of recognition and joy transforming her grief, first resurrection appearance to a woman, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, glorious dawn lighting with divine radiance, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman courageously saved baby Moses by hiding him?",
+              "de": "Welche Frau rettete mutig das Baby Mose, indem sie ihn versteckte?",
+              "it": "Quale donna salvò coraggiosamente il bambino Mosè nascondendolo?"
+            },
+            "option_a": {
+              "en": "His mother Jochebed",
+              "de": "Seine Mutter Jochebed",
+              "it": "Sua madre Iochebed"
+            },
+            "option_b": {
+              "en": "Pharaoh's daughter",
+              "de": "Die Tochter des Pharao",
+              "it": "La figlia del Faraone"
+            },
+            "option_c": {
+              "en": "His sister Miriam",
+              "de": "Seine Schwester Mirjam",
+              "it": "Sua sorella Miriam"
+            },
+            "option_d": {
+              "en": "All of the above",
+              "de": "Alle oben genannten",
+              "it": "Tutte le precedenti"
+            },
+            "right_answer": {
+              "en": "All of the above",
+              "de": "Alle oben genannten",
+              "it": "Tutte le precedenti"
+            },
+            "verse_reference": {
+              "en": "Exodus 2:2-9",
+              "de": "2. Mose 2:2-9",
+              "it": "Esodo 2:2-9"
+            },
+            "verse_content": {
+              "en": "The woman conceived, and bore a son. When she saw that he was a fine child, she hid him three months... Pharaoh's daughter came down to bathe at the river... She saw the basket among the reeds, and sent her handmaid to get it. She opened it, and saw the child... His sister said to Pharaoh's daughter, 'Should I go and call a nurse for you from the Hebrew women?'",
+              "de": "Und die Frau ward schwanger und gebar einen Sohn. Und als sie sah, dass es ein feines Kind war, verbarg sie ihn drei Monate... Da kam die Tochter des Pharao herab, um im Nil zu baden... Und sie sah das Kästlein im Schilf und sandte ihre Magd hin, die holte es... Da sprach seine Schwester zu der Tochter des Pharao: Soll ich hingehen und eine der hebräischen Frauen rufen, die da stillt?",
+              "it": "La donna concepì, partorì un figlio e, vedendo com'era bello, lo tenne nascosto tre mesi... Or la figlia del Faraone scese al Fiume per fare il bagno... Vide il canestro fra i giunchi, e mandò la sua cameriera a prenderlo... Allora la sorella del bambino disse alla figlia del Faraone: 'Devo andare a chiamarti una balia tra le donne ebree?'"
+            },
+            "image_prompt": "Biblical times, bank of Nile River in Egypt circa 1500 BC ancient Egypt, three brave women protecting baby Moses - Jochebed placing baby in basket among reeds, young Miriam watching from distance, Pharaoh's daughter in royal Egyptian dress discovering basket, papyrus reeds, crocodiles in background, conspiracy of women across social classes to save future deliverer, Bronze Age Egypt",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm Egyptian sunlight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Egyptian period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman's wisdom prevented bloodshed by bringing provisions to David's men?",
+              "de": "Wessen Weisheit verhinderte Blutvergießen, indem sie Davids Männern Vorräte brachte?",
+              "it": "La saggezza di quale donna impedì lo spargimento di sangue portando provviste agli uomini di Davide?"
+            },
+            "option_a": {
+              "en": "Abigail",
+              "de": "Abigail",
+              "it": "Abigail"
+            },
+            "option_b": {
+              "en": "Hannah",
+              "de": "Hanna",
+              "it": "Anna"
+            },
+            "option_c": {
+              "en": "Ruth",
+              "de": "Ruth",
+              "it": "Rut"
+            },
+            "option_d": {
+              "en": "Sarah",
+              "de": "Sara",
+              "it": "Sara"
+            },
+            "right_answer": {
+              "en": "Abigail",
+              "de": "Abigail",
+              "it": "Abigail"
+            },
+            "verse_reference": {
+              "en": "1 Samuel 25:18-19",
+              "de": "1. Samuel 25:18-19",
+              "it": "1 Samuele 25:18-19"
+            },
+            "verse_content": {
+              "en": "Then Abigail hurried and took two hundred loaves of bread, two bottles of wine, five sheep ready dressed, five measures of parched grain, one hundred clusters of raisins, and two hundred cakes of figs, and laid them on donkeys. She said to her young men, 'Go on before me. Behold, I come after you.'",
+              "de": "Da eilte Abigail und nahm zweihundert Brote und zwei Schläuche Wein und fünf gekochte Schafe und fünf Scheffel geröstetes Getreide und hundert Rosinenkuchen und zweihundert Feigenkuchen und lud sie auf Esel und sprach zu ihren Leuten: Geht vor mir her; siehe, ich will euch nachkommen.",
+              "it": "Allora Abigail prese in fretta duecento pani, due otri di vino, cinque montoni pronti, cinque misure di grano arrostito, cento grappoli di uva passa e duecento masse di fichi secchi, e caricò ogni cosa sugli asini. Poi disse ai suoi servi: 'Precedetemi; ecco, io vi seguirò.'"
+            },
+            "image_prompt": "Biblical times, desert path in Judean wilderness circa 1000 BC ancient Israel, noble woman Abigail riding donkey leading caravan loaded with abundant provisions, meeting angry David and his armed men, Abigail bowing in humble wisdom, donkeys laden with bread, wine, sheep, grain, raisins, figs, Abigail's intelligent diplomacy preventing massacre, dramatic desert landscape, Iron Age Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, harsh desert sunlight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman was a seller of purple cloth who became one of the first European Christians?",
+              "de": "Welche Frau war eine Purpurhändlerin, die eine der ersten europäischen Christen wurde?",
+              "it": "Quale donna era una venditrice di porpora che divenne una delle prime cristiane europee?"
+            },
+            "option_a": {
+              "en": "Priscilla",
+              "de": "Priszilla",
+              "it": "Priscilla"
+            },
+            "option_b": {
+              "en": "Lydia",
+              "de": "Lydia",
+              "it": "Lidia"
+            },
+            "option_c": {
+              "en": "Phoebe",
+              "de": "Phöbe",
+              "it": "Febe"
+            },
+            "option_d": {
+              "en": "Dorcas",
+              "de": "Dorkas",
+              "it": "Dorca"
+            },
+            "right_answer": {
+              "en": "Lydia",
+              "de": "Lydia",
+              "it": "Lidia"
+            },
+            "verse_reference": {
+              "en": "Acts 16:14",
+              "de": "Apostelgeschichte 16:14",
+              "it": "Atti 16:14"
+            },
+            "verse_content": {
+              "en": "A certain woman named Lydia, a seller of purple, of the city of Thyatira, one who worshiped God, heard us; whose heart the Lord opened to listen to the things which were spoken by Paul.",
+              "de": "Und eine gottesfürchtige Frau mit Namen Lydia, eine Purpurhändlerin aus der Stadt Thyatira, hörte zu; ihr tat der Herr das Herz auf, sodass sie darauf achthatte, was von Paulus geredet wurde.",
+              "it": "Una donna della città di Tiatiri, commerciante di porpora, di nome Lidia, che temeva Dio, ci stava ad ascoltare. Il Signore le aprì il cuore per renderla attenta alle cose dette da Paolo."
+            },
+            "image_prompt": "Biblical times, riverside gathering place in Philippi Macedonia circa 50 AD Roman Empire, wealthy businesswoman Lydia in fine purple-dyed robes listening intently to Paul preaching, small group of women gathered for prayer, Lydia's face showing spiritual awakening, bolts of expensive purple cloth visible, moment of Europe's first recorded Christian conversion, first century Greece",
+            "image_style": "Photorealistic, historically accurate biblical scene, soft riverside lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Greco-Roman period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman worked alongside her husband Aquila teaching about Jesus?",
+              "de": "Welche Frau arbeitete an der Seite ihres Mannes Aquila und lehrte über Jesus?",
+              "it": "Quale donna lavorò al fianco di suo marito Aquila insegnando di Gesù?"
+            },
+            "option_a": {
+              "en": "Sapphira",
+              "de": "Saphira",
+              "it": "Saffira"
+            },
+            "option_b": {
+              "en": "Priscilla",
+              "de": "Priszilla",
+              "it": "Priscilla"
+            },
+            "option_c": {
+              "en": "Mary",
+              "de": "Maria",
+              "it": "Maria"
+            },
+            "option_d": {
+              "en": "Tabitha",
+              "de": "Tabitha",
+              "it": "Tabita"
+            },
+            "right_answer": {
+              "en": "Priscilla",
+              "de": "Priszilla",
+              "it": "Priscilla"
+            },
+            "verse_reference": {
+              "en": "Acts 18:26",
+              "de": "Apostelgeschichte 18:26",
+              "it": "Atti 18:26"
+            },
+            "verse_content": {
+              "en": "He began to speak boldly in the synagogue. But when Priscilla and Aquila heard him, they took him aside, and explained to him the way of God more accurately.",
+              "de": "Dieser fing an, frei und offen in der Synagoge zu reden. Als ihn aber Priszilla und Aquila hörten, nahmen sie ihn zu sich und legten ihm den Weg Gottes noch genauer aus.",
+              "it": "Egli cominciò pure a parlare francamente nella sinagoga. E Priscilla e Aquila, dopo averlo udito, lo presero con loro e gli esposero più accuratamente la via di Dio."
+            },
+            "image_prompt": "Biblical times, interior of home in Corinth or Ephesus circa 55 AD Roman Empire, Priscilla and Aquila sitting with Apollo teaching him accurately about Jesus, scrolls of scripture open, tentmaking materials in background, atmosphere of gentle correction and discipleship, husband and wife ministry team instructing learned teacher, first century Mediterranean world",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm interior lamplight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Greco-Roman period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman was known for being 'full of good works and acts of charity'?",
+              "de": "Welche Frau war bekannt dafür, 'voller guter Werke und Taten der Nächstenliebe' zu sein?",
+              "it": "Quale donna era conosciuta per essere 'piena di opere buone e di elemosine'?"
+            },
+            "option_a": {
+              "en": "Dorcas (Tabitha)",
+              "de": "Dorkas (Tabitha)",
+              "it": "Dorca (Tabita)"
+            },
+            "option_b": {
+              "en": "Anna",
+              "de": "Hanna",
+              "it": "Anna"
+            },
+            "option_c": {
+              "en": "Joanna",
+              "de": "Johanna",
+              "it": "Giovanna"
+            },
+            "option_d": {
+              "en": "Susanna",
+              "de": "Susanna",
+              "it": "Susanna"
+            },
+            "right_answer": {
+              "en": "Dorcas (Tabitha)",
+              "de": "Dorkas (Tabitha)",
+              "it": "Dorca (Tabita)"
+            },
+            "verse_reference": {
+              "en": "Acts 9:36",
+              "de": "Apostelgeschichte 9:36",
+              "it": "Atti 9:36"
+            },
+            "verse_content": {
+              "en": "Now there was at Joppa a certain disciple named Tabitha, which when translated, means Dorcas. This woman was full of good works and acts of mercy which she did.",
+              "de": "In Joppe aber war eine Jüngerin mit Namen Tabita, das heißt übersetzt: Gazelle. Die tat viele gute Werke und gab reichlich Almosen.",
+              "it": "Or in Ioppe c'era una discepola, di nome Tabita, che, tradotto, vuol dire Gazzella. Costei abbondava in buone opere e faceva molte elemosine."
+            },
+            "image_prompt": "Biblical times, home in Joppa circa 40 AD Roman Empire, Dorcas (Tabitha) surrounded by grateful widows showing beautiful garments she made for them, sewing materials and fabrics spread around, woman's face showing compassion and service, widows weeping with gratitude, atmosphere of generous charity and practical love, first century Mediterranean coastal town",
+            "image_style": "Photorealistic, historically accurate biblical scene, soft interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Mediterranean period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who was the mother of John the Baptist?",
+              "de": "Wer war die Mutter von Johannes dem Täufer?",
+              "it": "Chi era la madre di Giovanni Battista?"
+            },
+            "option_a": {
+              "en": "Mary",
+              "de": "Maria",
+              "it": "Maria"
+            },
+            "option_b": {
+              "en": "Elizabeth",
+              "de": "Elisabeth",
+              "it": "Elisabetta"
+            },
+            "option_c": {
+              "en": "Anna",
+              "de": "Anna",
+              "it": "Anna"
+            },
+            "option_d": {
+              "en": "Sarah",
+              "de": "Sara",
+              "it": "Sara"
+            },
+            "right_answer": {
+              "en": "Elizabeth",
+              "de": "Elisabeth",
+              "it": "Elisabetta"
+            },
+            "verse_reference": {
+              "en": "Luke 1:13",
+              "de": "Lukas 1:13",
+              "it": "Luca 1:13"
+            },
+            "verse_content": {
+              "en": "But the angel said to him, 'Don't be afraid, Zacharias, because your request has been heard, and your wife, Elizabeth, will bear you a son, and you shall call his name John.'",
+              "de": "Aber der Engel sprach zu ihm: Fürchte dich nicht, Zacharias, denn dein Gebet ist erhört, und deine Frau Elisabeth wird dir einen Sohn gebären, und du sollst ihm den Namen Johannes geben.",
+              "it": "Ma l'angelo gli disse: 'Non temere, Zaccaria, perché la tua preghiera è stata esaudita; tua moglie Elisabetta ti partorirà un figlio, e tu gli porrai nome Giovanni.'"
+            },
+            "image_prompt": "Biblical times, home in hill country of Judea circa 6 BC Middle East, elderly Elizabeth pregnant in miraculous fulfillment of promise, visited by young Mary her kinswoman, baby leaping in Elizabeth's womb, Elizabeth blessing Mary with prophetic words, two women embracing in joy, atmosphere of divine miracles and feminine faith, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which prophetess recognized baby Jesus at the temple?",
+              "de": "Welche Prophetin erkannte das Baby Jesus im Tempel?",
+              "it": "Quale profetessa riconobbe il bambino Gesù al tempio?"
+            },
+            "option_a": {
+              "en": "Huldah",
+              "de": "Hulda",
+              "it": "Culda"
+            },
+            "option_b": {
+              "en": "Anna",
+              "de": "Hanna",
+              "it": "Anna"
+            },
+            "option_c": {
+              "en": "Deborah",
+              "de": "Debora",
+              "it": "Debora"
+            },
+            "option_d": {
+              "en": "Miriam",
+              "de": "Mirjam",
+              "it": "Miriam"
+            },
+            "right_answer": {
+              "en": "Anna",
+              "de": "Hanna",
+              "it": "Anna"
+            },
+            "verse_reference": {
+              "en": "Luke 2:36-38",
+              "de": "Lukas 2:36-38",
+              "it": "Luca 2:36-38"
+            },
+            "verse_content": {
+              "en": "There was one Anna, a prophetess, the daughter of Phanuel, of the tribe of Asher (she was of a great age, having lived with a husband seven years from her virginity, and she had been a widow for about eighty-four years), who didn't depart from the temple, worshiping with fastings and petitions night and day. Coming up at that very hour, she gave thanks to the Lord, and spoke of him to all those who were looking for redemption in Jerusalem.",
+              "de": "Und es war eine Prophetin, Hanna, eine Tochter Phanuels, aus dem Stamm Asser; die war hochbetagt. Sie hatte sieben Jahre mit ihrem Mann gelebt, nachdem sie geheiratet hatte, und war nun eine Witwe an die vierundachtzig Jahre; die wich nicht vom Tempel und diente Gott mit Fasten und Beten Tag und Nacht. Die trat auch hinzu zu derselben Stunde und pries Gott und redete von ihm zu allen, die auf die Erlösung Jerusalems warteten.",
+              "it": "C'era anche Anna, profetessa, figlia di Penuel, della tribù di Ascer. Era molto avanti negli anni; dopo essere vissuta con il marito sette anni dalla sua verginità, era rimasta vedova e aveva raggiunto gli ottantaquattro anni. Non si allontanava mai dal tempio e serviva Dio notte e giorno con digiuni e preghiere. Sopraggiunta in quella stessa ora, anche lei lodava Dio e parlava del bambino a tutti quelli che aspettavano la redenzione di Gerusalemme."
+            },
+            "image_prompt": "Biblical times, Jerusalem Temple courts circa 4 BC Middle East, elderly prophetess Anna aged 84 approaching infant Jesus in Mary's arms, Anna's face radiant with prophetic recognition, Anna raising hands in praise to God, temple columns and architecture, aged widow who never left temple in prayer and fasting, moment of divine revelation to faithful servant, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, sacred temple lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which sisters were close friends of Jesus who lived in Bethany?",
+              "de": "Welche Schwestern waren enge Freundinnen von Jesus, die in Bethanien lebten?",
+              "it": "Quali sorelle erano amiche intime di Gesù che vivevano a Betania?"
+            },
+            "option_a": {
+              "en": "Mary and Elizabeth",
+              "de": "Maria und Elisabeth",
+              "it": "Maria ed Elisabetta"
+            },
+            "option_b": {
+              "en": "Rachel and Leah",
+              "de": "Rahel und Lea",
+              "it": "Rachele e Lia"
+            },
+            "option_c": {
+              "en": "Martha and Mary",
+              "de": "Martha und Maria",
+              "it": "Marta e Maria"
+            },
+            "option_d": {
+              "en": "Priscilla and Lydia",
+              "de": "Priszilla und Lydia",
+              "it": "Priscilla e Lidia"
+            },
+            "right_answer": {
+              "en": "Martha and Mary",
+              "de": "Martha und Maria",
+              "it": "Marta e Maria"
+            },
+            "verse_reference": {
+              "en": "Luke 10:38-39",
+              "de": "Lukas 10:38-39",
+              "it": "Luca 10:38-39"
+            },
+            "verse_content": {
+              "en": "It happened as they went on their way, he entered into a certain village, and a certain woman named Martha received him into her house. She had a sister called Mary, who also sat at Jesus' feet, and heard his word.",
+              "de": "Als sie aber weiterzogen, kam er in ein Dorf. Da war eine Frau mit Namen Martha, die nahm ihn auf. Und sie hatte eine Schwester, die hieß Maria; die setzte sich dem Herrn zu Füßen und hörte seiner Rede zu.",
+              "it": "Mentre erano in cammino, Gesù entrò in un villaggio; e una donna, di nome Marta, lo ricevette in casa sua. Ella aveva una sorella chiamata Maria, la quale, sedutasi ai piedi di Gesù, ascoltava la sua parola."
+            },
+            "image_prompt": "Biblical times, home interior in Bethany circa 30 AD Middle East, two sisters in same scene - Martha busy serving and preparing meal in background, Mary sitting peacefully at Jesus' feet listening intently in foreground, Jesus teaching, contrast between active service and contemplative devotion, warm domestic setting, close friendship evident, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which woman's persistent faith led Jesus to heal her daughter?",
+              "de": "Wessen beharrlicher Glaube führte dazu, dass Jesus ihre Tochter heilte?",
+              "it": "La fede persistente di quale donna portò Gesù a guarire sua figlia?"
+            },
+            "option_a": {
+              "en": "The Roman centurion's wife",
+              "de": "Die Frau des römischen Hauptmanns",
+              "it": "La moglie del centurione romano"
+            },
+            "option_b": {
+              "en": "The Canaanite woman",
+              "de": "Die kanaanäische Frau",
+              "it": "La donna cananea"
+            },
+            "option_c": {
+              "en": "The widow of Nain",
+              "de": "Die Witwe von Nain",
+              "it": "La vedova di Nain"
+            },
+            "option_d": {
+              "en": "Jairus' wife",
+              "de": "Die Frau des Jairus",
+              "it": "La moglie di Iairo"
+            },
+            "right_answer": {
+              "en": "The Canaanite woman",
+              "de": "Die kanaanäische Frau",
+              "it": "La donna cananea"
+            },
+            "verse_reference": {
+              "en": "Matthew 15:27-28",
+              "de": "Matthäus 15:27-28",
+              "it": "Matteo 15:27-28"
+            },
+            "verse_content": {
+              "en": "But she said, 'Yes, Lord, but even the dogs eat the crumbs which fall from their masters' table.' Then Jesus answered her, 'Woman, great is your faith! Be it done to you even as you desire.' And her daughter was healed from that hour.",
+              "de": "Sie aber sprach: Ja, Herr; aber doch fressen die Hunde von den Brosamen, die vom Tisch ihrer Herren fallen. Da antwortete Jesus und sprach zu ihr: Frau, dein Glaube ist groß. Dir geschehe, wie du willst! Und ihre Tochter wurde gesund zu derselben Stunde.",
+              "it": "Ma ella disse: 'Dici bene, Signore, eppure anche i cagnolini mangiano delle briciole che cadono dalla tavola dei loro padroni.' Allora Gesù le disse: 'Donna, grande è la tua fede; ti sia fatto come vuoi.' E da quel momento sua figlia fu guarita."
+            },
+            "image_prompt": "Biblical times, region of Tyre and Sidon circa 30 AD Middle East, desperate Gentile mother kneeling persistently before Jesus despite initial rejection, woman's face showing determined humility and faith, Jesus looking at her with admiration, disciples watching in background, moment when Jesus praises great faith found in unexpected place, coastal region of ancient Phoenicia",
+            "image_style": "Photorealistic, historically accurate biblical scene, natural outdoor lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who provided financial support for Jesus' ministry from her own resources?",
+              "de": "Wer unterstützte Jesu Dienst finanziell aus ihren eigenen Mitteln?",
+              "it": "Chi fornì sostegno finanziario al ministero di Gesù con le proprie risorse?"
+            },
+            "option_a": {
+              "en": "Mary Magdalene and other women",
+              "de": "Maria Magdalena und andere Frauen",
+              "it": "Maria Maddalena e altre donne"
+            },
+            "option_b": {
+              "en": "The apostles' wives",
+              "de": "Die Frauen der Apostel",
+              "it": "Le mogli degli apostoli"
+            },
+            "option_c": {
+              "en": "The temple treasury",
+              "de": "Die Tempelkasse",
+              "it": "Il tesoro del tempio"
+            },
+            "option_d": {
+              "en": "The Roman government",
+              "de": "Die römische Regierung",
+              "it": "Il governo romano"
+            },
+            "right_answer": {
+              "en": "Mary Magdalene and other women",
+              "de": "Maria Magdalena und andere Frauen",
+              "it": "Maria Maddalena e altre donne"
+            },
+            "verse_reference": {
+              "en": "Luke 8:2-3",
+              "de": "Lukas 8:2-3",
+              "it": "Luca 8:2-3"
+            },
+            "verse_content": {
+              "en": "And certain women who had been healed of evil spirits and infirmities: Mary who was called Magdalene, from whom seven demons had gone out; and Joanna, the wife of Chuzas, Herod's steward; Susanna; and many others; who served them from their possessions.",
+              "de": "Dazu einige Frauen, die er von bösen Geistern und Krankheiten befreit hatte: Maria, genannt Magdalena, von der sieben Dämonen ausgefahren waren, und Johanna, die Frau des Chuzas, eines Verwalters des Herodes, und Susanna und viele andere, die ihm dienten mit ihrer Habe.",
+              "it": "E con lui vi erano i dodici e alcune donne che erano state guarite da spiriti maligni e da malattie: Maria, detta Maddalena, dalla quale erano usciti sette demòni; Giovanna, moglie di Cuza, amministratore di Erode; Susanna e molte altre che assistevano Gesù e i dodici con i loro beni."
+            },
+            "image_prompt": "Biblical times, traveling with Jesus through Galilee circa 30 AD Middle East, group of faithful women disciples including Mary Magdalene, Joanna, and Susanna providing financial support and practical service, women carrying supplies and provisions, Jesus teaching with women among His followers, revolutionary inclusion of women in ministry support, first century Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, natural traveling light, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          }
+        ]
+      }
+    ]
+  }

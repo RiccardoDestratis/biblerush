@@ -104,3 +104,4 @@ So that I know my connection is working while waiting for the host to start.
 - [Source: docs/prd.md#FR6] - Functional requirement for waiting room
 
 
+

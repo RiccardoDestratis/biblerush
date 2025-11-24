@@ -2,7 +2,7 @@
 
 
 ## Pre-commit Checklist
-
+run esclint 
 1. **Build the application** to ensure there are no compilation errors
 2. **Run e2e tests** (only if major changes were made)
    - If the e2e tests don't cover the changes made, update the test files accordingly and re-run the tests

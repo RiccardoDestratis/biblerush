@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { getSpeedBonus, formatResponseTime } from "@/lib/game/scoring";
 
 interface PlayerAnswerFeedbackProps {
   gameId: string;
@@ -20,8 +21,13 @@ interface PlayerAnswerFeedbackProps {
 
 /**
  * Player answer feedback component
- * Shows if answer was correct/incorrect, points earned, speed bonus, and total score
+ * Shows if answer was correct/incorrect, points earned, speed bonus breakdown, and total score
  * Displays for 5 seconds (matches Story 3.2 reveal duration)
+ * 
+ * Display format:
+ * - Correct with speed bonus: "10 points + 5 speed bonus = 15 total"
+ * - Correct without speed bonus: "10 points (no speed bonus)" or "10 points + 0 speed bonus = 10 total"
+ * - Incorrect: "0 points" (no speed bonus mentioned)
  */
 export function PlayerAnswerFeedback({
   selectedAnswer,
@@ -33,45 +39,16 @@ export function PlayerAnswerFeedback({
   totalScore,
   responseTimeMs,
 }: PlayerAnswerFeedbackProps) {
-  const [displayedPoints, setDisplayedPoints] = useState(0);
   const isCorrect = selectedAnswer === correctAnswer;
   const hasAnswer = selectedAnswer !== null;
 
-  // Calculate speed bonus (from Story 3.1 scoring)
-  const getSpeedBonus = (responseTimeMs: number): number => {
-    if (responseTimeMs <= 3000) return 5;
-    if (responseTimeMs <= 5000) return 3;
-    return 0;
-  };
-
-  const speedBonus = isCorrect ? getSpeedBonus(responseTimeMs) : 0;
+  // Calculate speed bonus using imported function
+  // Handle case where responseTimeMs might be undefined initially
+  const speedBonus = isCorrect ? getSpeedBonus(responseTimeMs || 0) : 0;
   const basePoints = isCorrect ? 10 : 0;
 
-  // Animate points count-up from 0 to actual points over 500ms
-  useEffect(() => {
-    if (pointsEarned === 0) {
-      setDisplayedPoints(0);
-      return;
-    }
-
-    const duration = 500; // 500ms animation
-    const steps = 30;
-    const increment = pointsEarned / steps;
-    const stepDuration = duration / steps;
-
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= pointsEarned) {
-        setDisplayedPoints(pointsEarned);
-        clearInterval(timer);
-      } else {
-        setDisplayedPoints(Math.floor(current));
-      }
-    }, stepDuration);
-
-    return () => clearInterval(timer);
-  }, [pointsEarned]);
+  // NO ANIMATION - just use pointsEarned directly
+  const displayedPoints = pointsEarned;
 
   // Get encouraging message based on result
   const getFeedbackMessage = () => {
@@ -122,22 +99,42 @@ export function PlayerAnswerFeedback({
           </h2>
         </motion.div>
 
-        {/* Points earned (animated count-up) */}
+        {/* Points earned (animated count-up) with breakdown */}
         {isCorrect && (
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.3 }}
-            className="text-center"
+            className="text-center space-y-2"
+            role="status"
+            aria-live="polite"
+            aria-label={`Correct answer. ${basePoints} points${speedBonus > 0 ? ` plus ${speedBonus} speed bonus equals ${pointsEarned} total points` : speedBonus === 0 ? ` (no speed bonus)` : ""}`}
           >
+            {/* Base points */}
             <div className="text-3xl font-bold text-gray-900">
-              +{displayedPoints} points
+              {basePoints} points
             </div>
-            {speedBonus > 0 && (
-              <div className="text-xl text-teal-600 font-semibold mt-2">
-                +{speedBonus} speed bonus!
+            
+            {/* Speed bonus breakdown */}
+            {speedBonus > 0 ? (
+              <div className="text-xl text-teal-600 font-semibold">
+                +{speedBonus} speed bonus
+              </div>
+            ) : (
+              <div className="text-lg text-gray-600">
+                (no speed bonus)
               </div>
             )}
+            
+            {/* Total breakdown */}
+            <div className="text-2xl font-bold text-gray-900 pt-2">
+              = {displayedPoints} total
+            </div>
+            
+            {/* Response time display */}
+            <div className="text-sm text-gray-600 pt-1">
+              Answered in {formatResponseTime(responseTimeMs)}
+            </div>
           </motion.div>
         )}
 
@@ -148,11 +145,19 @@ export function PlayerAnswerFeedback({
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.3 }}
             className="text-center space-y-2"
+            role="status"
+            aria-live="polite"
+            aria-label={hasAnswer ? "Incorrect answer. 0 points" : "Time's up. No answer submitted. 0 points"}
           >
             <div className="text-lg text-gray-600">
               Correct answer: {correctAnswer} - {correctAnswerText}
             </div>
-            <div className="text-lg text-gray-500">+0 points</div>
+            <div className="text-lg font-semibold text-gray-900">0 points</div>
+            {hasAnswer && (
+              <div className="text-sm text-gray-600">
+                Answered in {formatResponseTime(responseTimeMs)}
+              </div>
+            )}
           </motion.div>
         )}
 

@@ -1,0 +1,899 @@
+{
+    "question_sets": [
+      {
+        "set_name": {
+          "en": "Brothers & Betrayal: Family Drama",
+          "de": "Brüder & Verrat: Familiendrama",
+          "it": "Fratelli e Tradimento: Dramma Familiare"
+        },
+        "set_description": {
+          "en": "Explore the complex relationships between biblical brothers",
+          "de": "Entdecken Sie die komplexen Beziehungen zwischen biblischen Brüdern.",
+          "it": "Esplora le complesse relazioni tra fratelli biblici."
+        },
+        "difficulty": "intermediate",
+        "questions": [
+          {
+            "question": {
+              "en": "Who was the first murderer in the Bible?",
+              "de": "Wer war der erste Mörder in der Bibel?",
+              "it": "Chi fu il primo omicida nella Bibbia?"
+            },
+            "option_a": {
+              "en": "Cain",
+              "de": "Kain",
+              "it": "Caino"
+            },
+            "option_b": {
+              "en": "Lamech",
+              "de": "Lamech",
+              "it": "Lamec"
+            },
+            "option_c": {
+              "en": "Esau",
+              "de": "Esau",
+              "it": "Esaù"
+            },
+            "option_d": {
+              "en": "Absalom",
+              "de": "Absalom",
+              "it": "Absalom"
+            },
+            "right_answer": {
+              "en": "Cain",
+              "de": "Kain",
+              "it": "Caino"
+            },
+            "verse_reference": {
+              "en": "Genesis 4:8",
+              "de": "1. Mose 4:8",
+              "it": "Genesi 4:8"
+            },
+            "verse_content": {
+              "en": "Cain said to Abel, his brother, 'Let's go into the field.' While they were in the field, Cain rose up against Abel, his brother, and killed him.",
+              "de": "Da sprach Kain zu seinem Bruder Abel: Lass uns aufs Feld gehen! Und es geschah, als sie auf dem Feld waren, da erhob sich Kain gegen seinen Bruder Abel und schlug ihn tot.",
+              "it": "Caino disse ad Abele, suo fratello: 'Andiamo nei campi!' E, quando furono nei campi, Caino si avventò contro Abele, suo fratello, e l'uccise."
+            },
+            "image_prompt": "Biblical times, open field outside Eden circa 4000 BC Middle East, Cain in dark tunic striking down Abel who lies on ground, expression of rage and jealousy on Cain's face, Abel's shepherd staff fallen beside him, dark stormy sky overhead, first act of murder in human history, tragic moment of brother killing brother, atmosphere of violence and sin entering the world, ancient Near East setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic stormy lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of earliest human civilization, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Cain's brother Abel do for a living?",
+              "de": "Was war der Beruf von Kains Bruder Abel?",
+              "it": "Che mestiere faceva Abele, fratello di Caino?"
+            },
+            "option_a": {
+              "en": "He was a farmer",
+              "de": "Er war Bauer",
+              "it": "Era agricoltore"
+            },
+            "option_b": {
+              "en": "He was a shepherd",
+              "de": "Er war Hirte",
+              "it": "Era pastore"
+            },
+            "option_c": {
+              "en": "He was a hunter",
+              "de": "Er war Jäger",
+              "it": "Era cacciatore"
+            },
+            "option_d": {
+              "en": "He was a fisherman",
+              "de": "Er war Fischer",
+              "it": "Era pescatore"
+            },
+            "right_answer": {
+              "en": "He was a shepherd",
+              "de": "Er war Hirte",
+              "it": "Era pastore"
+            },
+            "verse_reference": {
+              "en": "Genesis 4:2",
+              "de": "1. Mose 4:2",
+              "it": "Genesi 4:2"
+            },
+            "verse_content": {
+              "en": "Again she gave birth, to Cain's brother Abel. Abel was a keeper of sheep, but Cain was a tiller of the ground.",
+              "de": "Und sie gebar abermals, seinen Bruder Abel. Und Abel wurde ein Schäfer, Kain aber wurde ein Ackermann.",
+              "it": "Poi partorì ancora Abele, suo fratello. Abele fu pastore di pecore; Caino lavoratore della terra."
+            },
+            "image_prompt": "Biblical times, green pasture near Eden circa 4000 BC Middle East, young Abel in simple shepherd's robe tending flock of sheep with wooden staff, peaceful countryside scene, sheep grazing contentedly, Abel with kind gentle expression caring for animals, morning sunlight, idyllic pastoral life before tragedy, ancient Near East landscape",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of earliest human civilization, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Why did Esau hate his brother Jacob?",
+              "de": "Warum hasste Esau seinen Bruder Jakob?",
+              "it": "Perché Esaù odiava suo fratello Giacobbe?"
+            },
+            "option_a": {
+              "en": "Jacob stole his birthright and blessing",
+              "de": "Jakob stahl sein Erstgeburtsrecht und seinen Segen",
+              "it": "Giacobbe rubò il suo diritto di primogenitura e la sua benedizione"
+            },
+            "option_b": {
+              "en": "Jacob married the woman he loved",
+              "de": "Jakob heiratete die Frau, die er liebte",
+              "it": "Giacobbe sposò la donna che amava"
+            },
+            "option_c": {
+              "en": "Jacob was stronger than him",
+              "de": "Jakob war stärker als er",
+              "it": "Giacobbe era più forte di lui"
+            },
+            "option_d": {
+              "en": "Jacob took his sheep",
+              "de": "Jakob nahm seine Schafe",
+              "it": "Giacobbe prese le sue pecore"
+            },
+            "right_answer": {
+              "en": "Jacob stole his birthright and blessing",
+              "de": "Jakob stahl sein Erstgeburtsrecht und seinen Segen",
+              "it": "Giacobbe rubò il suo diritto di primogenitura e la sua benedizione"
+            },
+            "verse_reference": {
+              "en": "Genesis 27:41",
+              "de": "1. Mose 27:41",
+              "it": "Genesi 27:41"
+            },
+            "verse_content": {
+              "en": "Esau hated Jacob because of the blessing with which his father blessed him. Esau said in his heart, 'The days of mourning for my father are at hand. Then I will kill my brother Jacob.'",
+              "de": "Und Esau war Jakob gram um des Segens willen, mit dem ihn sein Vater gesegnet hatte, und sprach in seinem Herzen: Es wird die Zeit bald kommen, dass man um meinen Vater Leid tragen muss; dann will ich meinen Bruder Jakob umbringen.",
+              "it": "Esaù odiò Giacobbe a causa della benedizione che suo padre gli aveva dato. Esaù disse in cuor suo: 'I giorni del lutto di mio padre si avvicinano; allora ucciderò mio fratello Giacobbe.'"
+            },
+            "image_prompt": "Biblical times, tent interior in Canaan circa 1800 BC Middle East, Esau with rugged appearance and red hair glaring with rage and hatred, clenched fists, Isaac's tent visible in background, atmosphere of bitter resentment and murderous intent, Esau processing betrayal by his twin brother, dramatic lighting showing internal turmoil, ancient Canaanite setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "How many brothers did Joseph have?",
+              "de": "Wie viele Brüder hatte Josef?",
+              "it": "Quanti fratelli aveva Giuseppe?"
+            },
+            "option_a": {
+              "en": "10",
+              "de": "10",
+              "it": "10"
+            },
+            "option_b": {
+              "en": "11",
+              "de": "11",
+              "it": "11"
+            },
+            "option_c": {
+              "en": "12",
+              "de": "12",
+              "it": "12"
+            },
+            "option_d": {
+              "en": "7",
+              "de": "7",
+              "it": "7"
+            },
+            "right_answer": {
+              "en": "11",
+              "de": "11",
+              "it": "11"
+            },
+            "verse_reference": {
+              "en": "Genesis 35:22-26",
+              "de": "1. Mose 35:22-26",
+              "it": "Genesi 35:22-26"
+            },
+            "verse_content": {
+              "en": "The sons of Jacob were twelve. The sons of Leah: Reuben (Jacob's firstborn), Simeon, Levi, Judah, Issachar, and Zebulun. The sons of Rachel: Joseph and Benjamin. The sons of Bilhah (Rachel's servant): Dan and Naphtali. The sons of Zilpah (Leah's servant): Gad and Asher.",
+              "de": "Die Söhne Jakobs aber waren zwölf. Die Söhne Leas waren: Ruben, der erstgeborene Sohn Jakobs, Simeon, Levi, Juda, Issachar und Sebulon. Die Söhne Rahels waren: Josef und Benjamin. Die Söhne Bilhas, der Magd Rahels: Dan und Naftali. Die Söhne Silpas, der Magd Leas: Gad und Asser.",
+              "it": "I figli di Giacobbe furono dodici. Figli di Lea: Ruben, primogenito di Giacobbe, Simeone, Levi, Giuda, Issacar e Zabulon. Figli di Rachele: Giuseppe e Beniamino. Figli di Bila, serva di Rachele: Dan e Neftali. Figli di Zilpa, serva di Lea: Gad e Ascer."
+            },
+            "image_prompt": "Biblical times, outdoor gathering in Canaan circa 1700 BC Middle East, twelve sons of Jacob standing together, Joseph younger and distinct in colorful coat among brothers, various ages from young men to adults, expressions ranging from jealousy to indifference toward Joseph, family gathering scene showing complex dynamics, tents and livestock in background, patriarchal era setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Joseph's brothers do to him out of jealousy?",
+              "de": "Was taten Josefs Brüder ihm aus Eifersucht an?",
+              "it": "Cosa fecero i fratelli di Giuseppe per gelosia?"
+            },
+            "option_a": {
+              "en": "They sold him into slavery",
+              "de": "Sie verkauften ihn in die Sklaverei",
+              "it": "Lo vendettero come schiavo"
+            },
+            "option_b": {
+              "en": "They killed him",
+              "de": "Sie töteten ihn",
+              "it": "Lo uccisero"
+            },
+            "option_c": {
+              "en": "They sent him away to another country",
+              "de": "Sie schickten ihn in ein anderes Land",
+              "it": "Lo mandarono in un altro paese"
+            },
+            "option_d": {
+              "en": "They stole his coat",
+              "de": "Sie stahlen seinen Mantel",
+              "it": "Gli rubarono il mantello"
+            },
+            "right_answer": {
+              "en": "They sold him into slavery",
+              "de": "Sie verkauften ihn in die Sklaverei",
+              "it": "Lo vendettero come schiavo"
+            },
+            "verse_reference": {
+              "en": "Genesis 37:28",
+              "de": "1. Mose 37:28",
+              "it": "Genesi 37:28"
+            },
+            "verse_content": {
+              "en": "Midianites who were merchants passed by, and they drew and lifted up Joseph out of the pit, and sold Joseph to the Ishmaelites for twenty pieces of silver. The merchants brought Joseph into Egypt.",
+              "de": "Und als die Midianiter, die Kaufleute, vorüberzogen, zogen sie Josef herauf und hoben ihn aus der Grube und verkauften ihn den Ismaelitern um zwanzig Silberstücke; die brachten Josef nach Ägypten.",
+              "it": "Passarono dei mercanti Madianiti; essi tirarono su Giuseppe, lo fecero salire dalla cisterna e lo vendettero per venti sicli d'argento agli Ismaeliti. Questi condussero Giuseppe in Egitto."
+            },
+            "image_prompt": "Biblical times, desert road in Canaan circa 1700 BC Middle East, Joseph in torn colorful coat being pulled from pit by Ishmaelite merchants, brothers watching in background with mixture of guilt and relief, camels and merchant caravan, young Joseph with fearful expression, moment of ultimate betrayal, dusty desert landscape, ancient trade route setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, harsh desert lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Why did Joseph's brothers hate him?",
+              "de": "Warum hassten Josefs Brüder ihn?",
+              "it": "Perché i fratelli di Giuseppe lo odiavano?"
+            },
+            "option_a": {
+              "en": "He was lazy and didn't work",
+              "de": "Er war faul und arbeitete nicht",
+              "it": "Era pigro e non lavorava"
+            },
+            "option_b": {
+              "en": "Their father loved him more than them",
+              "de": "Ihr Vater liebte ihn mehr als sie",
+              "it": "Loro padre lo amava più di loro"
+            },
+            "option_c": {
+              "en": "He stole from them",
+              "de": "Er stahl von ihnen",
+              "it": "Rubava loro"
+            },
+            "option_d": {
+              "en": "He was smarter than them",
+              "de": "Er war klüger als sie",
+              "it": "Era più intelligente di loro"
+            },
+            "right_answer": {
+              "en": "Their father loved him more than them",
+              "de": "Ihr Vater liebte ihn mehr als sie",
+              "it": "Loro padre lo amava più di loro"
+            },
+            "verse_reference": {
+              "en": "Genesis 37:4",
+              "de": "1. Mose 37:4",
+              "it": "Genesi 37:4"
+            },
+            "verse_content": {
+              "en": "His brothers saw that their father loved him more than all his brothers, and they hated him, and couldn't speak peaceably to him.",
+              "de": "Als nun seine Brüder sahen, dass ihr Vater ihn lieber hatte als alle seine Brüder, hassten sie ihn und konnten ihm kein freundliches Wort mehr sagen.",
+              "it": "I suoi fratelli videro che il loro padre l'amava più di tutti gli altri fratelli e l'odiarono, e non potevano parlargli amichevolmente."
+            },
+            "image_prompt": "Biblical times, family camp in Canaan circa 1700 BC Middle East, Jacob embracing young Joseph while presenting him with ornate colorful coat, other brothers standing at distance watching with scowls and jealous expressions, clear favoritism shown, tents and sheep in background, tension and resentment visible in body language, patriarchal family dynamics, ancient Near East",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm afternoon lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "How did Jacob trick his father Isaac?",
+              "de": "Wie betrog Jakob seinen Vater Isaak?",
+              "it": "Come ingannò Giacobbe suo padre Isacco?"
+            },
+            "option_a": {
+              "en": "He pretended to be his brother Esau",
+              "de": "Er gab sich als sein Bruder Esau aus",
+              "it": "Finse di essere suo fratello Esaù"
+            },
+            "option_b": {
+              "en": "He stole his money",
+              "de": "Er stahl sein Geld",
+              "it": "Gli rubò i soldi"
+            },
+            "option_c": {
+              "en": "He lied about a dream",
+              "de": "Er log über einen Traum",
+              "it": "Mentì riguardo a un sogno"
+            },
+            "option_d": {
+              "en": "He changed his will",
+              "de": "Er änderte sein Testament",
+              "it": "Cambiò il suo testamento"
+            },
+            "right_answer": {
+              "en": "He pretended to be his brother Esau",
+              "de": "Er gab sich als sein Bruder Esau aus",
+              "it": "Finse di essere suo fratello Esaù"
+            },
+            "verse_reference": {
+              "en": "Genesis 27:19",
+              "de": "1. Mose 27:19",
+              "it": "Genesi 27:19"
+            },
+            "verse_content": {
+              "en": "Jacob said to his father, 'I am Esau your firstborn. I have done what you asked me to do. Please arise, sit and eat of my venison, that your soul may bless me.'",
+              "de": "Jakob sprach zu seinem Vater: Ich bin Esau, dein Erstgeborener; ich habe getan, wie du mir gesagt hast. Richte dich auf, setz dich und iss von meinem Wildbret, auf dass mich deine Seele segne.",
+              "it": "Giacobbe disse a suo padre: 'Io sono Esaù, il tuo primogenito; ho fatto come tu m'hai detto; àlzati, ti prego, mettiti seduto e mangia della mia cacciagione, affinché tu mi benedica.'"
+            },
+            "image_prompt": "Biblical times, dark tent interior in Canaan circa 1800 BC Middle East, Jacob wearing goatskin on arms approaching elderly blind Isaac who sits on cushions, Rebecca visible in background orchestrating deception, plate of savory food in Jacob's hands, tension and deception in the air, Isaac reaching out to touch Jacob's hairy arms, dim oil lamp lighting, patriarchal dwelling",
+            "image_style": "Photorealistic, historically accurate biblical scene, dim interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Jacob give Esau in exchange for his birthright?",
+              "de": "Was gab Jakob Esau im Tausch für sein Erstgeburtsrecht?",
+              "it": "Cosa diede Giacobbe a Esaù in cambio della sua primogenitura?"
+            },
+            "option_a": {
+              "en": "A bowl of stew",
+              "de": "Eine Schale Eintopf",
+              "it": "Una scodella di zuppa"
+            },
+            "option_b": {
+              "en": "Twenty pieces of silver",
+              "de": "Zwanzig Silberstücke",
+              "it": "Venti pezzi d'argento"
+            },
+            "option_c": {
+              "en": "A flock of sheep",
+              "de": "Eine Schafherde",
+              "it": "Un gregge di pecore"
+            },
+            "option_d": {
+              "en": "His servants",
+              "de": "Seine Diener",
+              "it": "I suoi servi"
+            },
+            "right_answer": {
+              "en": "A bowl of stew",
+              "de": "Eine Schale Eintopf",
+              "it": "Una scodella di zuppa"
+            },
+            "verse_reference": {
+              "en": "Genesis 25:33-34",
+              "de": "1. Mose 25:33-34",
+              "it": "Genesi 25:33-34"
+            },
+            "verse_content": {
+              "en": "Jacob said, 'Swear to me first.' He swore to him. He sold his birthright to Jacob. Jacob gave Esau bread and lentil stew. He ate and drank, rose up, and went his way. So Esau despised his birthright.",
+              "de": "Jakob sprach: So schwöre mir zuvor! Und er schwor ihm und verkaufte so Jakob seine Erstgeburt. Da gab ihm Jakob Brot und das Linsengericht, und er aß und trank und stand auf und ging davon. So verachtete Esau seine Erstgeburt.",
+              "it": "Giacobbe disse: 'Giuramelo prima di tutto'. Quello gli giurò e vendette la sua primogenitura a Giacobbe. Allora Giacobbe diede a Esaù del pane e della minestra di lenticchie. Egli mangiò e bevve, poi si alzò e se ne andò. Così Esaù disprezzò la primogenitura."
+            },
+            "image_prompt": "Biblical times, outdoor cooking area near tents in Canaan circa 1800 BC Middle East, exhausted Esau in hunting garments hungrily eating red lentil stew from bowl, Jacob standing nearby with knowing expression, moment of impulsive trade with eternal consequences, cooking pot over fire, simple dwelling area, foolish exchange of spiritual inheritance for temporary satisfaction",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm firelight and natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which of David's sons rebelled against him?",
+              "de": "Welcher von Davids Söhnen rebellierte gegen ihn?",
+              "it": "Quale dei figli di Davide si ribellò contro di lui?"
+            },
+            "option_a": {
+              "en": "Solomon",
+              "de": "Salomo",
+              "it": "Salomone"
+            },
+            "option_b": {
+              "en": "Absalom",
+              "de": "Absalom",
+              "it": "Absalom"
+            },
+            "option_c": {
+              "en": "Adonijah",
+              "de": "Adonia",
+              "it": "Adonia"
+            },
+            "option_d": {
+              "en": "Nathan",
+              "de": "Nathan",
+              "it": "Natan"
+            },
+            "right_answer": {
+              "en": "Absalom",
+              "de": "Absalom",
+              "it": "Absalom"
+            },
+            "verse_reference": {
+              "en": "2 Samuel 15:10",
+              "de": "2. Samuel 15:10",
+              "it": "2 Samuele 15:10"
+            },
+            "verse_content": {
+              "en": "But Absalom sent spies throughout all the tribes of Israel, saying, 'As soon as you hear the sound of the trumpet, then you shall say, \"Absalom is king in Hebron!\"'",
+              "de": "Absalom aber sandte Kundschafter aus in alle Stämme Israels und ließ sagen: Wenn ihr den Schall der Posaune hören werdet, so sprecht: Absalom ist König geworden zu Hebron!",
+              "it": "Absalom mandò per tutto Israele degli emissari incaricati di dire: 'Appena udrete il suono della tromba, direte: Absalom è diventato re a Ebron!'"
+            },
+            "image_prompt": "Biblical times, Hebron city circa 1000 BC Israel, handsome Absalom with long flowing hair standing on elevated platform addressing crowd, trumpet players announcing his rebellion, people gathering below, atmosphere of political coup and family betrayal, ancient Israelite city architecture, moment of son usurping father's throne, dramatic scene of ambition and treachery",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of united monarchy period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Why did Absalom kill his half-brother Amnon?",
+              "de": "Warum tötete Absalom seinen Halbbruder Amnon?",
+              "it": "Perché Absalom uccise suo fratellastro Amnon?"
+            },
+            "option_a": {
+              "en": "For the throne",
+              "de": "Wegen des Throns",
+              "it": "Per il trono"
+            },
+            "option_b": {
+              "en": "Because Amnon dishonored their sister Tamar",
+              "de": "Weil Amnon ihre Schwester Tamar entehrt hatte",
+              "it": "Perché Amnon aveva disonorato loro sorella Tamar"
+            },
+            "option_c": {
+              "en": "Over money",
+              "de": "Wegen Geld",
+              "it": "Per denaro"
+            },
+            "option_d": {
+              "en": "In battle",
+              "de": "Im Kampf",
+              "it": "In battaglia"
+            },
+            "right_answer": {
+              "en": "Because Amnon dishonored their sister Tamar",
+              "de": "Weil Amnon ihre Schwester Tamar entehrt hatte",
+              "it": "Perché Amnon aveva disonorato loro sorella Tamar"
+            },
+            "verse_reference": {
+              "en": "2 Samuel 13:28",
+              "de": "2. Samuel 13:28",
+              "it": "2 Samuele 13:28"
+            },
+            "verse_content": {
+              "en": "Absalom commanded his servants, saying, 'Mark now, when Amnon's heart is merry with wine; and when I tell you, \"Strike Amnon,\" then kill him. Don't be afraid. Haven't I commanded you? Be courageous, and be valiant!'",
+              "de": "Absalom aber gebot seinen Leuten und sprach: Seht zu, wenn Amnons Herz guter Dinge wird vom Wein und ich zu euch spreche: Schlagt Amnon!, dann tötet ihn. Fürchtet euch nicht! Ich hab's euch geboten. Seid getrost und zeigt euch als tapfere Leute!",
+              "it": "Absalom diede quest'ordine ai suoi servi: 'Badate bene, quando il cuore di Amnon sarà rallegrato dal vino e io vi dirò: \"Colpite Amnon!\", uccidetelo; non abbiate paura; non ve l'ho comandato io? Fatevi coraggio, e mostratevi valorosi!'"
+            },
+            "image_prompt": "Biblical times, outdoor feast setting in Israel circa 1000 BC, Absalom's servants approaching drunken Amnon at banquet table, Absalom watching from distance with cold expression of vengeance, feast spread with wine and food, moment before execution of revenge for sister's dishonor, tense atmosphere of planned murder disguised as hospitality, ancient Israelite celebration scene",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm feast lighting transitioning to ominous shadows, cinematic composition, reverent tone suitable for all ages, cultural authenticity of united monarchy period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "When Joseph revealed himself to his brothers in Egypt, what did he tell them?",
+              "de": "Als Josef sich seinen Brüdern in Ägypten zu erkennen gab, was sagte er ihnen?",
+              "it": "Quando Giuseppe si rivelò ai suoi fratelli in Egitto, cosa disse loro?"
+            },
+            "option_a": {
+              "en": "God sent me here to save lives",
+              "de": "Gott sandte mich hierher, um Leben zu retten",
+              "it": "Dio mi ha mandato qui per salvare vite"
+            },
+            "option_b": {
+              "en": "I will punish you for your crimes",
+              "de": "Ich werde euch für eure Verbrechen bestrafen",
+              "it": "Vi punirò per i vostri crimini"
+            },
+            "option_c": {
+              "en": "You must serve me as slaves",
+              "de": "Ihr müsst mir als Sklaven dienen",
+              "it": "Dovete servirmi come schiavi"
+            },
+            "option_d": {
+              "en": "I never want to see you again",
+              "de": "Ich will euch nie wieder sehen",
+              "it": "Non voglio più rivedervi"
+            },
+            "right_answer": {
+              "en": "God sent me here to save lives",
+              "de": "Gott sandte mich hierher, um Leben zu retten",
+              "it": "Dio mi ha mandato qui per salvare vite"
+            },
+            "verse_reference": {
+              "en": "Genesis 45:5",
+              "de": "1. Mose 45:5",
+              "it": "Genesi 45:5"
+            },
+            "verse_content": {
+              "en": "Now don't be grieved, nor angry with yourselves, that you sold me here, for God sent me before you to preserve life.",
+              "de": "Und nun bekümmert euch nicht und denkt nicht, dass ich darum zürne, dass ihr mich hierher verkauft habt; denn um euer Leben zu erhalten, hat mich Gott vor euch hergesandt.",
+              "it": "Ma ora non vi rattristate, né vi dolga di avermi venduto perché sono qui; poiché Dio mi ha mandato qui prima di voi per conservarvi in vita."
+            },
+            "image_prompt": "Biblical times, Egyptian palace throne room circa 1650 BC, Joseph in fine Egyptian robes and jewelry revealing identity to shocked brothers who bow before him, tears streaming down Joseph's face as he embraces them, ornate Egyptian columns and decorations, powerful moment of forgiveness and reconciliation, brothers overwhelmed with fear and amazement, ancient Egypt royal setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, grand palace lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Egyptian period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who were the first two brothers mentioned in the Bible?",
+              "de": "Wer waren die ersten beiden Brüder, die in der Bibel erwähnt wurden?",
+              "it": "Chi furono i primi due fratelli menzionati nella Bibbia?"
+            },
+            "option_a": {
+              "en": "Jacob and Esau",
+              "de": "Jakob und Esau",
+              "it": "Giacobbe ed Esaù"
+            },
+            "option_b": {
+              "en": "Cain and Abel",
+              "de": "Kain und Abel",
+              "it": "Caino e Abele"
+            },
+            "option_c": {
+              "en": "Isaac and Ishmael",
+              "de": "Isaak und Ismael",
+              "it": "Isacco e Ismaele"
+            },
+            "option_d": {
+              "en": "Moses and Aaron",
+              "de": "Mose und Aaron",
+              "it": "Mosè e Aaronne"
+            },
+            "right_answer": {
+              "en": "Cain and Abel",
+              "de": "Kain und Abel",
+              "it": "Caino e Abele"
+            },
+            "verse_reference": {
+              "en": "Genesis 4:1-2",
+              "de": "1. Mose 4:1-2",
+              "it": "Genesi 4:1-2"
+            },
+            "verse_content": {
+              "en": "The man knew Eve his wife. She conceived, and gave birth to Cain, and said, 'I have gotten a man with Yahweh's help.' Again she gave birth, to Cain's brother Abel.",
+              "de": "Und Adam erkannte seine Frau Eva, und sie wurde schwanger und gebar den Kain und sprach: Ich habe einen Mann gewonnen mithilfe des HERRN. Danach gebar sie Abel, seinen Bruder.",
+              "it": "Adamo conobbe Eva, sua moglie, la quale concepì e partorì Caino, e disse: 'Ho acquistato un uomo con l'aiuto del SIGNORE'. Poi partorì ancora Abele, suo fratello."
+            },
+            "image_prompt": "Biblical times, simple dwelling near Eden circa 4000 BC Middle East, Eve holding newborn baby Cain with Adam standing beside her, then scene showing Eve with second baby Abel, first family of humanity, humble beginning of human civilization, hope and innocence before tragedy, simple garments and primitive shelter, dawn of human history",
+            "image_style": "Photorealistic, historically accurate biblical scene, soft natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of earliest human civilization, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What special coat did Jacob give to Joseph?",
+              "de": "Welchen besonderen Mantel gab Jakob Josef?",
+              "it": "Quale mantello speciale diede Giacobbe a Giuseppe?"
+            },
+            "option_a": {
+              "en": "A coat of many colors",
+              "de": "Einen bunten Rock",
+              "it": "Un mantello di molti colori"
+            },
+            "option_b": {
+              "en": "A shepherd's coat",
+              "de": "Einen Hirtenmantel",
+              "it": "Un mantello da pastore"
+            },
+            "option_c": {
+              "en": "A warrior's coat",
+              "de": "Einen Kriegermantel",
+              "it": "Un mantello da guerriero"
+            },
+            "option_d": {
+              "en": "A priest's coat",
+              "de": "Einen Priesterrock",
+              "it": "Un mantello sacerdotale"
+            },
+            "right_answer": {
+              "en": "A coat of many colors",
+              "de": "Einen bunten Rock",
+              "it": "Un mantello di molti colori"
+            },
+            "verse_reference": {
+              "en": "Genesis 37:3",
+              "de": "1. Mose 37:3",
+              "it": "Genesi 37:3"
+            },
+            "verse_content": {
+              "en": "Now Israel loved Joseph more than all his children, because he was the son of his old age, and he made him a coat of many colors.",
+              "de": "Und Israel hatte Josef lieber als alle seine Söhne, weil er der Sohn seines Alters war, und er machte ihm einen bunten Rock.",
+              "it": "Israele amava Giuseppe più di tutti gli altri suoi figli, perché era il figlio della sua vecchiaia; e gli fece una veste lunga con le maniche."
+            },
+            "image_prompt": "Biblical times, family tent in Canaan circa 1700 BC Middle East, elderly Jacob presenting beautiful ornate multicolored robe to young Joseph, coat with vibrant stripes of red, blue, purple, gold, Joseph trying it on with joy, other brothers watching from distance with dark jealous expressions, moment of favoritism that sparked family tragedy, rich fabric unusual for shepherds, patriarchal setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm golden hour lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "How did Moses' brother Aaron help him?",
+              "de": "Wie half Moses Bruder Aaron ihm?",
+              "it": "Come aiutò Aaronne, fratello di Mosè?"
+            },
+            "option_a": {
+              "en": "Aaron spoke for Moses to Pharaoh",
+              "de": "Aaron sprach für Mose zum Pharao",
+              "it": "Aaronne parlò per Mosè al Faraone"
+            },
+            "option_b": {
+              "en": "Aaron wrote down the laws",
+              "de": "Aaron schrieb die Gesetze auf",
+              "it": "Aaronne scrisse le leggi"
+            },
+            "option_c": {
+              "en": "Aaron led the army",
+              "de": "Aaron führte die Armee",
+              "it": "Aaronne guidò l'esercito"
+            },
+            "option_d": {
+              "en": "Aaron parted the Red Sea",
+              "de": "Aaron teilte das Rote Meer",
+              "it": "Aaronne divise il Mar Rosso"
+            },
+            "right_answer": {
+              "en": "Aaron spoke for Moses to Pharaoh",
+              "de": "Aaron sprach für Mose zum Pharao",
+              "it": "Aaronne parlò per Mosè al Faraone"
+            },
+            "verse_reference": {
+              "en": "Exodus 4:14-16",
+              "de": "2. Mose 4:14-16",
+              "it": "Esodo 4:14-16"
+            },
+            "verse_content": {
+              "en": "Yahweh's anger burned against Moses, and he said, 'What about Aaron, your brother, the Levite? I know that he can speak well... He will be your spokesman to the people. He will be to you a mouth, and you will be to him as God.'",
+              "de": "Da wurde der HERR zornig über Mose und sprach: Weiß ich denn nicht, dass dein Bruder Aaron, der Levit, reden kann?... Er soll für dich zum Volk reden; er soll dein Mund sein, und du sollst für ihn Gott sein.",
+              "it": "Allora l'ira del SIGNORE si accese contro Mosè; egli disse: 'Non c'è tuo fratello Aaronne, il Levita? Io so che lui sa parlare bene... Egli parlerà per te al popolo; sarà tua bocca e tu sarai per lui come Dio.'"
+            },
+            "image_prompt": "Biblical times, Egyptian palace throne room circa 1450 BC, Aaron in Hebrew robes speaking boldly to Pharaoh on ornate throne, Moses standing beside Aaron with staff, Egyptian guards and officials watching, Aaron serving as Moses' spokesman, partnership of brothers confronting most powerful ruler on earth, dramatic confrontation scene, ancient Egypt setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, grand palace lighting with dramatic shadows, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Egyptian period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which brothers became leaders of the early church?",
+              "de": "Welche Brüder wurden Führer der frühen Gemeinde?",
+              "it": "Quali fratelli divennero leader della chiesa primitiva?"
+            },
+            "option_a": {
+              "en": "Peter and Andrew",
+              "de": "Petrus und Andreas",
+              "it": "Pietro e Andrea"
+            },
+            "option_b": {
+              "en": "James and John",
+              "de": "Jakobus und Johannes",
+              "it": "Giacomo e Giovanni"
+            },
+            "option_c": {
+              "en": "Both sets of brothers",
+              "de": "Beide Brüderpaare",
+              "it": "Entrambe le coppie di fratelli"
+            },
+            "option_d": {
+              "en": "Philip and Bartholomew",
+              "de": "Philippus und Bartholomäus",
+              "it": "Filippo e Bartolomeo"
+            },
+            "right_answer": {
+              "en": "Both sets of brothers",
+              "de": "Beide Brüderpaare",
+              "it": "Entrambe le coppie di fratelli"
+            },
+            "verse_reference": {
+              "en": "Matthew 4:18,21",
+              "de": "Matthäus 4:18,21",
+              "it": "Matteo 4:18,21"
+            },
+            "verse_content": {
+              "en": "Walking by the sea of Galilee, he saw two brothers: Simon, who is called Peter, and Andrew, his brother, casting a net into the sea; for they were fishermen... Going on from there, he saw two other brothers, James the son of Zebedee, and John his brother, in the boat with Zebedee their father, mending their nets.",
+              "de": "Als nun Jesus am Galiläischen Meer entlangging, sah er zwei Brüder, Simon, der Petrus genannt wird, und Andreas, seinen Bruder; die warfen ihre Netze ins Meer; denn sie waren Fischer... Und als er von dort weiterging, sah er zwei andere Brüder, Jakobus, den Sohn des Zebedäus, und Johannes, seinen Bruder, im Boot mit ihrem Vater Zebedäus, wie sie ihre Netze flickten.",
+              "it": "Mentre camminava lungo il mare di Galilea, Gesù vide due fratelli, Simone detto Pietro, e Andrea suo fratello, i quali gettavano la rete in mare, poiché erano pescatori... Passato oltre, vide altri due fratelli, Giacomo di Zebedeo e Giovanni, suo fratello, i quali nella barca, con Zebedeo loro padre, rassettavano le reti."
+            },
+            "image_prompt": "Biblical times, shore of Sea of Galilee circa 30 AD Middle East, four fishermen brothers—Peter and Andrew casting nets in shallow water, James and John mending nets in boat with father, Jesus walking along shore calling them, morning light on water, fishing boats and nets, moment of life-changing calling, transition from fishermen to disciples, ancient Galilee fishing village",
+            "image_style": "Photorealistic, historically accurate biblical scene, beautiful morning lakeside lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of first-century Israel, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Jacob and Esau do when they reunited after many years?",
+              "de": "Was taten Jakob und Esau, als sie sich nach vielen Jahren wiedersahen?",
+              "it": "Cosa fecero Giacobbe ed Esaù quando si riunirono dopo molti anni?"
+            },
+            "option_a": {
+              "en": "They embraced and wept",
+              "de": "Sie umarmten sich und weinten",
+              "it": "Si abbracciarono e piansero"
+            },
+            "option_b": {
+              "en": "They fought",
+              "de": "Sie kämpften",
+              "it": "Combatterono"
+            },
+            "option_c": {
+              "en": "They ignored each other",
+              "de": "Sie ignorierten einander",
+              "it": "Si ignorarono a vicenda"
+            },
+            "option_d": {
+              "en": "They divided their father's property",
+              "de": "Sie teilten das Eigentum ihres Vaters",
+              "it": "Divisero la proprietà del padre"
+            },
+            "right_answer": {
+              "en": "They embraced and wept",
+              "de": "Sie umarmten sich und weinten",
+              "it": "Si abbracciarono e piansero"
+            },
+            "verse_reference": {
+              "en": "Genesis 33:4",
+              "de": "1. Mose 33:4",
+              "it": "Genesi 33:4"
+            },
+            "verse_content": {
+              "en": "Esau ran to meet him, embraced him, fell on his neck, kissed him, and they wept.",
+              "de": "Esau aber lief ihm entgegen und herzte ihn und fiel ihm um den Hals und küsste ihn, und sie weinten.",
+              "it": "Esaù gli corse incontro, l'abbracciò, gli si gettò al collo, lo baciò e piansero."
+            },
+            "image_prompt": "Biblical times, open field in Canaan circa 1770 BC Middle East, Esau running toward Jacob with open arms, brothers embracing emotionally after decades apart, both men with beards crying tears of reconciliation, Jacob's family and servants watching from behind, Esau's men in background, powerful moment of forgiveness overcoming years of hatred, healing of family wounds, ancient Near East landscape",
+            "image_style": "Photorealistic, historically accurate biblical scene, golden afternoon lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "After betraying Joseph, what did his brothers tell their father?",
+              "de": "Was erzählten Josefs Brüder ihrem Vater, nachdem sie Josef verraten hatten?",
+              "it": "Dopo aver tradito Giuseppe, cosa dissero i suoi fratelli al padre?"
+            },
+            "option_a": {
+              "en": "That a wild animal killed him",
+              "de": "Dass ein wildes Tier ihn tötete",
+              "it": "Che un animale selvatico lo aveva ucciso"
+            },
+            "option_b": {
+              "en": "That he ran away",
+              "de": "Dass er davongelaufen war",
+              "it": "Che era scappato"
+            },
+            "option_c": {
+              "en": "That he drowned",
+              "de": "Dass er ertrunken war",
+              "it": "Che era annegato"
+            },
+            "option_d": {
+              "en": "The truth about selling him",
+              "de": "Die Wahrheit über seinen Verkauf",
+              "it": "La verità sulla sua vendita"
+            },
+            "right_answer": {
+              "en": "That a wild animal killed him",
+              "de": "Dass ein wildes Tier ihn tötete",
+              "it": "Che un animale selvatico lo aveva ucciso"
+            },
+            "verse_reference": {
+              "en": "Genesis 37:31-32",
+              "de": "1. Mose 37:31-32",
+              "it": "Genesi 37:31-32"
+            },
+            "verse_content": {
+              "en": "They took Joseph's coat, and killed a male goat, and dipped the coat in the blood. They took the coat of many colors, and they brought it to their father, and said, 'We have found this. Examine it, now, and see if it is your son's coat or not.'",
+              "de": "Da nahmen sie Josefs Rock und schlachteten einen Ziegenbock und tauchten den Rock ins Blut und sie schickten den bunten Rock hin und ließen ihn ihrem Vater bringen und sagen: Das haben wir gefunden. Sieh, ob's nicht deines Sohnes Rock ist!",
+              "it": "Presero la veste di Giuseppe, ammazzarono un becco e intinsero la veste nel sangue. Poi mandarono uno a portare al padre la veste lunga con le maniche, e gli fecero dire: 'Abbiamo trovato questa veste; vedi tu se è quella di tuo figlio o no.'"
+            },
+            "image_prompt": "Biblical times, Jacob's tent in Canaan circa 1700 BC Middle East, brothers presenting bloodstained colorful coat to elderly Jacob who clutches it in horror and grief, brothers standing with guilty downcast expressions maintaining their lie, goat blood on coat, Jacob beginning to weep, devastating moment of deception, family torn apart by jealousy and lies, patriarchal dwelling",
+            "image_style": "Photorealistic, historically accurate biblical scene, somber interior lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of patriarchal period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple was the brother of Peter?",
+              "de": "Welcher Jünger war der Bruder von Petrus?",
+              "it": "Quale discepolo era fratello di Pietro?"
+            },
+            "option_a": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "option_b": {
+              "en": "James",
+              "de": "Jakobus",
+              "it": "Giacomo"
+            },
+            "option_c": {
+              "en": "Andrew",
+              "de": "Andreas",
+              "it": "Andrea"
+            },
+            "option_d": {
+              "en": "Philip",
+              "de": "Philippus",
+              "it": "Filippo"
+            },
+            "right_answer": {
+              "en": "Andrew",
+              "de": "Andreas",
+              "it": "Andrea"
+            },
+            "verse_reference": {
+              "en": "John 1:40",
+              "de": "Johannes 1:40",
+              "it": "Giovanni 1:40"
+            },
+            "verse_content": {
+              "en": "One of the two who heard John and followed him was Andrew, Simon Peter's brother.",
+              "de": "Einer von den zweien, die Johannes gehört hatten und Jesus nachgefolgt waren, war Andreas, der Bruder des Simon Petrus.",
+              "it": "Andrea, fratello di Simon Pietro, era uno dei due che avevano udito Giovanni e avevano seguito Gesù."
+            },
+            "image_prompt": "Biblical times, near Jordan River circa 30 AD Israel, Andrew and Peter as fishermen brothers standing together, both with nets and simple tunics, Sea of Galilee in background, strong brotherly bond evident, both becoming disciples of Jesus, working-class fishermen called to greater purpose, ancient Galilee fishing community",
+            "image_style": "Photorealistic, historically accurate biblical scene, natural outdoor lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of first-century Israel, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What was Moses doing when God called him?",
+              "de": "Was tat Mose, als Gott ihn berief?",
+              "it": "Cosa stava facendo Mosè quando Dio lo chiamò?"
+            },
+            "option_a": {
+              "en": "Tending his father-in-law's sheep",
+              "de": "Er hütete die Schafe seines Schwiegervaters",
+              "it": "Badava alle pecore di suo suocero"
+            },
+            "option_b": {
+              "en": "Building pyramids",
+              "de": "Er baute Pyramiden",
+              "it": "Costruiva piramidi"
+            },
+            "option_c": {
+              "en": "Leading an army",
+              "de": "Er führte eine Armee",
+              "it": "Guidava un esercito"
+            },
+            "option_d": {
+              "en": "Praying in the temple",
+              "de": "Er betete im Tempel",
+              "it": "Pregava nel tempio"
+            },
+            "right_answer": {
+              "en": "Tending his father-in-law's sheep",
+              "de": "Er hütete die Schafe seines Schwiegervaters",
+              "it": "Badava alle pecore di suo suocero"
+            },
+            "verse_reference": {
+              "en": "Exodus 3:1",
+              "de": "2. Mose 3:1",
+              "it": "Esodo 3:1"
+            },
+            "verse_content": {
+              "en": "Now Moses was keeping the flock of Jethro, his father-in-law, the priest of Midian, and he led the flock to the back of the wilderness, and came to God's mountain, to Horeb.",
+              "de": "Mose aber hütete die Schafe Jitros, seines Schwiegervaters, des Priesters in Midian, und trieb die Schafe über die Wüste hinaus und kam an den Berg Gottes, den Horeb.",
+              "it": "Mosè pascolava il gregge di Ietro suo suocero, sacerdote di Madian, e, guidando il gregge oltre il deserto, giunse alla montagna di Dio, a Oreb."
+            },
+            "image_prompt": "Biblical times, wilderness of Midian circa 1450 BC Middle East, Moses as shepherd in dusty robes with staff tending sheep in rocky desert terrain, Mount Horeb in distance, Moses in his humble role before divine calling, contemplative moment before burning bush encounter, rugged desert landscape with sparse vegetation, ancient Sinai region",
+            "image_style": "Photorealistic, historically accurate biblical scene, harsh desert sunlight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What emotion did Joseph's forgiveness of his brothers demonstrate?",
+              "de": "Welche Emotion zeigte Josefs Vergebung gegenüber seinen Brüdern?",
+              "it": "Quale emozione dimostrò il perdono di Giuseppe verso i suoi fratelli?"
+            },
+            "option_a": {
+              "en": "Grace and mercy",
+              "de": "Gnade und Barmherzigkeit",
+              "it": "Grazia e misericordia"
+            },
+            "option_b": {
+              "en": "Weakness",
+              "de": "Schwäche",
+              "it": "Debolezza"
+            },
+            "option_c": {
+              "en": "Revenge",
+              "de": "Rache",
+              "it": "Vendetta"
+            },
+            "option_d": {
+              "en": "Indifference",
+              "de": "Gleichgültigkeit",
+              "it": "Indifferenza"
+            },
+            "right_answer": {
+              "en": "Grace and mercy",
+              "de": "Gnade und Barmherzigkeit",
+              "it": "Grazia e misericordia"
+            },
+            "verse_reference": {
+              "en": "Genesis 50:20",
+              "de": "1. Mose 50:20",
+              "it": "Genesi 50:20"
+            },
+            "verse_content": {
+              "en": "As for you, you meant evil against me, but God meant it for good, to save many people alive, as is happening today.",
+              "de": "Ihr gedachtet es böse mit mir zu machen, aber Gott gedachte es gut zu machen, um zu tun, wie es jetzt am Tage ist, nämlich am Leben zu erhalten ein großes Volk.",
+              "it": "Voi avevate pensato del male contro di me, ma Dio ha pensato di convertirlo in bene per compiere quello che oggi avviene: per conservare in vita un popolo numeroso."
+            },
+            "image_prompt": "Biblical times, Egyptian palace room circa 1640 BC, Joseph embracing his elderly brothers who bow before him in fear and shame, Joseph's face showing tears of forgiveness and compassion not vengeance, brothers overwhelmed by unexpected grace, powerful scene of reconciliation, Joseph seeing God's sovereign plan in their betrayal, redemptive moment, ancient Egyptian setting",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm emotional lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Egyptian period, 8K quality"
+          }
+        ]
+      }
+    ]
+  }

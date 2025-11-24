@@ -60,14 +60,15 @@ development_status:
 
   # Epic 3: Scoring, Leaderboards & Game Completion
   epic-3: backlog
-  3-1-scoring-calculation-engine: done
+  3-1-scoring-calculation-engine: in-progress # BLOCKER: Scoring not working - needs fix
   3-2-answer-reveal-projector: done
   3-3-player-answer-feedback: done
   3-4-live-leaderboard-projector-display: done
   3-5-personal-leaderboard-player-view: done
   3-6-game-completion-final-results-projector: done
   3-7-game-completion-final-results-player-view: done
-  epic-3-retrospective: optional
+  3-8-speed-bonus-display-and-comprehensive-testing: drafted # P0: NEXT STORY - Critical for release: Speed bonus display + comprehensive tests
+  epic-3-retrospective: completed # See epic-1-3-retrospective-2025-01-27.md
 
   # Epic 4: Content Infrastructure & AI Visual System
   epic-4: backlog
@@ -80,14 +81,22 @@ development_status:
 
   # Epic 5: Content Library Completion & Launch Readiness
   epic-5: backlog
-  5-1-complete-remaining-question-sets: backlog
-  5-2-user-authentication-supabase-auth: backlog
-  5-3-freemium-tier-restrictions-enforcement: backlog
-  5-4-user-dashboard-enhancement: backlog
-  5-5-upgrade-flow-pricing-page: backlog
-  5-6-production-error-handling-monitoring: backlog
-  5-7-performance-optimization-lighthouse-targets: backlog
-  5-8-beta-launch-preparation-documentation: backlog
-  5-9-admin-dashboard-question-management: backlog
+  # CRITICAL BLOCKER - Must fix before launch
+  scoring-fix: in-progress # P0: Fix scoring calculation (points, speed bonuses, display)
+  # Launch-critical stories (Priority order)
+  5-2-user-authentication-supabase-auth: backlog # P0: Required for launch
+  5-2-5-row-level-security-rls-policies: backlog # P0: Required for launch
+  5-2-1-conditional-navigation-based-on-auth: backlog # P1: High priority
+  landing-page-product-explanation: backlog # P0: Required for launch (new story)
+  5-5-upgrade-flow-pricing-page: backlog # P0: Required for launch
+  5-3-freemium-tier-restrictions-enforcement: backlog # P0: Required for launch
+  5-4-user-dashboard-enhancement: backlog # P1: Basic version sufficient
+  5-6-production-error-handling-monitoring: backlog # P0: Required for launch
+  5-7-performance-optimization-lighthouse-targets: backlog # P0: Required for launch
+  full-end-to-end-testing: backlog # P0: Required for launch (new story)
+  # Can defer post-launch
+  5-1-complete-remaining-question-sets: backlog # Defer: Launch with existing sets
+  5-8-beta-launch-preparation-documentation: backlog # Defer: Minimal for MVP
+  5-9-admin-dashboard-question-management: backlog # Defer: Use Supabase dashboard
   epic-5-retrospective: optional
 

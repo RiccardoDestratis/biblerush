@@ -1,0 +1,899 @@
+{
+    "question_sets": [
+      {
+        "set_name": {
+          "en": "The Twelve Disciples: Following Jesus",
+          "de": "Die zwölf Jünger: Jesus folgen",
+          "it": "I Dodici Discepoli: Seguire Gesù"
+        },
+        "set_description": {
+          "en": "Discover the remarkable stories of Jesus' twelve disciples - ordinary men called to extraordinary faith. Learn about their calling, struggles, transformations, and the powerful lessons they learned while following the Messiah.",
+          "de": "Entdecken Sie die bemerkenswerten Geschichten der zwölf Jünger Jesu - gewöhnliche Menschen, die zu außergewöhnlichem Glauben berufen wurden. Erfahren Sie mehr über ihre Berufung, Kämpfe, Verwandlung und die kraftvollen Lektionen, die sie lernten, während sie dem Messias folgten.",
+          "it": "Scopri le storie straordinarie dei dodici discepoli di Gesù - uomini comuni chiamati a una fede straordinaria. Impara sulla loro chiamata, lotte, trasformazioni e le potenti lezioni che hanno imparato seguendo il Messia."
+        },
+        "difficulty": "intermediate",
+        "questions": [
+          {
+            "question": {
+              "en": "How many disciples did Jesus choose to be His closest followers?",
+              "de": "Wie viele Jünger wählte Jesus als seine engsten Nachfolger aus?",
+              "it": "Quanti discepoli scelse Gesù come suoi seguaci più vicini?"
+            },
+            "option_a": {
+              "en": "7",
+              "de": "7",
+              "it": "7"
+            },
+            "option_b": {
+              "en": "12",
+              "de": "12",
+              "it": "12"
+            },
+            "option_c": {
+              "en": "24",
+              "de": "24",
+              "it": "24"
+            },
+            "option_d": {
+              "en": "70",
+              "de": "70",
+              "it": "70"
+            },
+            "right_answer": {
+              "en": "12",
+              "de": "12",
+              "it": "12"
+            },
+            "verse_reference": {
+              "en": "Matthew 10:1-2",
+              "de": "Matthäus 10:1-2",
+              "it": "Matteo 10:1-2"
+            },
+            "verse_content": {
+              "en": "He called to himself his twelve disciples, and gave them authority over unclean spirits, to cast them out, and to heal every disease and every sickness. Now the names of the twelve apostles are these. The first, Simon, who is called Peter; Andrew, his brother; James the son of Zebedee; John, his brother.",
+              "de": "Und er rief seine zwölf Jünger zu sich und gab ihnen Macht über die unreinen Geister, dass sie die austrieben und heilten alle Krankheiten und alle Gebrechen. Die Namen aber der zwölf Apostel sind diese: zuerst Simon, genannt Petrus, und Andreas, sein Bruder; Jakobus, der Sohn des Zebedäus, und Johannes, sein Bruder.",
+              "it": "Poi, chiamati a sé i suoi dodici discepoli, diede loro il potere di scacciare gli spiriti immondi e di guarire qualunque malattia e qualunque infermità. I nomi dei dodici apostoli sono questi: il primo, Simone detto Pietro, e Andrea suo fratello; Giacomo di Zebedeo e Giovanni suo fratello."
+            },
+            "image_prompt": "Biblical times, hillside near Sea of Galilee circa 30 AD Middle East, Jesus in white robe standing before group of twelve diverse men in simple tunics and robes, some holding fishing nets and walking staffs, sunny morning with blue waters visible in background, men listening intently as Jesus gestures while speaking, mixture of ages and backgrounds among disciples, atmosphere of calling and commission, first century Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which two brothers were fishermen whom Jesus called first?",
+              "de": "Welche zwei Brüder waren Fischer, die Jesus zuerst rief?",
+              "it": "Quali due fratelli erano pescatori che Gesù chiamò per primi?"
+            },
+            "option_a": {
+              "en": "James and John",
+              "de": "Jakobus und Johannes",
+              "it": "Giacomo e Giovanni"
+            },
+            "option_b": {
+              "en": "Peter and Andrew",
+              "de": "Petrus und Andreas",
+              "it": "Pietro e Andrea"
+            },
+            "option_c": {
+              "en": "Matthew and Thomas",
+              "de": "Matthäus und Thomas",
+              "it": "Matteo e Tommaso"
+            },
+            "option_d": {
+              "en": "Philip and Bartholomew",
+              "de": "Philippus und Bartholomäus",
+              "it": "Filippo e Bartolomeo"
+            },
+            "right_answer": {
+              "en": "Peter and Andrew",
+              "de": "Petrus und Andreas",
+              "it": "Pietro e Andrea"
+            },
+            "verse_reference": {
+              "en": "Mark 1:16-17",
+              "de": "Markus 1:16-17",
+              "it": "Marco 1:16-17"
+            },
+            "verse_content": {
+              "en": "Passing along by the sea of Galilee, he saw Simon and Andrew, the brother of Simon, casting a net into the sea, for they were fishermen. Jesus said to them, 'Come after me, and I will make you become fishers for men.'",
+              "de": "Als er aber am Galiläischen Meer entlangging, sah er Simon und Andreas, Simons Bruder, wie sie ihre Netze ins Meer warfen; denn sie waren Fischer. Und Jesus sprach zu ihnen: Folgt mir nach; ich will euch zu Menschenfischern machen!",
+              "it": "Passando lungo il mare della Galilea, vide Simone e Andrea, fratello di Simone, che gettavano la rete in mare, perché erano pescatori. Gesù disse loro: 'Seguitemi, e io farò di voi dei pescatori di uomini.'"
+            },
+            "image_prompt": "Biblical times, shore of Sea of Galilee circa 30 AD Middle East at early morning, two rugged fishermen brothers Simon Peter and Andrew in weathered tunics standing in shallow water casting nets, Jesus approaching them on sandy beach in white robe, fishing boats visible nearby, golden sunrise light reflecting on calm blue waters, nets suspended mid-cast, moment of divine calling, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, golden hour lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What was Matthew's occupation before becoming a disciple?",
+              "de": "Was war Matthäus von Beruf, bevor er Jünger wurde?",
+              "it": "Qual era la professione di Matteo prima di diventare discepolo?"
+            },
+            "option_a": {
+              "en": "Fisherman",
+              "de": "Fischer",
+              "it": "Pescatore"
+            },
+            "option_b": {
+              "en": "Tax collector",
+              "de": "Zöllner",
+              "it": "Esattore delle tasse"
+            },
+            "option_c": {
+              "en": "Carpenter",
+              "de": "Zimmermann",
+              "it": "Falegname"
+            },
+            "option_d": {
+              "en": "Zealot warrior",
+              "de": "Zeloten-Krieger",
+              "it": "Guerriero zelota"
+            },
+            "right_answer": {
+              "en": "Tax collector",
+              "de": "Zöllner",
+              "it": "Esattore delle tasse"
+            },
+            "verse_reference": {
+              "en": "Matthew 9:9",
+              "de": "Matthäus 9:9",
+              "it": "Matteo 9:9"
+            },
+            "verse_content": {
+              "en": "As Jesus passed by from there, he saw a man called Matthew sitting at the tax collection office. He said to him, 'Follow me.' He got up and followed him.",
+              "de": "Und als Jesus von dort wegging, sah er einen Menschen am Zoll sitzen, der hieß Matthäus; und er sprach zu ihm: Folge mir! Und er stand auf und folgte ihm.",
+              "it": "Poi Gesù, passando oltre, vide un uomo chiamato Matteo, seduto al banco delle imposte, e gli disse: 'Seguimi'. Ed egli, alzatosi, lo seguì."
+            },
+            "image_prompt": "Biblical times, tax collection booth in Capernaum marketplace circa 30 AD Middle East, Matthew sitting at wooden table with scrolls and coins counting money in official robe, Jesus standing before him extending hand in invitation, marketplace crowds watching with surprise, tax collector's stern expression softening to wonder, stone buildings and market stalls in background, moment of radical calling and transformation, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, bright midday lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple was known as 'the doubter' until he saw the risen Jesus?",
+              "de": "Welcher Jünger war als 'der Zweifler' bekannt, bis er den auferstandenen Jesus sah?",
+              "it": "Quale discepolo era conosciuto come 'il dubbioso' fino a quando vide Gesù risorto?"
+            },
+            "option_a": {
+              "en": "Thomas",
+              "de": "Thomas",
+              "it": "Tommaso"
+            },
+            "option_b": {
+              "en": "Philip",
+              "de": "Philippus",
+              "it": "Filippo"
+            },
+            "option_c": {
+              "en": "Bartholomew",
+              "de": "Bartholomäus",
+              "it": "Bartolomeo"
+            },
+            "option_d": {
+              "en": "James",
+              "de": "Jakobus",
+              "it": "Giacomo"
+            },
+            "right_answer": {
+              "en": "Thomas",
+              "de": "Thomas",
+              "it": "Tommaso"
+            },
+            "verse_reference": {
+              "en": "John 20:24-25",
+              "de": "Johannes 20:24-25",
+              "it": "Giovanni 20:24-25"
+            },
+            "verse_content": {
+              "en": "But Thomas, one of the twelve, called Didymus, wasn't with them when Jesus came. The other disciples therefore said to him, 'We have seen the Lord!' But he said to them, 'Unless I see in his hands the print of the nails, and put my hand into his side, I will not believe.'",
+              "de": "Thomas aber, einer der Zwölf, der Zwilling genannt wird, war nicht bei ihnen, als Jesus kam. Da sagten die andern Jünger zu ihm: Wir haben den Herrn gesehen. Er aber sprach zu ihnen: Wenn ich nicht in seinen Händen die Nägelmale sehe und meinen Finger in die Nägelmale lege und meine Hand in seine Seite lege, kann ich's nicht glauben.",
+              "it": "Or Tommaso, detto Didimo, uno dei dodici, non era con loro quando venne Gesù. Gli altri discepoli dunque gli dissero: 'Abbiamo visto il Signore!' Ma egli disse loro: 'Se non vedo nelle sue mani il segno dei chiodi, e se non metto il mio dito nel segno dei chiodi, e se non metto la mia mano nel suo costato, io non crederò.'"
+            },
+            "image_prompt": "Biblical times, upper room in Jerusalem circa 30 AD Middle East, Thomas standing apart from group of excited disciples who are gesturing animatedly, Thomas with arms crossed and skeptical expression, oil lamps casting warm glow on stone walls, other disciples trying to convince him of resurrection, atmosphere of tension between doubt and faith, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm interior lamplight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple betrayed Jesus for thirty pieces of silver?",
+              "de": "Welcher Jünger verriet Jesus für dreißig Silberlinge?",
+              "it": "Quale discepolo tradì Gesù per trenta pezzi d'argento?"
+            },
+            "option_a": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "option_b": {
+              "en": "Judas Iscariot",
+              "de": "Judas Iskariot",
+              "it": "Giuda Iscariota"
+            },
+            "option_c": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "option_d": {
+              "en": "James",
+              "de": "Jakobus",
+              "it": "Giacomo"
+            },
+            "right_answer": {
+              "en": "Judas Iscariot",
+              "de": "Judas Iskariot",
+              "it": "Giuda Iscariota"
+            },
+            "verse_reference": {
+              "en": "Matthew 26:14-15",
+              "de": "Matthäus 26:14-15",
+              "it": "Matteo 26:14-15"
+            },
+            "verse_content": {
+              "en": "Then one of the twelve, who was called Judas Iscariot, went to the chief priests, and said, 'What are you willing to give me, that I should deliver him to you?' They weighed out for him thirty pieces of silver.",
+              "de": "Da ging einer von den Zwölfen, mit Namen Judas Iskariot, hin zu den Hohenpriestern und sprach: Was wollt ihr mir geben? Ich will ihn euch verraten. Und sie boten ihm dreißig Silberlinge.",
+              "it": "Allora uno dei dodici, che si chiamava Giuda Iscariota, andò dai capi dei sacerdoti e disse loro: 'Quanto mi volete dare, perché io ve lo consegni?' Ed essi gli fissarono trenta sicli d'argento."
+            },
+            "image_prompt": "Biblical times, dark chamber in Jerusalem Temple circa 30 AD Middle East at night, Judas Iscariot in shadows meeting with chief priests in ornate robes, silver coins being counted on table, torchlight casting ominous shadows on stone walls, expressions of conspiracy and greed, Judas reaching for money pouch, atmosphere of betrayal and darkness, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic torch lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "How many times did Peter deny knowing Jesus?",
+              "de": "Wie oft verleugnete Petrus, Jesus zu kennen?",
+              "it": "Quante volte Pietro negò di conoscere Gesù?"
+            },
+            "option_a": {
+              "en": "Once",
+              "de": "Einmal",
+              "it": "Una volta"
+            },
+            "option_b": {
+              "en": "Twice",
+              "de": "Zweimal",
+              "it": "Due volte"
+            },
+            "option_c": {
+              "en": "Three times",
+              "de": "Dreimal",
+              "it": "Tre volte"
+            },
+            "option_d": {
+              "en": "Seven times",
+              "de": "Siebenmal",
+              "it": "Sette volte"
+            },
+            "right_answer": {
+              "en": "Three times",
+              "de": "Dreimal",
+              "it": "Tre volte"
+            },
+            "verse_reference": {
+              "en": "Matthew 26:34",
+              "de": "Matthäus 26:34",
+              "it": "Matteo 26:34"
+            },
+            "verse_content": {
+              "en": "Jesus said to him, 'Most certainly I tell you that tonight, before the rooster crows, you will deny me three times.'",
+              "de": "Jesus sprach zu ihm: Wahrlich, ich sage dir: In dieser Nacht, ehe der Hahn kräht, wirst du mich dreimal verleugnen.",
+              "it": "Gesù gli disse: 'In verità ti dico che questa stessa notte, prima che il gallo canti, tu mi rinnegherai tre volte.'"
+            },
+            "image_prompt": "Biblical times, courtyard of high priest's palace in Jerusalem circa 30 AD Middle East at night, Peter standing by charcoal fire warming hands, servant girl pointing at him accusingly, Peter gesturing denial with fearful expression, rooster visible on nearby wall, torchlight illuminating scene, other people around fire watching suspiciously, moment of weakness and failure, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic firelight and torchlight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which two disciples were brothers and sons of Zebedee?",
+              "de": "Welche zwei Jünger waren Brüder und Söhne des Zebedäus?",
+              "it": "Quali due discepoli erano fratelli e figli di Zebedeo?"
+            },
+            "option_a": {
+              "en": "Peter and Andrew",
+              "de": "Petrus und Andreas",
+              "it": "Pietro e Andrea"
+            },
+            "option_b": {
+              "en": "James and John",
+              "de": "Jakobus und Johannes",
+              "it": "Giacomo e Giovanni"
+            },
+            "option_c": {
+              "en": "Philip and Bartholomew",
+              "de": "Philippus und Bartholomäus",
+              "it": "Filippo e Bartolomeo"
+            },
+            "option_d": {
+              "en": "Matthew and Thomas",
+              "de": "Matthäus und Thomas",
+              "it": "Matteo e Tommaso"
+            },
+            "right_answer": {
+              "en": "James and John",
+              "de": "Jakobus und Johannes",
+              "it": "Giacomo e Giovanni"
+            },
+            "verse_reference": {
+              "en": "Matthew 10:2",
+              "de": "Matthäus 10:2",
+              "it": "Matteo 10:2"
+            },
+            "verse_content": {
+              "en": "Now the names of the twelve apostles are these. The first, Simon, who is called Peter; Andrew, his brother; James the son of Zebedee; John, his brother.",
+              "de": "Die Namen aber der zwölf Apostel sind diese: zuerst Simon, genannt Petrus, und Andreas, sein Bruder; Jakobus, der Sohn des Zebedäus, und Johannes, sein Bruder.",
+              "it": "I nomi dei dodici apostoli sono questi: il primo, Simone detto Pietro, e Andrea suo fratello; Giacomo di Zebedeo e Giovanni suo fratello."
+            },
+            "image_prompt": "Biblical times, fishing boat on Sea of Galilee circa 30 AD Middle East, two brothers James and John working together mending fishing nets in wooden boat, their father Zebedee working alongside them, weathered faces of fishermen, muscular build from physical labor, simple tunics and head coverings, fishing equipment scattered in boat, blue waters and hills in background, family fishing business, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, natural daylight, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Jesus promise to make His disciples?",
+              "de": "Was versprach Jesus seinen Jüngern zu machen?",
+              "it": "Cosa promise Gesù di fare dei suoi discepoli?"
+            },
+            "option_a": {
+              "en": "Kings and priests",
+              "de": "Könige und Priester",
+              "it": "Re e sacerdoti"
+            },
+            "option_b": {
+              "en": "Fishers of men",
+              "de": "Menschenfischer",
+              "it": "Pescatori di uomini"
+            },
+            "option_c": {
+              "en": "Teachers of the law",
+              "de": "Gesetzeslehrer",
+              "it": "Maestri della legge"
+            },
+            "option_d": {
+              "en": "Warriors for God",
+              "de": "Krieger für Gott",
+              "it": "Guerrieri di Dio"
+            },
+            "right_answer": {
+              "en": "Fishers of men",
+              "de": "Menschenfischer",
+              "it": "Pescatori di uomini"
+            },
+            "verse_reference": {
+              "en": "Matthew 4:19",
+              "de": "Matthäus 4:19",
+              "it": "Matteo 4:19"
+            },
+            "verse_content": {
+              "en": "He said to them, 'Come after me, and I will make you fishers for men.'",
+              "de": "Und er sprach zu ihnen: Folgt mir nach; ich will euch zu Menschenfischern machen!",
+              "it": "E Gesù disse loro: 'Venite dietro a me e io vi farò pescatori di uomini.'"
+            },
+            "image_prompt": "Biblical times, shore of Sea of Galilee circa 30 AD Middle East, Jesus standing on beach gesturing toward group of fishermen with nets, symbolic imagery of nets transforming into people's silhouettes, disciples looking from fishing nets to Jesus with expressions of wonder and realization, boats on water, morning mist rising, moment of call to greater purpose, spiritual metaphor becoming visible, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, soft morning lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple walked on water before becoming afraid?",
+              "de": "Welcher Jünger ging auf dem Wasser, bevor er Angst bekam?",
+              "it": "Quale discepolo camminò sull'acqua prima di aver paura?"
+            },
+            "option_a": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "option_b": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "option_c": {
+              "en": "Andrew",
+              "de": "Andreas",
+              "it": "Andrea"
+            },
+            "option_d": {
+              "en": "James",
+              "de": "Jakobus",
+              "it": "Giacomo"
+            },
+            "right_answer": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "verse_reference": {
+              "en": "Matthew 14:29-30",
+              "de": "Matthäus 14:29-30",
+              "it": "Matteo 14:29-30"
+            },
+            "verse_content": {
+              "en": "He said, 'Come!' Peter stepped down from the boat, and walked on the waters to come to Jesus. But when he saw that the wind was strong, he was afraid, and beginning to sink, he cried out, saying, 'Lord, save me!'",
+              "de": "Und er sprach: Komm her! Und Petrus stieg aus dem Boot und ging auf dem Wasser und kam auf Jesus zu. Als er aber den starken Wind sah, erschrak er und begann zu sinken und schrie: Herr, rette mich!",
+              "it": "Egli disse: 'Vieni!' E Pietro, sceso dalla barca, camminò sull'acqua e andò verso Gesù. Ma, vedendo il vento, ebbe paura e, cominciando ad affondare, gridò: 'Signore, salvami!'"
+            },
+            "image_prompt": "Biblical times, Sea of Galilee during storm circa 30 AD Middle East at early morning, Peter stepping out of fishing boat onto turbulent waves walking toward Jesus who stands calmly on water in white robe, Peter's expression changing from faith to fear as he begins to sink, other disciples watching from boat with amazement and concern, dark storm clouds, dramatic waves, supernatural moment of faith and doubt, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic storm lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who was known as 'the disciple whom Jesus loved'?",
+              "de": "Wer war als 'der Jünger, den Jesus liebte' bekannt?",
+              "it": "Chi era conosciuto come 'il discepolo che Gesù amava'?"
+            },
+            "option_a": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "option_b": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "option_c": {
+              "en": "Matthew",
+              "de": "Matthäus",
+              "it": "Matteo"
+            },
+            "option_d": {
+              "en": "Andrew",
+              "de": "Andreas",
+              "it": "Andrea"
+            },
+            "right_answer": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "verse_reference": {
+              "en": "John 13:23",
+              "de": "Johannes 13:23",
+              "it": "Giovanni 13:23"
+            },
+            "verse_content": {
+              "en": "One of his disciples, whom Jesus loved, was at the table, leaning against Jesus' breast.",
+              "de": "Es war aber einer unter seinen Jüngern, den Jesus lieb hatte, der lag bei Tisch an der Brust Jesu.",
+              "it": "Ora, a tavola, inclinato sul petto di Gesù, stava uno dei discepoli, quello che Gesù amava."
+            },
+            "image_prompt": "Biblical times, upper room at Last Supper in Jerusalem circa 30 AD Middle East, intimate scene of John the beloved disciple reclining close to Jesus at low table, John's head resting near Jesus' chest in posture of trust and affection, warm lamplight, other disciples around table, expression of deep spiritual connection and love, peaceful moment during final meal, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm intimate lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "After Jesus' resurrection, how many times did He ask Peter 'Do you love me?'",
+              "de": "Wie oft fragte Jesus Petrus nach seiner Auferstehung: 'Liebst du mich?'",
+              "it": "Dopo la risurrezione di Gesù, quante volte chiese a Pietro 'Mi ami?'"
+            },
+            "option_a": {
+              "en": "Once",
+              "de": "Einmal",
+              "it": "Una volta"
+            },
+            "option_b": {
+              "en": "Twice",
+              "de": "Zweimal",
+              "it": "Due volte"
+            },
+            "option_c": {
+              "en": "Three times",
+              "de": "Dreimal",
+              "it": "Tre volte"
+            },
+            "option_d": {
+              "en": "Seven times",
+              "de": "Siebenmal",
+              "it": "Sette volte"
+            },
+            "right_answer": {
+              "en": "Three times",
+              "de": "Dreimal",
+              "it": "Tre volte"
+            },
+            "verse_reference": {
+              "en": "John 21:17",
+              "de": "Johannes 21:17",
+              "it": "Giovanni 21:17"
+            },
+            "verse_content": {
+              "en": "He said to him the third time, 'Simon, son of Jonah, do you have affection for me?' Peter was grieved because he asked him the third time, 'Do you have affection for me?' He said to him, 'Lord, you know everything. You know that I have affection for you.' Jesus said to him, 'Feed my sheep.'",
+              "de": "Er spricht zum dritten Mal zu ihm: Simon, Sohn des Johannes, hast du mich lieb? Petrus wurde traurig, weil er zum dritten Mal zu ihm sagte: Hast du mich lieb?, und sprach zu ihm: Herr, du weißt alle Dinge, du weißt, dass ich dich lieb habe. Spricht Jesus zu ihm: Weide meine Schafe!",
+              "it": "Gli disse per la terza volta: 'Simone di Giovanni, mi ami?' Pietro fu rattristato che per la terza volta gli avesse chiesto: 'Mi ami?' E gli rispose: 'Signore, tu sai ogni cosa; tu conosci che ti amo.' Gesù gli disse: 'Pasci le mie pecore.'"
+            },
+            "image_prompt": "Biblical times, shore of Sea of Galilee after resurrection circa 30 AD Middle East at dawn, Jesus and Peter standing face to face in intimate conversation by charcoal fire, Peter's expression showing grief and deep emotion, Jesus' face showing love and restoration, fishing boat nearby, other disciples at distance preparing fish, moment of forgiveness and recommissioning, healing of relationship, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, golden dawn lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Jesus tell His disciples they would receive power to be?",
+              "de": "Was sagte Jesus seinen Jüngern, wozu sie Kraft empfangen würden?",
+              "it": "Cosa disse Gesù ai suoi discepoli che avrebbero ricevuto potenza per essere?"
+            },
+            "option_a": {
+              "en": "His witnesses",
+              "de": "Seine Zeugen",
+              "it": "Suoi testimoni"
+            },
+            "option_b": {
+              "en": "His judges",
+              "de": "Seine Richter",
+              "it": "Suoi giudici"
+            },
+            "option_c": {
+              "en": "His priests",
+              "de": "Seine Priester",
+              "it": "Suoi sacerdoti"
+            },
+            "option_d": {
+              "en": "His kings",
+              "de": "Seine Könige",
+              "it": "Suoi re"
+            },
+            "right_answer": {
+              "en": "His witnesses",
+              "de": "Seine Zeugen",
+              "it": "Suoi testimoni"
+            },
+            "verse_reference": {
+              "en": "Acts 1:8",
+              "de": "Apostelgeschichte 1:8",
+              "it": "Atti 1:8"
+            },
+            "verse_content": {
+              "en": "But you will receive power when the Holy Spirit has come upon you. You will be witnesses to me in Jerusalem, in all Judea and Samaria, and to the uttermost parts of the earth.",
+              "de": "Aber ihr werdet die Kraft des Heiligen Geistes empfangen, der auf euch kommen wird, und werdet meine Zeugen sein in Jerusalem und in ganz Judäa und Samarien und bis an das Ende der Erde.",
+              "it": "Ma voi riceverete potenza quando lo Spirito Santo verrà su voi, e mi sarete testimoni in Gerusalemme, e in tutta la Giudea e Samaria, e fino all'estremità della terra."
+            },
+            "image_prompt": "Biblical times, Mount of Olives near Jerusalem circa 30 AD Middle East, risen Jesus standing before group of eleven disciples speaking final instructions, disciples listening intently with expressions of determination and anticipation, Jesus gesturing outward toward Jerusalem and beyond, bright morning sky suggesting divine empowerment to come, moment before ascension and commissioning, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, bright natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple brought his brother to Jesus, saying 'We have found the Messiah'?",
+              "de": "Welcher Jünger brachte seinen Bruder zu Jesus und sagte: 'Wir haben den Messias gefunden'?",
+              "it": "Quale discepolo portò suo fratello da Gesù dicendo: 'Abbiamo trovato il Messia'?"
+            },
+            "option_a": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "option_b": {
+              "en": "Andrew",
+              "de": "Andreas",
+              "it": "Andrea"
+            },
+            "option_c": {
+              "en": "James",
+              "de": "Jakobus",
+              "it": "Giacomo"
+            },
+            "option_d": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "right_answer": {
+              "en": "Andrew",
+              "de": "Andreas",
+              "it": "Andrea"
+            },
+            "verse_reference": {
+              "en": "John 1:40-41",
+              "de": "Johannes 1:40-41",
+              "it": "Giovanni 1:40-41"
+            },
+            "verse_content": {
+              "en": "One of the two who heard John, and followed him, was Andrew, Simon Peter's brother. He first found his own brother, Simon, and said to him, 'We have found the Messiah!' (which is, being interpreted, Christ).",
+              "de": "Andreas, der Bruder des Simon Petrus, war einer von den zweien, die Johannes gehört hatten und Jesus nachgefolgt waren. Der findet zuerst seinen Bruder Simon und spricht zu ihm: Wir haben den Messias gefunden, das heißt übersetzt: der Gesalbte.",
+              "it": "Andrea, fratello di Simon Pietro, era uno dei due che avevano udito Giovanni e avevano seguito Gesù. Egli per primo trovò suo fratello Simone e gli disse: 'Abbiamo trovato il Messia' (che, tradotto, vuol dire Cristo)."
+            },
+            "image_prompt": "Biblical times, village path in Galilee circa 30 AD Middle East, Andrew excitedly leading his brother Simon Peter by the arm toward where Jesus stands in distance, Andrew's face showing joy and urgency, Peter looking curious and skeptical, dusty path with stone buildings, moment of evangelism between brothers, bringing family to Jesus, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm afternoon lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did the disciples do immediately after Jesus called them?",
+              "de": "Was taten die Jünger unmittelbar nachdem Jesus sie rief?",
+              "it": "Cosa fecero i discepoli immediatamente dopo che Gesù li chiamò?"
+            },
+            "option_a": {
+              "en": "They asked for time to think",
+              "de": "Sie baten um Bedenkzeit",
+              "it": "Chiesero tempo per pensare"
+            },
+            "option_b": {
+              "en": "They left everything and followed Him",
+              "de": "Sie verließen alles und folgten ihm",
+              "it": "Lasciarono tutto e lo seguirono"
+            },
+            "option_c": {
+              "en": "They finished their work first",
+              "de": "Sie beendeten zuerst ihre Arbeit",
+              "it": "Finirono prima il loro lavoro"
+            },
+            "option_d": {
+              "en": "They told Him they would come later",
+              "de": "Sie sagten ihm, dass sie später kommen würden",
+              "it": "Gli dissero che sarebbero venuti più tardi"
+            },
+            "right_answer": {
+              "en": "They left everything and followed Him",
+              "de": "Sie verließen alles und folgten ihm",
+              "it": "Lasciarono tutto e lo seguirono"
+            },
+            "verse_reference": {
+              "en": "Mark 1:18",
+              "de": "Markus 1:18",
+              "it": "Marco 1:18"
+            },
+            "verse_content": {
+              "en": "Immediately they left their nets, and followed him.",
+              "de": "Sogleich verließen sie ihre Netze und folgten ihm nach.",
+              "it": "E subito, lasciate le reti, lo seguirono."
+            },
+            "image_prompt": "Biblical times, shore of Sea of Galilee circa 30 AD Middle East, dramatic scene of fishermen dropping their nets into water and walking away toward Jesus, nets falling and spreading in shallow water, fishing boat left behind, men's faces showing determination and radical commitment, immediate obedience to divine call, leaving old life for new, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, dynamic natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple was also called Nathanael?",
+              "de": "Welcher Jünger wurde auch Nathanael genannt?",
+              "it": "Quale discepolo era chiamato anche Natanaele?"
+            },
+            "option_a": {
+              "en": "Bartholomew",
+              "de": "Bartholomäus",
+              "it": "Bartolomeo"
+            },
+            "option_b": {
+              "en": "Matthew",
+              "de": "Matthäus",
+              "it": "Matteo"
+            },
+            "option_c": {
+              "en": "Judas",
+              "de": "Judas",
+              "it": "Giuda"
+            },
+            "option_d": {
+              "en": "Simon",
+              "de": "Simon",
+              "it": "Simone"
+            },
+            "right_answer": {
+              "en": "Bartholomew",
+              "de": "Bartholomäus",
+              "it": "Bartolomeo"
+            },
+            "verse_reference": {
+              "en": "John 1:45-46",
+              "de": "Johannes 1:45-46",
+              "it": "Giovanni 1:45-46"
+            },
+            "verse_content": {
+              "en": "Philip found Nathanael, and said to him, 'We have found him, of whom Moses in the law, and the prophets, wrote: Jesus of Nazareth, the son of Joseph.' Nathanael said to him, 'Can any good thing come out of Nazareth?' Philip said to him, 'Come and see.'",
+              "de": "Philippus findet Nathanael und spricht zu ihm: Wir haben den gefunden, von dem Mose im Gesetz und die Propheten geschrieben haben, Jesus, Josefs Sohn, aus Nazareth. Und Nathanael sprach zu ihm: Was kann aus Nazareth Gutes kommen? Philippus spricht zu ihm: Komm und sieh!",
+              "it": "Filippo trovò Natanaele e gli disse: 'Abbiamo trovato colui del quale hanno scritto Mosè nella legge e i profeti: Gesù da Nazaret, figlio di Giuseppe.' Natanaele gli disse: 'Può forse venir qualcosa di buono da Nazaret?' Filippo gli rispose: 'Vieni e vedi.'"
+            },
+            "image_prompt": "Biblical times, village scene in Galilee circa 30 AD Middle East, Philip excitedly approaching Nathanael who sits under fig tree reading Torah scroll, Philip gesturing enthusiastically while speaking, Nathanael looking up with skeptical but intrigued expression, dappled sunlight through fig leaves, moment of invitation and initial doubt, first century Galilee",
+            "image_style": "Photorealistic, historically accurate biblical scene, dappled natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What special ability did Jesus give His disciples?",
+              "de": "Welche besondere Fähigkeit gab Jesus seinen Jüngern?",
+              "it": "Quale capacità speciale diede Gesù ai suoi discepoli?"
+            },
+            "option_a": {
+              "en": "To speak all languages",
+              "de": "Alle Sprachen zu sprechen",
+              "it": "Parlare tutte le lingue"
+            },
+            "option_b": {
+              "en": "To cast out demons and heal",
+              "de": "Dämonen auszutreiben und zu heilen",
+              "it": "Scacciare demoni e guarire"
+            },
+            "option_c": {
+              "en": "To become invisible",
+              "de": "Unsichtbar zu werden",
+              "it": "Diventare invisibili"
+            },
+            "option_d": {
+              "en": "To live forever",
+              "de": "Ewig zu leben",
+              "it": "Vivere per sempre"
+            },
+            "right_answer": {
+              "en": "To cast out demons and heal",
+              "de": "Dämonen auszutreiben und zu heilen",
+              "it": "Scacciare demoni e guarire"
+            },
+            "verse_reference": {
+              "en": "Matthew 10:1",
+              "de": "Matthäus 10:1",
+              "it": "Matteo 10:1"
+            },
+            "verse_content": {
+              "en": "He called to himself his twelve disciples, and gave them authority over unclean spirits, to cast them out, and to heal every disease and every sickness.",
+              "de": "Und er rief seine zwölf Jünger zu sich und gab ihnen Macht über die unreinen Geister, dass sie die austrieben und heilten alle Krankheiten und alle Gebrechen.",
+              "it": "Poi, chiamati a sé i suoi dodici discepoli, diede loro il potere di scacciare gli spiriti immondi e di guarire qualunque malattia e qualunque infermità."
+            },
+            "image_prompt": "Biblical times, village square in Galilee circa 30 AD Middle East, disciples laying hands on sick person who is being healed, crowd gathering around in amazement, divine light emanating from healing touch, disciples' faces showing faith and authority, Jesus watching from nearby with approval, demonstration of spiritual power given to followers, first century Israel",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic natural lighting with divine glow, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Which disciple was a Zealot (political activist)?",
+              "de": "Welcher Jünger war ein Zelot (politischer Aktivist)?",
+              "it": "Quale discepolo era uno Zelota (attivista politico)?"
+            },
+            "option_a": {
+              "en": "Simon the Zealot",
+              "de": "Simon der Zelot",
+              "it": "Simone lo Zelota"
+            },
+            "option_b": {
+              "en": "Judas Iscariot",
+              "de": "Judas Iskariot",
+              "it": "Giuda Iscariota"
+            },
+            "option_c": {
+              "en": "Matthew",
+              "de": "Matthäus",
+              "it": "Matteo"
+            },
+            "option_d": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "right_answer": {
+              "en": "Simon the Zealot",
+              "de": "Simon der Zelot",
+              "it": "Simone lo Zelota"
+            },
+            "verse_reference": {
+              "en": "Luke 6:15",
+              "de": "Lukas 6:15",
+              "it": "Luca 6:15"
+            },
+            "verse_content": {
+              "en": "Matthew; Thomas; James, the son of Alphaeus; Simon, who was called the Zealot.",
+              "de": "Matthäus und Thomas, Jakobus, des Alphäus Sohn, und Simon, genannt der Zelot.",
+              "it": "Matteo e Tommaso; Giacomo d'Alfeo e Simone, detto lo Zelota."
+            },
+            "image_prompt": "Biblical times, Jerusalem street circa 30 AD Middle East, Simon the Zealot with intense passionate expression, dressed in simple but purposeful garments, in background subtle hint of Roman soldiers, Simon's face showing transformation from political zealot to spiritual disciple of Jesus, mixture of former revolutionary fervor now channeled to kingdom of God, tension between old identity and new calling, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did Jesus say His disciples would be persecuted for?",
+              "de": "Wofür sagte Jesus, dass seine Jünger verfolgt werden würden?",
+              "it": "Per cosa disse Gesù che i suoi discepoli sarebbero stati perseguitati?"
+            },
+            "option_a": {
+              "en": "For His name's sake",
+              "de": "Um seines Namens willen",
+              "it": "Per causa del suo nome"
+            },
+            "option_b": {
+              "en": "For being fishermen",
+              "de": "Weil sie Fischer waren",
+              "it": "Per essere pescatori"
+            },
+            "option_c": {
+              "en": "For their wealth",
+              "de": "Wegen ihres Reichtums",
+              "it": "Per la loro ricchezza"
+            },
+            "option_d": {
+              "en": "For their education",
+              "de": "Wegen ihrer Bildung",
+              "it": "Per la loro educazione"
+            },
+            "right_answer": {
+              "en": "For His name's sake",
+              "de": "Um seines Namens willen",
+              "it": "Per causa del suo nome"
+            },
+            "verse_reference": {
+              "en": "Matthew 10:22",
+              "de": "Matthäus 10:22",
+              "it": "Matteo 10:22"
+            },
+            "verse_content": {
+              "en": "You will be hated by all men for my name's sake, but he who endures to the end will be saved.",
+              "de": "Und ihr werdet gehasst werden von jedermann um meines Namens willen. Wer aber bis an das Ende beharrt, der wird selig werden.",
+              "it": "E sarete odiati da tutti a causa del mio nome; ma chi avrà perseverato sino alla fine sarà salvato."
+            },
+            "image_prompt": "Biblical times, disciples facing hostile crowd in Jerusalem circa 30 AD Middle East, disciples standing together with courage despite threatening gestures from crowd, Roman soldiers watching, religious leaders pointing accusingly, disciples' faces showing both fear and determination, Jesus' words about persecution being fulfilled, standing firm for their faith, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic natural lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "What did the disciples do when Jesus was arrested in the garden?",
+              "de": "Was taten die Jünger, als Jesus im Garten verhaftet wurde?",
+              "it": "Cosa fecero i discepoli quando Gesù fu arrestato nel giardino?"
+            },
+            "option_a": {
+              "en": "They fought the guards",
+              "de": "Sie kämpften mit den Wachen",
+              "it": "Combatterono contro le guardie"
+            },
+            "option_b": {
+              "en": "They all fled",
+              "de": "Sie flohen alle",
+              "it": "Fuggirono tutti"
+            },
+            "option_c": {
+              "en": "They stayed and watched",
+              "de": "Sie blieben und schauten zu",
+              "it": "Rimasero e guardarono"
+            },
+            "option_d": {
+              "en": "They hid in the trees",
+              "de": "Sie versteckten sich in den Bäumen",
+              "it": "Si nascosero tra gli alberi"
+            },
+            "right_answer": {
+              "en": "They all fled",
+              "de": "Sie flohen alle",
+              "it": "Fuggirono tutti"
+            },
+            "verse_reference": {
+              "en": "Mark 14:50",
+              "de": "Markus 14:50",
+              "it": "Marco 14:50"
+            },
+            "verse_content": {
+              "en": "They all left him, and fled.",
+              "de": "Da verließen ihn alle und flohen.",
+              "it": "Allora tutti lo abbandonarono e fuggirono."
+            },
+            "image_prompt": "Biblical times, Garden of Gethsemane at night circa 30 AD Middle East, disciples fleeing in all directions as armed temple guards arrest Jesus, torchlight illuminating scene, disciples' robes flowing as they run in panic and fear, Jesus standing calmly with guards, olive trees in darkness, moment of abandonment and human weakness, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, dramatic torch lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          },
+          {
+            "question": {
+              "en": "Who asked to see Jesus' hands and side to believe He had risen?",
+              "de": "Wer wollte Jesu Hände und Seite sehen, um zu glauben, dass er auferstanden war?",
+              "it": "Chi chiese di vedere le mani e il costato di Gesù per credere che fosse risorto?"
+            },
+            "option_a": {
+              "en": "Peter",
+              "de": "Petrus",
+              "it": "Pietro"
+            },
+            "option_b": {
+              "en": "Thomas",
+              "de": "Thomas",
+              "it": "Tommaso"
+            },
+            "option_c": {
+              "en": "John",
+              "de": "Johannes",
+              "it": "Giovanni"
+            },
+            "option_d": {
+              "en": "James",
+              "de": "Jakobus",
+              "it": "Giacomo"
+            },
+            "right_answer": {
+              "en": "Thomas",
+              "de": "Thomas",
+              "it": "Tommaso"
+            },
+            "verse_reference": {
+              "en": "John 20:25",
+              "de": "Johannes 20:25",
+              "it": "Giovanni 20:25"
+            },
+            "verse_content": {
+              "en": "The other disciples therefore said to him, 'We have seen the Lord!' But he said to them, 'Unless I see in his hands the print of the nails, put my finger into the print of the nails, and put my hand into his side, I will not believe.'",
+              "de": "Da sagten die andern Jünger zu ihm: Wir haben den Herrn gesehen. Er aber sprach zu ihnen: Wenn ich nicht in seinen Händen die Nägelmale sehe und lege meinen Finger in die Nägelmale und lege meine Hand in seine Seite, kann ich's nicht glauben.",
+              "it": "Gli altri discepoli dunque gli dissero: 'Abbiamo visto il Signore!' Ma egli disse loro: 'Se non vedo nelle sue mani il segno dei chiodi, e se non metto il mio dito nel segno dei chiodi, e se non metto la mia mano nel suo costato, io non crederò.'"
+            },
+            "image_prompt": "Biblical times, upper room in Jerusalem circa 30 AD Middle East eight days after resurrection, Thomas kneeling before risen Jesus touching wounds in Jesus' hands, Thomas's face showing transformation from doubt to overwhelming faith and worship, other disciples watching with joy, warm lamplight, moment of proof and belief, tangible evidence of resurrection, first century Judea",
+            "image_style": "Photorealistic, historically accurate biblical scene, warm divine lighting, cinematic composition, reverent tone suitable for all ages, cultural authenticity of ancient Middle Eastern period, 8K quality"
+          }
+        ]
+      }
+    ]
+  }

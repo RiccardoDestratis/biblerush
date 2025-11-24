@@ -253,10 +253,12 @@ export async function processQuestionScores(
       };
     }
 
-    if (game.status !== "active") {
+    // Allow processing scores for active games, or completed games (in case scoring happens after game ends)
+    // This prevents race conditions where game ends before scores are processed
+    if (game.status !== "active" && game.status !== "completed") {
       return {
         success: false,
-        error: `Game is not active. Current status: ${game.status}`,
+        error: `Game is not active or completed. Current status: ${game.status}`,
       };
     }
 
@@ -277,9 +279,10 @@ export async function processQuestionScores(
     const correctAnswer = question.correct_answer;
 
     // Fetch all player_answers for this game and question
+    // Check if scores have already been processed (points_earned is not null)
     const { data: answers, error: answersError } = await supabase
       .from("player_answers")
-      .select("id, player_id, selected_answer, response_time_ms")
+      .select("id, player_id, selected_answer, response_time_ms, points_earned")
       .eq("game_id", gameId)
       .eq("question_id", questionId);
 
@@ -301,12 +304,35 @@ export async function processQuestionScores(
       };
     }
 
+    // Check if scores have already been processed for this question
+    // If all answers have points_earned set (not null), skip processing
+    const allScoresProcessed = answers.every(answer => answer.points_earned !== null);
+    if (allScoresProcessed && answers.length > 0) {
+      console.log(`[processQuestionScores] ⚠️ Scores already processed for question ${questionId}, skipping to prevent double-counting`);
+      // Still broadcast scores_updated event in case clients need to refresh
+      await broadcastScoresUpdated(gameId, questionId);
+      return {
+        success: true,
+        processedCount: 0, // Return 0 since we didn't process anything new
+      };
+    }
+
     // Process each answer: calculate is_correct and points_earned
+    // Use a lock mechanism to prevent concurrent processing
+    // Check if processing is already in progress by looking for any answer with points_earned being set
+    // This is a simple check - in production, you might want a more robust locking mechanism
+    
     let processedCount = 0;
     const errors: Array<{ playerId: string; error: string }> = [];
 
     for (const answer of answers) {
       try {
+        // Skip if this answer has already been processed
+        if (answer.points_earned !== null) {
+          console.log(`[processQuestionScores] ⚠️ Answer ${answer.id} already processed (points_earned: ${answer.points_earned}), skipping`);
+          continue;
+        }
+
         // Calculate is_correct (handle NULL selected_answer)
         const isCorrect =
           answer.selected_answer !== null &&
@@ -316,34 +342,13 @@ export async function processQuestionScores(
         const responseTimeMs = answer.response_time_ms ?? 0;
         const pointsEarned = calculateScore(isCorrect, responseTimeMs);
 
-        // Update player_answers row
-        const { error: updateAnswerError } = await supabase
-          .from("player_answers")
-          .update({
-            is_correct: isCorrect,
-            points_earned: pointsEarned,
-          })
-          .eq("id", answer.id);
-
-        if (updateAnswerError) {
-          console.error(
-            `Error updating answer for player ${answer.player_id}:`,
-            updateAnswerError
-          );
-          errors.push({
-            playerId: answer.player_id || "unknown",
-            error: updateAnswerError.message || "Unknown error",
-          });
-          continue; // Continue processing other players
-        }
-
-        // Update game_players.total_score (cumulative: add to existing score)
-        // First, get current total_score
         if (!answer.player_id) {
           console.error("Answer missing player_id, skipping score update");
           continue;
         }
 
+        // CRITICAL FIX: Fetch current total_score BEFORE updating points_earned
+        // This ensures we have the correct baseline even if this function is called concurrently
         const { data: player, error: playerFetchError } = await supabase
           .from("game_players")
           .select("total_score")
@@ -366,6 +371,43 @@ export async function processQuestionScores(
         const currentTotalScore = player.total_score ?? 0;
         const newTotalScore = currentTotalScore + pointsEarned;
 
+        console.log(`[processQuestionScores] Processing answer ${answer.id} for player ${answer.player_id}:`, {
+          isCorrect,
+          responseTimeMs,
+          pointsEarned,
+          currentTotalScore,
+          newTotalScore,
+        });
+
+        // ATOMIC UPDATE: Update both points_earned and total_score in sequence without gaps
+        // First update player_answers with points_earned
+        const { error: updateAnswerError } = await supabase
+          .from("player_answers")
+          .update({
+            is_correct: isCorrect,
+            points_earned: pointsEarned,
+          })
+          .eq("id", answer.id)
+          .is("points_earned", null); // Only update if points_earned is still null (prevent race condition)
+
+        if (updateAnswerError) {
+          // Check if error is because points_earned was already set (race condition)
+          if (updateAnswerError.code === "PGRST116" || updateAnswerError.message?.includes("0 rows")) {
+            console.log(`[processQuestionScores] ⚠️ Answer ${answer.id} was processed by another call (race condition), skipping`);
+            continue;
+          }
+          console.error(
+            `Error updating answer for player ${answer.player_id}:`,
+            updateAnswerError
+          );
+          errors.push({
+            playerId: answer.player_id || "unknown",
+            error: updateAnswerError.message || "Unknown error",
+          });
+          continue; // Continue processing other players
+        }
+
+        // Immediately update total_score after points_earned (minimize gap)
         const { error: updateScoreError } = await supabase
           .from("game_players")
           .update({
@@ -383,7 +425,25 @@ export async function processQuestionScores(
             playerId: answer.player_id || "unknown",
             error: updateScoreError.message || "Unknown error",
           });
+          // Note: points_earned was updated but total_score failed - this is inconsistent
+          // In production, you might want to rollback points_earned or retry total_score update
           continue; // Continue processing other players
+        }
+
+        // Verify the update succeeded
+        const { data: verifyPlayer } = await supabase
+          .from("game_players")
+          .select("total_score")
+          .eq("id", answer.player_id!)
+          .eq("game_id", gameId)
+          .single();
+
+        if (verifyPlayer && verifyPlayer.total_score !== newTotalScore) {
+          console.error(
+            `[processQuestionScores] ⚠️ Race condition detected: Expected total_score=${newTotalScore}, but got ${verifyPlayer.total_score} for player ${answer.player_id}`
+          );
+        } else {
+          console.log(`[processQuestionScores] ✅ Successfully updated player ${answer.player_id}: total_score=${newTotalScore}`);
         }
 
         processedCount++;

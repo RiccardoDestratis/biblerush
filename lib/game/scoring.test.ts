@@ -8,79 +8,213 @@ import {
 } from "./scoring";
 
 describe("calculateScore", () => {
-  describe("correct answers", () => {
-    it("should return 15 points for correct answer with 2s response (2000ms)", () => {
-      expect(calculateScore(true, 2000)).toBe(15);
-    });
-
-    it("should return 15 points for correct answer with 0s response (0ms) - edge case", () => {
+  describe("correct answers - Tier 1 (0-3000ms = +5 bonus)", () => {
+    it("should return 15 points for 0ms - edge case: instant answer", () => {
       expect(calculateScore(true, 0)).toBe(15);
     });
 
-    it("should return 15 points for correct answer with 3s response (3000ms) - boundary", () => {
+    it("should return 15 points for 500ms", () => {
+      expect(calculateScore(true, 500)).toBe(15);
+    });
+
+    it("should return 15 points for 1000ms", () => {
+      expect(calculateScore(true, 1000)).toBe(15);
+    });
+
+    it("should return 15 points for 2000ms", () => {
+      expect(calculateScore(true, 2000)).toBe(15);
+    });
+
+    it("should return 15 points for 2500ms", () => {
+      expect(calculateScore(true, 2500)).toBe(15);
+    });
+
+    it("should return 15 points for 2999ms", () => {
+      expect(calculateScore(true, 2999)).toBe(15);
+    });
+
+    it("should return 15 points for 3000ms - boundary: exactly 3 seconds", () => {
       expect(calculateScore(true, 3000)).toBe(15);
     });
+  });
 
-    it("should return 13 points for correct answer with 4s response (4000ms)", () => {
-      expect(calculateScore(true, 4000)).toBe(13);
-    });
-
-    it("should return 13 points for correct answer with 3.001s response (3001ms) - boundary", () => {
+  describe("correct answers - Tier 2 (3001-5000ms = +3 bonus)", () => {
+    it("should return 13 points for 3001ms - boundary: just over 3 seconds", () => {
       expect(calculateScore(true, 3001)).toBe(13);
     });
 
-    it("should return 13 points for correct answer with 5s response (5000ms) - boundary", () => {
+    it("should return 13 points for 3500ms", () => {
+      expect(calculateScore(true, 3500)).toBe(13);
+    });
+
+    it("should return 13 points for 4000ms", () => {
+      expect(calculateScore(true, 4000)).toBe(13);
+    });
+
+    it("should return 13 points for 4500ms", () => {
+      expect(calculateScore(true, 4500)).toBe(13);
+    });
+
+    it("should return 13 points for 4999ms", () => {
+      expect(calculateScore(true, 4999)).toBe(13);
+    });
+
+    it("should return 13 points for 5000ms - boundary: exactly 5 seconds", () => {
       expect(calculateScore(true, 5000)).toBe(13);
     });
+  });
 
-    it("should return 10 points for correct answer with 10s response (10000ms)", () => {
-      expect(calculateScore(true, 10000)).toBe(10);
-    });
-
-    it("should return 10 points for correct answer with 5.001s response (5001ms) - boundary", () => {
+  describe("correct answers - Tier 3 (5001-15000ms = +0 bonus)", () => {
+    it("should return 10 points for 5001ms - boundary: just over 5 seconds", () => {
       expect(calculateScore(true, 5001)).toBe(10);
     });
 
-    it("should return 10 points for correct answer with 15s response (15000ms) - max time", () => {
+    it("should return 10 points for 6000ms", () => {
+      expect(calculateScore(true, 6000)).toBe(10);
+    });
+
+    it("should return 10 points for 8000ms", () => {
+      expect(calculateScore(true, 8000)).toBe(10);
+    });
+
+    it("should return 10 points for 10000ms", () => {
+      expect(calculateScore(true, 10000)).toBe(10);
+    });
+
+    it("should return 10 points for 12000ms", () => {
+      expect(calculateScore(true, 12000)).toBe(10);
+    });
+
+    it("should return 10 points for 15000ms - boundary: max question time", () => {
       expect(calculateScore(true, 15000)).toBe(10);
+    });
+
+    it("should return 10 points for 16000ms - edge case: beyond max time, no bonus", () => {
+      expect(calculateScore(true, 16000)).toBe(10);
     });
   });
 
   describe("incorrect answers", () => {
-    it("should return 0 points for incorrect answer with any time", () => {
+    it("should return 0 points for incorrect answer with 0ms", () => {
       expect(calculateScore(false, 0)).toBe(0);
+    });
+
+    it("should return 0 points for incorrect answer with 2000ms", () => {
       expect(calculateScore(false, 2000)).toBe(0);
+    });
+
+    it("should return 0 points for incorrect answer with 5000ms", () => {
       expect(calculateScore(false, 5000)).toBe(0);
+    });
+
+    it("should return 0 points for incorrect answer with 10000ms", () => {
       expect(calculateScore(false, 10000)).toBe(0);
+    });
+
+    it("should return 0 points for incorrect answer with 15000ms", () => {
       expect(calculateScore(false, 15000)).toBe(0);
     });
   });
 });
 
 describe("getSpeedBonus", () => {
-  it("should return 5 for 0-3000ms (0-3 seconds)", () => {
-    expect(getSpeedBonus(0)).toBe(5);
-    expect(getSpeedBonus(1000)).toBe(5);
-    expect(getSpeedBonus(2000)).toBe(5);
-    expect(getSpeedBonus(3000)).toBe(5);
+  describe("Tier 1 (0-3000ms = +5 bonus)", () => {
+    it("should return 5 for 0ms", () => {
+      expect(getSpeedBonus(0)).toBe(5);
+    });
+
+    it("should return 5 for 500ms", () => {
+      expect(getSpeedBonus(500)).toBe(5);
+    });
+
+    it("should return 5 for 1000ms", () => {
+      expect(getSpeedBonus(1000)).toBe(5);
+    });
+
+    it("should return 5 for 2000ms", () => {
+      expect(getSpeedBonus(2000)).toBe(5);
+    });
+
+    it("should return 5 for 2500ms", () => {
+      expect(getSpeedBonus(2500)).toBe(5);
+    });
+
+    it("should return 5 for 2999ms", () => {
+      expect(getSpeedBonus(2999)).toBe(5);
+    });
+
+    it("should return 5 for 3000ms - boundary: exactly 3 seconds", () => {
+      expect(getSpeedBonus(3000)).toBe(5);
+    });
   });
 
-  it("should return 3 for 3001-5000ms (3-5 seconds)", () => {
-    expect(getSpeedBonus(3001)).toBe(3);
-    expect(getSpeedBonus(4000)).toBe(3);
-    expect(getSpeedBonus(5000)).toBe(3);
+  describe("Tier 2 (3001-5000ms = +3 bonus)", () => {
+    it("should return 3 for 3001ms - boundary: just over 3 seconds", () => {
+      expect(getSpeedBonus(3001)).toBe(3);
+    });
+
+    it("should return 3 for 3500ms", () => {
+      expect(getSpeedBonus(3500)).toBe(3);
+    });
+
+    it("should return 3 for 4000ms", () => {
+      expect(getSpeedBonus(4000)).toBe(3);
+    });
+
+    it("should return 3 for 4500ms", () => {
+      expect(getSpeedBonus(4500)).toBe(3);
+    });
+
+    it("should return 3 for 4999ms", () => {
+      expect(getSpeedBonus(4999)).toBe(3);
+    });
+
+    it("should return 3 for 5000ms - boundary: exactly 5 seconds", () => {
+      expect(getSpeedBonus(5000)).toBe(3);
+    });
   });
 
-  it("should return 0 for 5001-15000ms (5-15 seconds)", () => {
-    expect(getSpeedBonus(5001)).toBe(0);
-    expect(getSpeedBonus(10000)).toBe(0);
-    expect(getSpeedBonus(15000)).toBe(0);
+  describe("Tier 3 (5001-15000ms = +0 bonus)", () => {
+    it("should return 0 for 5001ms - boundary: just over 5 seconds", () => {
+      expect(getSpeedBonus(5001)).toBe(0);
+    });
+
+    it("should return 0 for 6000ms", () => {
+      expect(getSpeedBonus(6000)).toBe(0);
+    });
+
+    it("should return 0 for 8000ms", () => {
+      expect(getSpeedBonus(8000)).toBe(0);
+    });
+
+    it("should return 0 for 10000ms", () => {
+      expect(getSpeedBonus(10000)).toBe(0);
+    });
+
+    it("should return 0 for 12000ms", () => {
+      expect(getSpeedBonus(12000)).toBe(0);
+    });
+
+    it("should return 0 for 15000ms - boundary: max question time", () => {
+      expect(getSpeedBonus(15000)).toBe(0);
+    });
+
+    it("should return 0 for 16000ms - edge case: beyond max time", () => {
+      expect(getSpeedBonus(16000)).toBe(0);
+    });
   });
 
-  it("should handle response times beyond 15 seconds (no bonus)", () => {
-    expect(getSpeedBonus(16000)).toBe(0);
-    expect(getSpeedBonus(30000)).toBe(0);
-    expect(getSpeedBonus(60000)).toBe(0);
+  describe("edge cases", () => {
+    it("should handle negative time gracefully (should return 5 as fastest tier)", () => {
+      // Negative time is invalid but function should handle it
+      expect(getSpeedBonus(-100)).toBe(5);
+    });
+
+    it("should handle very large times (no bonus)", () => {
+      expect(getSpeedBonus(30000)).toBe(0);
+      expect(getSpeedBonus(60000)).toBe(0);
+      expect(getSpeedBonus(999999)).toBe(0);
+    });
   });
 });
 

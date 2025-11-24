@@ -73,30 +73,77 @@ export function PlayerGameView({
             payload.verseContent
           );
           setRevealState("reveal");
-          hasShownFeedbackRef.current = true;
+          // Don't set hasShownFeedbackRef yet - show reveal first, then feedback
+          hasShownFeedbackRef.current = false;
 
           // Fetch player's answer result in background
-          getPlayerAnswerResult(gameId, playerId, payload.questionId)
-            .then((result) => {
-              if (result.success) {
-                setPlayerAnswer(result.selectedAnswer);
-                setPointsEarned(result.pointsEarned);
-                setTotalScore(result.totalScore);
-                setResponseTimeMs(result.responseTimeMs);
-              } else {
-                console.error(`[Player ${playerId}] Failed to fetch answer result:`, result.error);
-                // Non-critical error - answer result is for display only, game continues
+          // Retry mechanism: scores might not be processed yet, so retry a few times
+          const fetchAnswerResult = async (retries = 5): Promise<void> => {
+            const result = await getPlayerAnswerResult(gameId, playerId, payload.questionId);
+            
+            if (result.success) {
+              // Check if scores have been processed (points_earned should not be null for submitted answers)
+              // If answer was submitted but points_earned is still null, scores haven't been processed yet
+              if (result.selectedAnswer !== null && result.pointsEarned === 0 && result.isCorrect === false) {
+                // This might mean scores aren't processed yet, or answer was wrong
+                // Check if we should retry by looking at total_score - if it's > 0, scores were processed
+                // If total_score is 0 and we submitted an answer, might need to wait
+                if (retries > 0) {
+                  console.log(`[Player ${playerId}] Answer result fetched but scores might not be processed yet, retrying... (${retries} retries left)`);
+                  await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+                  return fetchAnswerResult(retries - 1);
+                }
               }
-            })
-            .catch((error) => {
-              console.error(`[Player ${playerId}] Error fetching answer result:`, error);
-              // Non-critical error - answer result is for display only, game continues
-            });
+              
+              setPlayerAnswer(result.selectedAnswer);
+              setPointsEarned(result.pointsEarned);
+              setTotalScore(result.totalScore);
+              setResponseTimeMs(result.responseTimeMs);
+              console.log(`[Player ${playerId}] Answer result: correct=${result.isCorrect}, points=${result.pointsEarned}, total=${result.totalScore}, time=${result.responseTimeMs}ms`);
+            } else {
+              console.error(`[Player ${playerId}] Failed to fetch answer result:`, result.error);
+              if (retries > 0) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return fetchAnswerResult(retries - 1);
+              }
+              // Set defaults if fetch fails after retries
+              setPlayerAnswer(null);
+              setPointsEarned(0);
+              setTotalScore(0);
+              setResponseTimeMs(0);
+            }
+          };
+          
+          fetchAnswerResult().catch((error) => {
+            console.error(`[Player ${playerId}] Error fetching answer result:`, error);
+            // Set defaults if fetch fails
+            setPlayerAnswer(null);
+            setPointsEarned(0);
+            setTotalScore(0);
+            setResponseTimeMs(0);
+          });
         },
         onLeaderboardReady: (payload: LeaderboardReadyPayload) => {
           if (payload.questionId === currentQuestionRef.current?.id) {
             // Event received - confirm state (may have already been set by local echo)
             console.log(`[Player ${playerId}] Received leaderboard_ready event for question ${payload.questionId}`);
+            
+            // Refresh pointsEarned and totalScore before showing leaderboard to ensure latest values
+            const refreshScores = async () => {
+              const { getPlayerAnswerResult } = await import("@/lib/actions/answers");
+              const result = await getPlayerAnswerResult(gameId, playerId, payload.questionId);
+              if (result.success) {
+                setPointsEarned(result.pointsEarned);
+                setTotalScore(result.totalScore);
+                console.log(`[Player ${playerId}] Refreshed scores: points=${result.pointsEarned}, total=${result.totalScore}`);
+              }
+            };
+            refreshScores();
+            
+            // CRITICAL FIX: Transition to leaderboard immediately when leaderboard_ready is received
+            // This ensures synchronization with the host/projector view
+            // The reveal component will handle its own countdown display, but we transition immediately
+            console.log(`[Player ${playerId}] Transitioning to leaderboard immediately (synchronized with host)`);
             setRevealState("leaderboard");
           }
         },
@@ -170,30 +217,26 @@ export function PlayerGameView({
       && !!currentQuestion;
   };
   if (shouldShowReveal()) {
+    // Show the reveal screen (same as host/projector)
+    // After reveal completes, it will transition to leaderboard automatically
     return (
       <GameErrorBoundary>
         <AnswerRevealPlayer
           gameId={gameId}
           questionId={currentQuestion.id}
           questionText={currentQuestion.questionText}
-          options={currentQuestion.options}
           correctAnswer={storeCorrectAnswer || ""}
           answerContent={storeAnswerContent || ""}
-          showSource={storeShowSource}
+          options={currentQuestion.options}
           verseReference={storeVerseReference}
           verseContent={storeVerseContent}
+          showSource={storeShowSource}
           selectedAnswer={playerAnswer}
-          onComplete={() => {
-            // If this is the final question, skip leaderboard and go directly to final results
-            if (questionNumber === totalQuestions) {
-              // Final question - will be handled by game_end event, but set state immediately for local echo
-              setRevealState("results");
-            } else {
-              // Transition to leaderboard after reveal completes (5 seconds)
-              // Use local echo: update store immediately, then wait for event to confirm
-              setRevealState("leaderboard");
-            }
-          }}
+            onComplete={() => {
+              // onComplete callback is kept for compatibility but transition happens via leaderboard_ready event
+              // This ensures synchronization with host/projector view
+              console.log(`[Player ${playerId}] Reveal countdown completed (transition handled by leaderboard_ready event)`);
+            }}
         />
       </GameErrorBoundary>
     );
@@ -209,6 +252,8 @@ export function PlayerGameView({
         <LeaderboardPlayer
           gameId={gameId}
           questionId={currentQuestion.id}
+          playerId={playerId} // Pass playerId to highlight their row and show speed bonus
+          pointsEarned={pointsEarned} // Pass points earned to show in message
         />
       </GameErrorBoundary>
     );

@@ -279,6 +279,23 @@ quizgame/
 - **Optimistic Updates** (`hooks/useGameState.ts`): Immediate UI updates before server confirmation
 - **Connection Recovery** (`lib/supabase/realtime.ts`): Exponential backoff reconnection
 
+**Two-Channel Architecture (Validated Pattern):**
+
+**Client-Side Channels (Persistent):**
+- Created once when component mounts
+- Stay subscribed for entire game duration
+- Only unsubscribed when component unmounts (game ends)
+- Purpose: Listen for events from server and other clients
+- Location: `components/game/question-display-projector.tsx`, `components/game/player-game-view.tsx`
+
+**Server-Side Channels (Temporary):**
+- Created temporarily for each broadcast
+- Pattern: Subscribe → Broadcast → Unsubscribe (immediately)
+- Repeats for each broadcast event
+- Purpose: Server Actions need to broadcast events (stateless architecture)
+- Location: `lib/actions/answers.ts` - `broadcastScoresUpdated()`
+- **Why:** Server Actions are stateless - cannot maintain persistent channels. This is standard practice for Next.js Server Actions + Supabase Realtime.
+
 **Data Flow:**
 1. Host creates game → Database insert → Realtime broadcast `game_created`
 2. Players join → Database insert → Realtime broadcast `player_joined`
@@ -288,10 +305,19 @@ quizgame/
 
 **Implementation Guide:**
 - Use Supabase Realtime channel per game: `supabase.channel('game:${gameId}')`
+- **Client channels:** Create once, stay subscribed for entire game
+- **Server channels:** Create temporarily for each broadcast (necessary for Server Actions)
 - Subscribe to PostgreSQL changes for real-time updates
 - Use broadcast events for custom game events
 - Implement presence tracking for connection status
 - Handle reconnection with exponential backoff (1s, 2s, 4s)
+
+**Performance & Cost:**
+- **Latency:** Sub-500ms p95 achieved consistently
+- **Cost:** Temporary server channels don't increase costs (subscribe/unsubscribe operations are free)
+- **Efficiency:** Client channels stay subscribed (efficient), server channels temporary (necessary overhead)
+- **See:** `docs/channel-architecture.md` for detailed channel patterns
+- **See:** `docs/supabase-realtime-cost-analysis.md` for cost analysis
 
 **Affects FR Categories:** Game Creation, Player Joining, Gameplay Flow, Real-Time Sync
 

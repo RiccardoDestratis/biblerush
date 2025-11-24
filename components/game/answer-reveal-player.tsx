@@ -47,7 +47,9 @@ export function AnswerRevealPlayer({
     return () => clearTimeout(loadingTimer);
   }, []);
 
-  // Countdown timer - triggers onComplete after 5 seconds of reveal
+  // Countdown timer - shows countdown but doesn't block transition
+  // The parent component (player-game-view) will transition to leaderboard when leaderboard_ready event is received
+  // This countdown is just for display purposes
   useEffect(() => {
     if (!showReveal) return;
     
@@ -64,16 +66,10 @@ export function AnswerRevealPlayer({
     return () => clearInterval(timer);
   }, [showReveal]);
 
-  // Trigger onComplete when countdown reaches 0
-  useEffect(() => {
-    if (showReveal && countdown === 0) {
-      // Use setTimeout to defer callback to next tick (avoid setState during render)
-      const timeoutId = setTimeout(() => {
-        onComplete();
-      }, 0);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [showReveal, countdown, onComplete]);
+  // REMOVED: onComplete callback trigger
+  // The leaderboard transition now happens immediately when leaderboard_ready event is received
+  // This ensures synchronization with the host/projector view
+  // The countdown is just for visual feedback, it doesn't control the transition
 
   // Get the index of the correct answer
   const correctIndex = ["A", "B", "C", "D"].indexOf(correctAnswer);
@@ -133,9 +129,9 @@ export function AnswerRevealPlayer({
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="max-w-md w-full space-y-6"
           >
-        {/* Countdown indicator - more prominent like host */}
+        {/* Countdown indicator - informational only, transition happens via leaderboard_ready event */}
         <div className="text-center text-lg font-bold text-gray-700 mb-2">
-          Next: Leaderboard in {countdown}...
+          {countdown > 0 ? `Revealing answer... ${countdown}` : "Leaderboard loading..."}
         </div>
 
         {/* Question text with answer boxes - show what was selected */}

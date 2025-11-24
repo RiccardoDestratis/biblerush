@@ -1,0 +1,244 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.8</storyId>
+    <title>Speed Bonus Display & Comprehensive Testing</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-8-speed-bonus-display-and-comprehensive-testing.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>player</asA>
+    <iWant>to see a clear breakdown of my points after each round showing base points and speed bonus separately</iWant>
+    <soThat>I understand how my speed affects my score and am incentivized to answer faster</soThat>
+    <tasks>
+      - Enhance `PlayerAnswerFeedback` component to show breakdown: "10 points + 5 speed bonus = 15 total"
+      - Add response time display: "Answered in 2.3s"
+      - Improve visual hierarchy with accent colors (teal/yellow for speed bonus)
+      - Enhance unit tests in `lib/game/scoring.test.ts` with comprehensive boundary cases
+      - Create component tests `components/game/player-answer-feedback.test.tsx`
+      - Create E2E tests `e2e/speed-bonus-display.spec.ts`
+      - Add integration tests for `processQuestionScores` with all speed bonus tiers
+      - Verify accessibility (WCAG AA) and mobile responsiveness
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    **Given** a player has answered a question correctly
+    **When** the answer reveal screen is displayed (after question timer expires)
+    **Then** the player feedback component displays:
+    - Base points: "10 points" (always shown for correct answers)
+    - Speed bonus: "+5 speed bonus" or "+3 speed bonus" (only if speed bonus > 0)
+    - Total points breakdown: "10 points + 5 speed bonus = 15 total"
+    - Clear visual hierarchy: Base points in primary color, speed bonus highlighted in accent color (teal/yellow)
+    - Response time display: "Answered in 2.3s" (formatted to 1 decimal place)
+
+    **And** for incorrect answers or no answer:
+    - Shows "0 points" clearly
+    - Does not show speed bonus (since no bonus for incorrect)
+    - Shows correct answer text
+
+    **And** comprehensive test coverage:
+    - Unit tests: All boundary cases (0ms, 3000ms, 3001ms, 5000ms, 5001ms, 15000ms)
+    - Component tests: All speed bonus tiers, visual styling, animations
+    - E2E tests: Complete user flow for all speed bonus scenarios
+    - Integration tests: Batch processing with multiple players in all tiers
+
+    **And** visual design:
+    - Base points: Large, bold, primary text color (gray-900)
+    - Speed bonus: Highlighted in accent color (teal-600 or yellow-600), slightly smaller but prominent
+    - Total breakdown: Clear equation format "10 + 5 = 15" or "10 + 3 = 13"
+    - Response time: Smaller text, secondary color (gray-600)
+
+    **And** accessibility:
+    - All text has sufficient color contrast (WCAG AA)
+    - Screen reader announces: "Correct answer. 10 points plus 5 speed bonus equals 15 total points"
+    - Text is readable at mobile sizes (minimum 16px base font)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 3: Scoring, Leaderboards & Game Completion">
+        Epic 3 covers scoring calculation (FR10), live leaderboards (FR12), and final results (FR14). Story 3.8 enhances the player feedback display to show speed bonus breakdown clearly, ensuring players understand how speed affects their score.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.1: Scoring Calculation Engine">
+        Story 3.1 implemented the core scoring calculation with speed bonus tiers: 0-3s = +5, 3-5s = +3, 5-15s = +0. Story 3.8 enhances the display of these calculations to show breakdown clearly.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.3: Player Answer Feedback">
+        Story 3.3 created the PlayerAnswerFeedback component. Story 3.8 enhances this component to show clearer speed bonus breakdown and adds comprehensive testing.
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="FR10: Scoring Calculation">
+        The system shall calculate scores using: 10 base points for correct answers + speed bonus (0-3 seconds = +5 points, 3-5 seconds = +3 points, >5 seconds = +0 bonus). Story 3.8 ensures players see this breakdown clearly.
+      </doc>
+      <doc path="docs/sprint-artifacts/3-1-scoring-calculation-engine.md" title="Story 3.1">
+        Story 3.1 implemented `calculateScore()`, `getSpeedBonus()`, and `formatResponseTime()` functions. Story 3.8 uses these functions and adds comprehensive tests for all boundary cases.
+      </doc>
+      <doc path="docs/sprint-artifacts/3-3-player-answer-feedback.md" title="Story 3.3">
+        Story 3.3 created the PlayerAnswerFeedback component with basic speed bonus display. Story 3.8 enhances the display format to show breakdown: "10 points + 5 speed bonus = 15 total" and adds response time display.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Testing Requirements">
+        Unit Tests: Critical business logic (scoring calculations) using Vitest. 80%+ coverage for scoring logic. Story 3.8 aims for 100% coverage of scoring functions with comprehensive boundary tests.
+      </doc>
+    </docs>
+    <code>
+      <file path="components/game/player-answer-feedback.tsx" kind="component">
+        Target component to enhance. Currently shows speed bonus but not in breakdown format. Needs to display: "10 points + 5 speed bonus = 15 total" instead of just "+15 points" and "+5 speed bonus!". Also needs to add response time display: "Answered in 2.3s". Uses framer-motion for animations. Already has `getSpeedBonus()` function inline (should use imported version from `lib/game/scoring.ts`). Update visual hierarchy: Base points primary color, speed bonus accent color (teal/yellow).
+      </file>
+      <file path="lib/game/scoring.ts" kind="utility">
+        Contains `calculateScore()`, `getSpeedBonus()`, and `formatResponseTime()` functions. Story 3.8 uses these functions in the component. Also needs comprehensive unit tests added to `lib/game/scoring.test.ts` for all boundary cases.
+      </file>
+      <file path="lib/game/scoring.test.ts" kind="test">
+        Existing test file with basic tests. Story 3.8 needs to enhance with comprehensive boundary tests: 0ms, 500ms, 1000ms, 2000ms, 2500ms, 2999ms, 3000ms, 3001ms, 3500ms, 4000ms, 4500ms, 4999ms, 5000ms, 5001ms, 6000ms, 8000ms, 10000ms, 12000ms, 15000ms, 16000ms. Also test incorrect answers with all time ranges. Achieve 100% coverage.
+      </file>
+      <file path="components/game/player-answer-feedback.test.tsx" kind="test">
+        New test file to create. Test component rendering with all speed bonus tiers (5, 3, 0), incorrect answers, no answer, response time formatting, points count-up animation, visual styling, accessibility attributes. Use Vitest + React Testing Library.
+      </file>
+      <file path="e2e/speed-bonus-display.spec.ts" kind="test">
+        New E2E test file to create. Test complete user flow: Answer in 2s → See "10 + 5 = 15" breakdown, Answer in 4s → See "10 + 3 = 13" breakdown, Answer in 10s → See "10 + 0 = 10" or "10 (no bonus)", Incorrect answer → See "0 points", No answer → See "0 points". Test response time display accuracy, total score accumulation, timing (appears after reveal), display duration (5 seconds). Use Playwright.
+      </file>
+      <file path="lib/actions/answers.ts" kind="server-action">
+        Contains `processQuestionScores()` Server Action from Story 3.1. Story 3.8 needs integration tests for this function: Test batch processing with players in all speed bonus tiers, test boundary cases (0ms, 3000ms, 3001ms, 5000ms, 5001ms, 15000ms), test database updates, test error handling, test performance (20 players in <500ms).
+      </file>
+      <file path="e2e/full-game-flow-scoring-leaderboard.spec.ts" kind="test">
+        Reference E2E test file. Shows pattern for testing complete game flow with scoring. Story 3.8 E2E tests should follow similar pattern but focus specifically on speed bonus display.
+      </file>
+      <file path="vitest.config.ts" kind="config">
+        Vitest configuration file. Already set up for unit and component tests. Story 3.8 uses this for testing.
+      </file>
+      <file path="playwright.config.ts" kind="config">
+        Playwright configuration file. Already set up for E2E tests. Story 3.8 uses this for E2E testing.
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="^15.1.0">Next.js 15 App Router framework</package>
+        <package name="react" version="^19.0.0">React 19</package>
+        <package name="react-dom" version="^19.0.0">React DOM 19</package>
+        <package name="framer-motion" version="latest">Animation library (already installed, used in PlayerAnswerFeedback)</package>
+        <package name="lucide-react" version="^0.554.0">Icon library (already installed, used for CheckCircle2, XCircle)</package>
+        <package name="vitest" version="latest">Unit testing framework (already installed)</package>
+        <package name="@testing-library/react" version="latest">React Testing Library for component tests (may need to install)</package>
+        <package name="@testing-library/jest-dom" version="latest">Jest DOM matchers for Testing Library (may need to install)</package>
+        <package name="@playwright/test" version="latest">Playwright for E2E tests (already installed)</package>
+      </ecosystem>
+      <database>
+        <table name="player_answers">
+          <column name="id" type="UUID" primaryKey="true">Answer identifier</column>
+          <column name="game_id" type="UUID" foreignKey="games.id">Reference to game</column>
+          <column name="player_id" type="UUID" foreignKey="game_players.id">Reference to player</column>
+          <column name="question_id" type="UUID" foreignKey="questions.id">Reference to question</column>
+          <column name="selected_answer" type="CHAR(1)">Selected answer: 'A', 'B', 'C', 'D', or NULL</column>
+          <column name="response_time_ms" type="INTEGER">Response time in milliseconds (0-15000)</column>
+          <column name="is_correct" type="BOOLEAN">Whether answer is correct</column>
+          <column name="points_earned" type="INTEGER">Points earned for this answer</column>
+          <column name="answered_at" type="TIMESTAMP">When answer was submitted</column>
+        </table>
+        <table name="game_players">
+          <column name="id" type="UUID" primaryKey="true">Game player identifier</column>
+          <column name="game_id" type="UUID" foreignKey="games.id">Reference to game</column>
+          <column name="player_id" type="UUID">Player identifier</column>
+          <column name="player_name" type="TEXT">Player display name</column>
+          <column name="total_score" type="INTEGER" default="0">Cumulative score across all questions</column>
+          <column name="joined_at" type="TIMESTAMP">When player joined game</column>
+        </table>
+      </database>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      Display format must show breakdown: "10 points + 5 speed bonus = 15 total" (not just "+15 points").
+    </constraint>
+    <constraint>
+      Speed bonus display: Only show if speed bonus > 0. For Tier 3 (no bonus), show "10 points (no speed bonus)" or "10 points + 0 speed bonus = 10 total".
+    </constraint>
+    <constraint>
+      Response time display: Must show "Answered in 2.3s" format (1 decimal place) using `formatResponseTime()` from `lib/game/scoring.ts`.
+    </constraint>
+    <constraint>
+      Visual hierarchy: Base points in primary color (gray-900), speed bonus in accent color (teal-600 or yellow-600), response time in secondary color (gray-600).
+    </constraint>
+    <constraint>
+      Component should use `getSpeedBonus()` from `lib/game/scoring.ts` instead of inline function (refactor existing code).
+    </constraint>
+    <constraint>
+      Unit tests must cover ALL boundary cases: 0ms, 3000ms, 3001ms, 5000ms, 5001ms, 15000ms, plus mid-tier values and edge cases.
+    </constraint>
+    <constraint>
+      Component tests must test all speed bonus tiers (5, 3, 0), incorrect answers, no answer, animations, visual styling, accessibility.
+    </constraint>
+    <constraint>
+      E2E tests must test complete user flow: Answer in different time ranges, verify display format, verify response time accuracy, verify total score accumulation.
+    </constraint>
+    <constraint>
+      Integration tests must test `processQuestionScores` with players in all speed bonus tiers, boundary cases, batch processing, error handling, performance.
+    </constraint>
+    <constraint>
+      Accessibility: WCAG AA contrast requirements, screen reader support, mobile-friendly text sizes (minimum 16px base font).
+    </constraint>
+    <constraint>
+      Animation: Points count-up over 500ms (existing implementation, verify it still works with new display format).
+    </constraint>
+    <constraint>
+      Display timing: Speed bonus appears after answer reveal (not before), persists for 5 seconds (matches reveal duration from Story 3.2).
+    </constraint>
+    <constraint>
+      Mobile responsiveness: Component must work on mobile devices (375px viewport), test responsive design.
+    </constraint>
+    <constraint>
+      Always use pnpm as package manager (never npm or yarn) per user rules.
+    </constraint>
+    <constraint>
+      Test coverage: Aim for 100% coverage of `calculateScore` and `getSpeedBonus` functions with comprehensive boundary tests.
+    </constraint>
+    <constraint>
+      Use existing test patterns from `lib/game/scoring.test.ts` and `e2e/` directory for consistency.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="PlayerAnswerFeedback component" kind="component">
+      <signature>PlayerAnswerFeedback(props: PlayerAnswerFeedbackProps): JSX.Element</signature>
+      <path>components/game/player-answer-feedback.tsx</path>
+      <description>React component that displays answer feedback with points breakdown. Props: gameId, playerId, questionId, selectedAnswer, correctAnswer, correctAnswerText, options, scriptureReference, pointsEarned, totalScore, responseTimeMs. Needs enhancement to show breakdown: "10 points + 5 speed bonus = 15 total" and response time "Answered in 2.3s".</description>
+    </interface>
+    <interface name="getSpeedBonus" kind="function">
+      <signature>getSpeedBonus(responseTimeMs: number): number</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Get speed bonus points (5, 3, or 0) based on response time. Returns 5 for 0-3000ms, 3 for 3001-5000ms, 0 for 5001-15000ms. Component should import and use this instead of inline function.</description>
+    </interface>
+    <interface name="formatResponseTime" kind="function">
+      <signature>formatResponseTime(responseTimeMs: number): string</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Format response time in milliseconds to "2.3s" format (1 decimal place). Component should use this to display "Answered in 2.3s".</description>
+    </interface>
+    <interface name="calculateScore" kind="function">
+      <signature>calculateScore(isCorrect: boolean, responseTimeMs: number): number</signature>
+      <path>lib/game/scoring.ts</path>
+      <description>Calculate score based on correctness and response time. Returns 0 for incorrect, 10 + speedBonus for correct. Used by `processQuestionScores` Server Action. Needs comprehensive unit tests for all boundary cases.</description>
+    </interface>
+    <interface name="processQuestionScores Server Action" kind="function">
+      <signature>processQuestionScores(gameId: string, questionId: string): Promise&lt;{success: true, processedCount: number} | {success: false, error: string}&gt;</signature>
+      <path>lib/actions/answers.ts</path>
+      <description>Server Action to process scores for a question. Fetches all answers, calculates scores using `calculateScore()`, updates database, broadcasts scores_updated event. Needs integration tests with players in all speed bonus tiers.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Unit tests: Use Vitest for scoring function tests. Test ALL boundary cases: 0ms, 500ms, 1000ms, 2000ms, 2500ms, 2999ms, 3000ms, 3001ms, 3500ms, 4000ms, 4500ms, 4999ms, 5000ms, 5001ms, 6000ms, 8000ms, 10000ms, 12000ms, 15000ms, 16000ms. Test incorrect answers with all time ranges. Achieve 100% coverage for `calculateScore` and `getSpeedBonus`. Component tests: Use Vitest + React Testing Library. Test rendering with all speed bonus tiers (5, 3, 0), incorrect answers, no answer, response time formatting, points count-up animation, visual styling, accessibility attributes. E2E tests: Use Playwright. Test complete user flow: Answer in 2s → See "10 + 5 = 15" breakdown, Answer in 4s → See "10 + 3 = 13" breakdown, Answer in 10s → See "10 + 0 = 10" or "10 (no bonus)", Incorrect answer → See "0 points", No answer → See "0 points". Test response time display accuracy, total score accumulation, timing (appears after reveal), display duration (5 seconds). Integration tests: Test `processQuestionScores` with players in all speed bonus tiers, boundary cases, batch processing (20 players), error handling, performance (<500ms).
+    </standards>
+    <locations>
+      Test scoring utility: `lib/game/scoring.test.ts` - Enhance existing tests with comprehensive boundary cases
+      Test component: `components/game/player-answer-feedback.test.tsx` - New file, test all rendering scenarios
+      Test E2E: `e2e/speed-bonus-display.spec.ts` - New file, test complete user flow
+      Test integration: `lib/actions/answers.ts` - Test `processQuestionScores` with various scenarios
+    </locations>
+    <ideas>
+      Unit tests: Create test cases for every millisecond boundary (0ms, 3000ms, 3001ms, 5000ms, 5001ms, 15000ms), mid-tier values (1500ms, 4000ms, 8000ms), edge cases (negative time, very large times), incorrect answers with all time ranges. Use describe blocks to organize by tier. Component tests: Test rendering with correct answer + Tier 1 (5 points), correct answer + Tier 2 (3 points), correct answer + Tier 3 (0 points), incorrect answer, no answer. Test that breakdown shows correctly: "10 points + 5 speed bonus = 15 total", "10 points + 3 speed bonus = 13 total", "10 points (no speed bonus)" or "10 points + 0 speed bonus = 10 total". Test response time display: "Answered in 2.3s". Test points count-up animation. Test visual styling (colors, sizes). Test accessibility (ARIA labels, screen reader text). E2E tests: Create game, start game, answer question in 2 seconds, verify feedback shows "10 points + 5 speed bonus = 15 total" and "Answered in 2.0s". Answer question in 4 seconds, verify "10 points + 3 speed bonus = 13 total" and "Answered in 4.0s". Answer question in 10 seconds, verify "10 points (no speed bonus)" or "10 points + 0 speed bonus = 10 total" and "Answered in 10.0s". Answer incorrectly, verify "0 points" (no speed bonus mentioned). Don't answer, verify "0 points" (no speed bonus mentioned). Test total score accumulation across multiple questions. Test timing: Speed bonus appears after answer reveal, not before. Test display duration: Shows for 5 seconds. Integration tests: Create game with 20 players, submit answers with various response times (covering all tiers), call `processQuestionScores()`, verify database updated correctly (is_correct, points_earned, total_score), verify scores_updated event broadcast. Test boundary cases: 0ms, 3000ms, 3001ms, 5000ms, 5001ms, 15000ms. Test error handling: Invalid gameId, invalid questionId, missing answers, database errors. Test performance: Measure processing time for 20 players (should be <500ms).
+    </ideas>
+  </tests>
+</story-context>
+

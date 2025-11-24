@@ -192,3 +192,4 @@ If broadcast frequency becomes very high (>100 per second per game), consider:
 
 For current use case (game events, ~1-2 broadcasts per question), current approach is optimal.
 
+

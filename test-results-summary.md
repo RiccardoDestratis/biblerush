@@ -32,3 +32,4 @@ Based on test results, the fix should:
 3. Ensure `useEffect` dependencies are correct to prevent unnecessary re-subscriptions
 4. Check channel state properly before broadcasting
 
+

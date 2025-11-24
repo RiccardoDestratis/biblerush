@@ -1,0 +1,5 @@
+---
+description: For any new UX compoenents and frontend stuff like buttons, cards, tables etc
+alwaysApply: false
+---
+Use ShadCN Components where possible instead of designing your own UX components and elements

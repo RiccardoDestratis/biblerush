@@ -1198,6 +1198,94 @@ export async function getFinalResults(
 }
 
 /**
+ * End/abort a game early
+ * Updates game status to 'completed' and sets completed_at timestamp
+ * Can be called by host to end the game at any time
+ * 
+ * @param gameId - UUID of the game to end
+ * @returns Success or error response
+ */
+export async function endGame(
+  gameId: string
+): Promise<{ success: true; completedAt: string } | { success: false; error: string }> {
+  try {
+    const supabase = await createClient();
+
+    // Validate inputs
+    if (!gameId) {
+      return {
+        success: false,
+        error: "Game ID is required",
+      };
+    }
+
+    // Validate UUID format
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(gameId)) {
+      return {
+        success: false,
+        error: "Invalid UUID format for game ID",
+      };
+    }
+
+    // Verify game exists and is in 'active' or 'waiting' status
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id, status")
+      .eq("id", gameId)
+      .single();
+
+    if (gameError || !game) {
+      return {
+        success: false,
+        error: "Game not found",
+      };
+    }
+
+    if (game.status === "completed") {
+      return {
+        success: false,
+        error: "Game is already completed",
+      };
+    }
+
+    // Update game status to 'completed' and set completed_at
+    const completedAt = new Date().toISOString();
+    const { error: updateError } = await supabase
+      .from("games")
+      .update({
+        status: "completed",
+        completed_at: completedAt,
+      })
+      .eq("id", gameId);
+
+    if (updateError) {
+      console.error("Error ending game:", updateError);
+      return {
+        success: false,
+        error: "Failed to end game. Please try again.",
+      };
+    }
+
+    // Revalidate paths
+    revalidatePath(`/game/${gameId}/host`);
+    revalidatePath(`/game/${gameId}/play`);
+
+    return {
+      success: true,
+      completedAt,
+    };
+  } catch (error) {
+    console.error("Unexpected error ending game:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred. Please try again.",
+    };
+  }
+}
+
+/**
  * Server Action: Get player's final results for player view
  * Returns player's rank, score, accuracy, average response time, and top 3
  * 

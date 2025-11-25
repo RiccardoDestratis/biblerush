@@ -99,6 +99,18 @@ export async function createGame(
       };
     }
 
+    // Check authentication for 10+ question games
+    if (questionCount > 3) {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        return {
+          success: false,
+          error: "You must be signed in to create games with 10+ questions. Please create an account first.",
+        };
+      }
+    }
+
     // Get or create question set
     const actualQuestionSetId = await getOrCreateQuestionSet(supabase, questionSetId);
     if (!actualQuestionSetId) {
@@ -115,15 +127,18 @@ export async function createGame(
     // Generate unique room code
     const roomCode = await generateUniqueRoomCode();
 
-    // Stub host_id for MVP (auth will be added in Epic 5)
-    // Using NULL since schema allows it (ON DELETE SET NULL)
-    // In production this will be auth.user.id
+    // Get authenticated user ID (if authenticated)
+    let hostId: string | null = null;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      hostId = user.id;
+    }
 
     // Insert game into database
     const { data, error } = await supabase
       .from("games")
       .insert({
-        host_id: null, // NULL for MVP, will be set to auth.user.id in Epic 5
+        host_id: hostId, // Set to authenticated user's ID, or NULL for anonymous 3-question games
         room_code: roomCode,
         question_set_id: actualQuestionSetId,
         question_count: questionCount,

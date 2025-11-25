@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Bible Memory Quiz Game uses a Next.js 15 App Router architecture with Supabase for real-time synchronization, optimized for a two-screen experience (projector host view + mobile player views). The architecture emphasizes real-time game state synchronization across multiple devices, AI-generated content delivery, and internationalization support for three languages (English, German, Italian) starting with English-only development.
+Bible Memory Quiz Game uses a Next.js 16 App Router architecture with Supabase for real-time synchronization, optimized for a two-screen experience (projector host view + mobile player views). The architecture emphasizes real-time game state synchronization across multiple devices, AI-generated content delivery, and internationalization support for three languages (English, German, Italian) starting with English-only development.
 
 **Key Architectural Principles:**
 - Server Actions over API Routes for type-safe mutations
@@ -24,7 +24,7 @@ pnpm create next-app@latest quizgame --typescript --tailwind --eslint --app --sr
 **Note:** Always use `pnpm` as package manager (never npm or yarn)
 
 This establishes the base architecture with these decisions:
-- Next.js 15 with App Router
+- Next.js 16 with App Router
 - TypeScript with strict mode
 - Tailwind CSS for styling
 - ESLint for code quality
@@ -36,7 +36,7 @@ This establishes the base architecture with these decisions:
 
 | Category | Decision | Version | Affects FR Categories | Rationale |
 | -------- | -------- | ------- | --------------------- | --------- |
-| **Framework** | Next.js | 15.x | All | Modern App Router, Server Components, Server Actions |
+| **Framework** | Next.js | 16.x | All | Modern App Router, Server Components, Server Actions |
 | **Language** | TypeScript | 5.x (strict mode) | All | Type safety, better DX, catch errors at compile time |
 | **Package Manager** | pnpm | Latest | All | Faster installs, better disk efficiency, workspace support |
 | **Styling** | Tailwind CSS | 3.x | UI/UX | Utility-first, projector-optimized, rapid development |
@@ -48,7 +48,7 @@ This establishes the base architecture with these decisions:
 | **Real-Time** | Supabase Realtime | Latest | Game State | WebSocket infrastructure, <500ms latency, proven scale |
 | **Authentication** | Supabase Auth | Latest | User Management | Email/password + Google OAuth, session management |
 | **Storage** | Supabase Storage | Latest | Media Assets | AI-generated images, CDN delivery, 30-day cache |
-| **Internationalization** | next-intl | 3.x | UI & Content | Next.js 15 App Router support, type-safe translations |
+| **Internationalization** | next-intl | 3.x | UI & Content | Next.js 16 App Router support, type-safe translations |
 | **Hosting** | Vercel | Latest | Deployment | Zero-config Next.js deployment, edge network, serverless |
 | **AI Image Gen** | OpenAI DALL-E 3 | Latest | Content | Pre-generated Biblical imagery, batch processing |
 | **Unit Testing** | Vitest | Latest | Testing | Fast unit tests for business logic, scoring, game state |
@@ -63,7 +63,7 @@ This establishes the base architecture with these decisions:
 
 ```
 quizgame/
-├── app/                          # Next.js 15 App Router
+├── app/                          # Next.js 16 App Router
 │   ├── [locale]/                 # i18n route segment (en, de, it)
 │   │   ├── (auth)/               # Auth routes (login, signup)
 │   │   │   ├── login/
@@ -191,8 +191,8 @@ quizgame/
 
 ### Core Technologies
 
-**Next.js 15 (App Router)**
-- **Version:** 15.x (latest stable)
+**Next.js 16 (App Router)**
+- **Version:** 16.x (latest stable)
 - **Rationale:** Modern React Server Components, Server Actions for mutations, optimized performance
 - **Key Features Used:**
   - Server Components for initial renders
@@ -228,7 +228,7 @@ quizgame/
 
 **next-intl (Internationalization)**
 - **Version:** 3.x (latest)
-- **Rationale:** Best Next.js 15 App Router support, type-safe translations, server/client compatible
+- **Rationale:** Best Next.js 16 App Router support, type-safe translations, server/client compatible
 - **Setup:**
   - Route-based locale segments (`/[locale]/...`)
   - Translations stored in Supabase database (`translations` table)
@@ -1252,8 +1252,8 @@ export async function getTranslations(locale: string) {
 
 ## Architecture Decision Records (ADRs)
 
-### ADR-001: Next.js 15 App Router
-**Decision:** Use Next.js 15 with App Router instead of Pages Router
+### ADR-001: Next.js 16 App Router
+**Decision:** Use Next.js 16 with App Router instead of Pages Router
 **Rationale:** Server Components for better performance, Server Actions for type-safe mutations, better developer experience
 **Alternatives Considered:** Pages Router (legacy), Remix (different paradigm)
 **Date:** 2025-01-27

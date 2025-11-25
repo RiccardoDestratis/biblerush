@@ -11,6 +11,7 @@ import { getQuestionSets } from "@/lib/actions/question-sets";
 import { getUserTier } from "@/lib/auth/user";
 import type { UserTier } from "@/lib/auth/user";
 import { hasAccessToTier } from "@/lib/auth/tier-access";
+import { SignupRequiredModal } from "@/components/auth/signup-required-modal";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,8 @@ export default function CreateGamePage() {
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userTier, setUserTier] = useState<UserTier | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [pendingQuestionCount, setPendingQuestionCount] = useState<number | null>(null);
 
   // Load user tier and question sets from database
   useEffect(() => {
@@ -134,7 +137,15 @@ export default function CreateGamePage() {
             <button
               key={count}
               type="button"
-              onClick={() => setQuestionCount(count)}
+              onClick={() => {
+                // Check if user needs auth for 10+ question games
+                if (count > 3 && (!userTier || !userTier.isAuthenticated)) {
+                  setPendingQuestionCount(count);
+                  setShowAuthModal(true);
+                } else {
+                  setQuestionCount(count);
+                }
+              }}
               className={cn(
                 "min-w-[60px] px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200",
                 "border-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
@@ -248,6 +259,18 @@ export default function CreateGamePage() {
           )}
         </Button>
       </div>
+
+      {/* Auth Required Modal */}
+      <SignupRequiredModal
+        open={showAuthModal}
+        onOpenChange={(open) => {
+          setShowAuthModal(open);
+          if (!open) {
+            setPendingQuestionCount(null);
+          }
+        }}
+        questionCount={pendingQuestionCount || 10}
+      />
     </div>
   );
 }

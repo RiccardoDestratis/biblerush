@@ -34,19 +34,15 @@ This authentication implementation follows the **official Supabase Next.js tutor
 - URL fragments (`#access_token=...`) can't be read server-side
 - For SSR, you need the session in the response body, not fragments
 
-**Solution:** Update the email template in Supabase Dashboard:
+**Solution:** Update the email templates in Supabase Dashboard:
 
 1. Go to: [Supabase Dashboard → Auth → Email Templates](https://supabase.com/dashboard/project/epswejbixjdhoezxczzu/auth/templates)
-2. Find the **"Confirm signup"** template
-3. Change this line:
-   ```html
-   <a href="{{ .ConfirmationURL }}">Confirm your signup</a>
-   ```
-   
-   To this:
-   ```html
-   <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Confirm your signup</a>
-   ```
+2. Update the **"Magic Link"** template:
+   - Change `{{ .ConfirmationURL }}` to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`
+   - See `docs/email-templates.md` for the complete template
+3. Update the **"Confirm signup"** template:
+   - Change `{{ .ConfirmationURL }}` to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`
+   - See `docs/email-templates.md` for the complete template
 
 This redirects directly to your server endpoint (`/auth/confirm`), which can verify the token server-side and create a session in cookies (accessible server-side).
 

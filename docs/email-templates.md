@@ -6,6 +6,8 @@ Copy these templates into your Supabase Dashboard → Auth → Email Templates
 
 **Subject:** Your Magic Link
 
+**IMPORTANT:** This template uses `token_hash` for Server-Side Rendering (SSR) compatibility. This ensures the magic link works correctly with Next.js SSR.
+
 **HTML Content:**
 
 ```html
@@ -44,7 +46,7 @@ Copy these templates into your Supabase Dashboard → Auth → Email Templates
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td align="center" style="padding: 20px 0;">
-                    <a href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #7C3AED 0%, #9D4EDD 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+                    <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #7C3AED 0%, #9D4EDD 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
                       Log In
                     </a>
                   </td>
@@ -53,7 +55,7 @@ Copy these templates into your Supabase Dashboard → Auth → Email Templates
               
               <p style="margin: 24px 0 0; font-size: 14px; color: #999999; text-align: center;">
                 If the button doesn't work, copy and paste this link into your browser:<br>
-                <a href="{{ .ConfirmationURL }}" style="color: #7C3AED; word-break: break-all;">{{ .ConfirmationURL }}</a>
+                <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email" style="color: #7C3AED; word-break: break-all;">{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email</a>
               </p>
             </td>
           </tr>

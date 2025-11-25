@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -14,7 +15,16 @@ import {
 } from "lucide-react";
 import { QuestionCarouselWrapper } from "@/components/landing/question-carousel-wrapper";
 
-export default function Home() {
+interface HomeProps {
+  searchParams: Promise<{ code?: string }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  // Handle magic link code parameter (PKCE flow) - redirect to auth/confirm
+  const params = await searchParams;
+  if (params.code) {
+    redirect(`/auth/confirm?code=${params.code}`);
+  }
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}

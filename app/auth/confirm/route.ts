@@ -9,6 +9,15 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type") as EmailOtpType | null;
   const next = searchParams.get("next") ?? "/create";
 
+  // Log the incoming request for debugging
+  console.log("[AUTH CONFIRM] Incoming request:", {
+    url: request.url,
+    token_hash: token_hash ? "present" : "missing",
+    code: code ? "present" : "missing",
+    type,
+    allParams: Object.fromEntries(searchParams.entries()),
+  });
+
   const redirectTo = request.nextUrl.clone();
   redirectTo.pathname = next;
   redirectTo.searchParams.delete("token_hash");
@@ -18,27 +27,8 @@ export async function GET(request: NextRequest) {
 
   const supabase = await createClient();
 
-  // Handle PKCE flow (code parameter without type - exchange code for session)
-  if (code && !type) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (!error) {
-      return NextResponse.redirect(redirectTo);
-    }
-  }
-
-  // Handle email OTP flow (code parameter with type - requires email)
-  // Note: For email OTP, we need the email which should be stored in session or passed separately
-  // This flow is typically handled client-side, but if needed here, email must be provided
-  if (code && type) {
-    // For email OTP verification, email is required but not available in URL
-    // This should typically be handled client-side where email is known
-    // For now, redirect to error page
-    redirectTo.pathname = "/error";
-    return NextResponse.redirect(redirectTo);
-  }
-
-  // Handle token_hash flow (for SSR)
+  // Handle token_hash flow (for SSR - preferred for magic links)
+  // This is the recommended approach for Next.js SSR
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({
       type,
@@ -56,9 +46,41 @@ export async function GET(request: NextRequest) {
       
       return NextResponse.redirect(redirectTo);
     }
+    
+    // If verification failed, log error and redirect to error page
+    console.error("Token verification failed:", error);
+    redirectTo.pathname = "/error";
+    return NextResponse.redirect(redirectTo);
   }
 
-  // If we get here, there was an error
+  // Handle PKCE flow (code parameter without type - exchange code for session)
+  // This is used when email template uses {{ .ConfirmationURL }} (not recommended for SSR)
+  if (code && !type) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (!error) {
+      return NextResponse.redirect(redirectTo);
+    }
+    
+    // If exchange failed, log error and redirect to error page
+    console.error("Code exchange failed:", error);
+    redirectTo.pathname = "/error";
+    return NextResponse.redirect(redirectTo);
+  }
+
+  // Handle email OTP flow (code parameter with type - requires email)
+  // Note: For email OTP, we need the email which should be stored in session or passed separately
+  // This flow is typically handled client-side, but if needed here, email must be provided
+  if (code && type) {
+    // For email OTP verification, email is required but not available in URL
+    // This should typically be handled client-side where email is known
+    console.error("Email OTP flow requires email parameter, which is not available in URL");
+    redirectTo.pathname = "/error";
+    return NextResponse.redirect(redirectTo);
+  }
+
+  // If we get here, there was an error - no valid parameters provided
+  console.error("No valid authentication parameters provided");
   redirectTo.pathname = "/error";
   return NextResponse.redirect(redirectTo);
 }

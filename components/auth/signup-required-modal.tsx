@@ -27,12 +27,12 @@ export function SignupRequiredModal({
 
   const handleSignUp = () => {
     onOpenChange(false);
-    router.push(`/signup?redirect=${encodeURIComponent("/create")}`);
+    router.push("/login");
   };
 
   const handleSignIn = () => {
     onOpenChange(false);
-    router.push(`/login?redirect=${encodeURIComponent("/create")}`);
+    router.push("/login");
   };
 
   return (

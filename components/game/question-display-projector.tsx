@@ -100,7 +100,26 @@ export function QuestionDisplayProjector({
 
   // Automatic reveal logic removed - let timer run out instead
 
-  // Subscribe to game events
+  // Use refs to avoid stale closures and reduce dependency array
+  const currentQuestionRef = useRef(currentQuestion);
+  const revealStateRef = useRef(revealState);
+  const questionNumberRef = useRef(questionNumber);
+  
+  // Keep refs in sync
+  useEffect(() => {
+    currentQuestionRef.current = currentQuestion;
+  }, [currentQuestion]);
+  
+  useEffect(() => {
+    revealStateRef.current = revealState;
+  }, [revealState]);
+  
+  useEffect(() => {
+    questionNumberRef.current = questionNumber;
+  }, [questionNumber]);
+
+  // Subscribe to game events - ONLY recreate when gameId changes
+  // Use refs in callbacks to avoid stale closures
   useEffect(() => {
     // Clean up previous subscription if it exists
     if (unsubscribeRef.current) {
@@ -115,8 +134,8 @@ export function QuestionDisplayProjector({
           console.log(`[Host] ✅ Received question_advance event, advancing to question ${payload.questionNumber}`);
           
           // Check if we already have this question (prevent duplicate updates)
-          if (payload.questionNumber === questionNumber) {
-            console.log(`[Host] ⚠️ Ignoring duplicate question_advance (already on question ${questionNumber})`);
+          if (payload.questionNumber === questionNumberRef.current) {
+            console.log(`[Host] ⚠️ Ignoring duplicate question_advance (already on question ${questionNumberRef.current})`);
             return;
           }
 
@@ -143,20 +162,20 @@ export function QuestionDisplayProjector({
           setResumed(payload.resumedAt);
         },
         onScoresUpdated: async (payload: ScoresUpdatedPayload) => {
-          // Helper function to check if reveal should be triggered
+          // Helper function to check if reveal should be triggered - use refs
           const shouldTriggerReveal = (): boolean => {
-            const questionIdMatches = currentQuestion && payload.questionId === currentQuestion.id;
-            const isInQuestionState = revealState === "question" || !revealState;
+            const questionIdMatches = currentQuestionRef.current && payload.questionId === currentQuestionRef.current.id;
+            const isInQuestionState = revealStateRef.current === "question" || !revealStateRef.current;
             return !hasTriggeredRevealRef.current && !!questionIdMatches && isInQuestionState;
           };
 
           console.log(`[Host] onScoresUpdated received:`, {
-            questionIdMatches: currentQuestion && payload.questionId === currentQuestion.id,
-            isInQuestionState: revealState === "question" || !revealState,
+            questionIdMatches: currentQuestionRef.current && payload.questionId === currentQuestionRef.current.id,
+            isInQuestionState: revealStateRef.current === "question" || !revealStateRef.current,
             hasTriggered: hasTriggeredRevealRef.current,
             payloadQuestionId: payload.questionId,
-            currentQuestionId: currentQuestion?.id,
-            revealState,
+            currentQuestionId: currentQuestionRef.current?.id,
+            revealState: revealStateRef.current,
           });
 
           if (shouldTriggerReveal()) {
@@ -166,14 +185,14 @@ export function QuestionDisplayProjector({
           } else {
             console.log(`[Host] ⚠️ Skipping reveal from onScoresUpdated:`, {
               hasTriggered: hasTriggeredRevealRef.current,
-              questionIdMatches: currentQuestion && payload.questionId === currentQuestion.id,
-              isInQuestionState: revealState === "question" || !revealState,
+              questionIdMatches: currentQuestionRef.current && payload.questionId === currentQuestionRef.current.id,
+              isInQuestionState: revealStateRef.current === "question" || !revealStateRef.current,
             });
           }
         },
         onAnswerReveal: (payload: AnswerRevealPayload) => {
-          const questionIdMatches = payload.questionId === currentQuestion?.id;
-          const isInQuestionState = revealState === "question" || !revealState;
+          const questionIdMatches = payload.questionId === currentQuestionRef.current?.id;
+          const isInQuestionState = revealStateRef.current === "question" || !revealStateRef.current;
           if (questionIdMatches || isInQuestionState) {
             setCorrectAnswer(
               payload.correctAnswer,
@@ -186,7 +205,7 @@ export function QuestionDisplayProjector({
           }
         },
         onLeaderboardReady: (payload: LeaderboardReadyPayload) => {
-          if (payload.questionId === currentQuestion?.id) {
+          if (payload.questionId === currentQuestionRef.current?.id) {
             setRevealState("leaderboard");
           }
         },
@@ -202,7 +221,7 @@ export function QuestionDisplayProjector({
         channelRef.current = null;
       }
     };
-  }, [gameId, currentQuestion, revealState, advanceQuestionStore, setGameStatus, setPaused, setResumed, setRevealState, setCorrectAnswer, questionNumber]);
+  }, [gameId]); // CRITICAL: Only depend on gameId - use refs for other values
 
   // Handle question timer expiration (15 seconds)
   const handleTimerExpire = async () => {
@@ -269,19 +288,22 @@ export function QuestionDisplayProjector({
         }
       }, 2000);
       
-      // Clear fallback if reveal triggers normally (check hasTriggeredRevealRef)
+      // Store timeout ref for cleanup
+      const fallbackTimeoutRef = { current: fallbackTimeout };
+      
+      // Check less frequently (500ms instead of 100ms) to reduce CPU usage
       const checkInterval = setInterval(() => {
         if (hasTriggeredRevealRef.current) {
           console.log(`[Host] ✅ Reveal triggered normally (timer), clearing fallback`);
-          clearTimeout(fallbackTimeout);
+          clearTimeout(fallbackTimeoutRef.current);
           clearInterval(checkInterval);
         }
-      }, 100);
+      }, 500); // Reduced from 100ms to 500ms
       
       // Clean up interval after 5 seconds
       setTimeout(() => {
         clearInterval(checkInterval);
-        clearTimeout(fallbackTimeout);
+        clearTimeout(fallbackTimeoutRef.current);
       }, 5000);
     }
     // Note: Answer reveal is triggered after scores_updated event (Story 3.2)
@@ -583,19 +605,22 @@ export function QuestionDisplayProjector({
       }
     }, 2000);
     
-    // Clear fallback if reveal triggers normally (check hasTriggeredRevealRef)
+    // Store timeout ref for cleanup
+    const fallbackTimeoutRef = { current: fallbackTimeout };
+    
+    // Check less frequently (500ms instead of 100ms) to reduce CPU usage
     const checkInterval = setInterval(() => {
       if (hasTriggeredRevealRef.current) {
         console.log(`[Host] ✅ Reveal triggered normally, clearing fallback`);
-        clearTimeout(fallbackTimeout);
+        clearTimeout(fallbackTimeoutRef.current);
         clearInterval(checkInterval);
       }
-    }, 100);
+    }, 500); // Reduced from 100ms to 500ms
     
     // Clean up interval after 5 seconds (should be enough time)
     setTimeout(() => {
       clearInterval(checkInterval);
-      clearTimeout(fallbackTimeout);
+      clearTimeout(fallbackTimeoutRef.current);
     }, 5000);
     
     // Don't advance here - let the natural flow happen:

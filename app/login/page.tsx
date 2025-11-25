@@ -1,113 +1,60 @@
 "use client";
 
-import * as React from "react";
-import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/actions/auth";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { LoginForm } from "@/components/login-form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Mail } from "lucide-react";
 
-function LoginForm() {
-  const router = useRouter();
+function LoginContent() {
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/create";
+  const magicLinkSent = searchParams.get("magic-link-sent") === "true";
+  const passwordUpdated = searchParams.get("password-updated") === "true";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  if (magicLinkSent) {
+    return (
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <Card>
+            <CardHeader className="space-y-1 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Mail className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-2xl">Check your email</CardTitle>
+              <CardDescription>
+                We've sent you a magic link. Click the link in the email to log in.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const result = await signIn(email, password);
-
-      if (!result.success) {
-        toast.error(result.error.message || "Failed to sign in");
-        setIsLoading(false);
-        return;
-      }
-
-      toast.success("Signed in successfully!");
-      router.push(redirectTo);
-      router.refresh();
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("An unexpected error occurred");
-      setIsLoading(false);
-    }
-  };
+  if (passwordUpdated) {
+    return (
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <Card>
+            <CardHeader className="space-y-1 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10">
+                <Mail className="h-6 w-6 text-green-600" />
+              </div>
+              <CardTitle className="text-2xl">Password updated</CardTitle>
+              <CardDescription>
+                Your password has been successfully updated. You can now sign in.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-md">
-      <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Sign In</h1>
-          <p className="text-muted-foreground">
-            Sign in to create games with 10+ questions
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={isLoading}
-              autoComplete="email"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-              autoComplete="current-password"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            size="lg"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing in...
-              </>
-            ) : (
-              "Sign In"
-            )}
-          </Button>
-        </form>
-
-        <div className="text-center text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <Link
-            href={`/signup?redirect=${encodeURIComponent(redirectTo)}`}
-            className="text-primary hover:underline font-medium"
-          >
-            Sign up
-          </Link>
-        </div>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm />
       </div>
     </div>
   );
@@ -116,13 +63,11 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <div className="flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
+      <div className="flex min-h-svh w-full items-center justify-center">
+        <div className="w-full max-w-sm">Loading...</div>
       </div>
     }>
-      <LoginForm />
+      <LoginContent />
     </Suspense>
   );
 }

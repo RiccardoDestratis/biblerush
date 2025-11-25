@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "dev:3002": "next dev -p 3002",
     "dev:clean": "rm -rf .next && rm -rf node_modules/.cache && rm -f tsconfig.tsbuildinfo && pnpm dev",
     "build": "next build",

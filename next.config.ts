@@ -10,6 +10,33 @@ const nextConfig: NextConfig = {
     // In production, this is handled automatically via proper domain configuration
   }),
 
+  // Performance optimizations for dev server
+  ...(process.env.NODE_ENV === "development" && {
+    // Webpack config (used with --webpack flag to optimize file watching)
+    webpack: (config, { dev, isServer }) => {
+      if (dev && !isServer) {
+        // Optimize file watching in development
+        config.watchOptions = {
+          poll: false, // Disable polling (use native file watching)
+          ignored: [
+            '**/node_modules/**',
+            '**/.next/**',
+            '**/.git/**',
+            '**/test-results/**',
+            '**/playwright-report/**',
+            '**/e2e/**',
+            '**/test-*.ts',
+            '**/*.test.ts',
+            '**/*.spec.ts',
+            '**/migrations/**',
+            '**/docs/**',
+          ],
+        };
+      }
+      return config;
+    },
+  }),
+
   // Image optimization configuration
   images: {
     // Allow images from Supabase Storage
